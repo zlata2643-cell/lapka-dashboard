@@ -56,9 +56,23 @@
 
   .updated { text-align: center; font-size: 10.5px; color: var(--text-2); margin-top: 24px; }
 
-  .report-box { white-space: pre-wrap; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.55; color: var(--text); max-height: 420px; overflow-y: auto; }
-  .copy-btn { width: 100%; margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--gold); padding: 10px; border-radius: 12px; font-size: 12px; font-family: inherit; letter-spacing: 0.4px; }
-  .copy-btn:active { border-color: var(--red-light); color: var(--red-light); }
+  .yesterday-card { background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+  .yesterday-date { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.5px; }
+  .yesterday-total { font-size: 30px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .yesterday-list { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .yesterday-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+  .yesterday-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .yesterday-name { flex: 1; color: var(--text-2); }
+  .yesterday-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .day-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 12px; }
+  .day-row .d-label { color: var(--text-2); }
+  .day-row .d-value { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .day-row .d-value.neg { color: var(--text-2); }
+  .day-row .d-value.empty { color: var(--border); }
+  .week-total-row { display: flex; justify-content: space-between; padding: 7px 2px; margin: 2px 0 8px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--gold); }
+  .week-total-row .pending { color: var(--text-2); font-weight: 400; }
+  .day-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
@@ -71,6 +85,10 @@
   <div class="header-paw">💹</div>
 </div>
 
+<div class="label">Вчера</div>
+<div class="yesterday-card" id="yesterdayCard"></div>
+
+<div class="label">Период</div>
 <div class="periods" id="periods"></div>
 
 <div class="kpi-row">
@@ -84,14 +102,8 @@
   <div class="donut-legend" id="donutLegend"></div>
 </div>
 
-<div class="label">По счетам</div>
+<div class="label">По счетам · по дням</div>
 <div id="acctList"></div>
-
-<div class="label">Отчёт по дням</div>
-<div class="card">
-  <div class="report-box" id="reportBox"></div>
-  <button class="copy-btn" onclick="copyReport()">Скопировать текст</button>
-</div>
 
 <div class="updated" id="updated"></div>
 
@@ -197,6 +209,7 @@ function render() {
       <div class="acct-head"><div class="acct-name">SONIC #${a}</div><div class="acct-total">${perAccountTotal[a] >= 0 ? '+' : ''}${fmt(perAccountTotal[a])}</div></div>
       <div class="bars">${barsHtml}</div>
       <div class="bar-labels">${labelsHtml}</div>
+      ${dayListHtml(a)}
     `;
     acctList.appendChild(card);
   });
@@ -243,10 +256,9 @@ function renderDonut(perAccountTotal, total) {
   svg.appendChild(centerText);
 }
 
-const MONTH_NAMES = ['', 'ЯНВАРЬ','ФЕВРАЛЬ','МАРТ','АПРЕЛЬ','МАЙ','ИЮНЬ','ИЮЛЬ','АВГУСТ','СЕНТЯБРЬ','ОКТЯБРЬ','НОЯБРЬ','ДЕКАБРЬ'];
 const DOW_SHORT = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 
-function buildReport() {
+function getMonthWeeks() {
   const [ly, lm] = lastDate.split('-').map(Number);
   const daysInMonth = new Date(Date.UTC(ly, lm, 0)).getUTCDate();
   const weekdays = [];
@@ -263,55 +275,57 @@ function buildReport() {
     current.push(wd);
   });
   if (current.length) weeks.push(current);
-  const wLabel = w => `${w[0].date.slice(8,10)}.${w[0].date.slice(5,7)}-${w[w.length-1].date.slice(8,10)}.${w[w.length-1].date.slice(5,7)}`;
+  return weeks;
+}
+const wLabel = w => `${w[0].date.slice(8,10)}.${w[0].date.slice(5,7)}–${w[w.length-1].date.slice(8,10)}.${w[w.length-1].date.slice(5,7)}`;
 
-  let out = `#${MONTH_NAMES[lm]}\n\n`;
-  const overallWeek = weeks.map(() => ({ total: 0, complete: true }));
-  let overallMonth = { total: 0, complete: true };
-
-  ACCOUNTS.forEach(a => {
-    out += `#SONIC ${a}\n\n`;
-    let monthTotal = 0, monthComplete = true;
-    weeks.forEach((week, wi) => {
-      let weekTotal = 0, weekComplete = true;
-      week.forEach(wd => {
-        const v = DATA[a][wd.date];
-        const dateLabel = `${wd.date.slice(8,10)}.${wd.date.slice(5,7)}`;
-        if (v === undefined) {
-          out += `${dateLabel} ${DOW_SHORT[wd.dow]}: \n`;
-          weekComplete = false; monthComplete = false;
-        } else {
-          out += `${dateLabel} ${DOW_SHORT[wd.dow]}: ${v < 0 ? 'минус ' + fmt(Math.abs(v)) : '+' + fmt(v)}\n`;
-          weekTotal += v; monthTotal += v;
-        }
-      });
-      out += `\nЧистый доход за неделю ${wLabel(week)} = ${weekComplete ? fmt(weekTotal) + ' USDT' : '__ USDT'}\n\n`;
-      overallWeek[wi].total += weekTotal;
-      if (!weekComplete) overallWeek[wi].complete = false;
+function dayListHtml(account) {
+  const weeks = getMonthWeeks();
+  let html = '<div class="day-list">';
+  weeks.forEach(week => {
+    let weekTotal = 0, weekComplete = true;
+    let rows = '';
+    week.forEach(wd => {
+      const v = DATA[account][wd.date];
+      const dateLabel = `${wd.date.slice(8,10)}.${wd.date.slice(5,7)} ${DOW_SHORT[wd.dow]}`;
+      if (v === undefined) {
+        rows += `<div class="day-row"><span class="d-label">${dateLabel}</span><span class="d-value empty">—</span></div>`;
+        weekComplete = false;
+      } else {
+        weekTotal += v;
+        const cls = v < 0 ? 'neg' : '';
+        rows += `<div class="day-row"><span class="d-label">${dateLabel}</span><span class="d-value ${cls}">${v >= 0 ? '+' : ''}${fmt(v)}</span></div>`;
+      }
     });
-    out += `Чистый доход за месяц ${MONTH_NAMES[lm].toLowerCase()} = ${monthComplete ? fmt(monthTotal) + ' USDT' : '______ USDT'}\n\n----------------\n\n`;
-    overallMonth.total += monthTotal;
-    if (!monthComplete) overallMonth.complete = false;
+    html += rows;
+    html += `<div class="week-total-row"><span>Неделя ${wLabel(week)}</span><span class="${weekComplete ? '' : 'pending'}">${weekComplete ? fmt(weekTotal) + ' USDT' : 'ждём данные'}</span></div>`;
   });
-
-  weeks.forEach((week, wi) => {
-    out += `Общий чистый доход за неделю ${wLabel(week)} = ${overallWeek[wi].complete ? fmt(overallWeek[wi].total) + ' USDT' : '__ USDT'}\n`;
-  });
-  out += `\nОбщий чистый доход за месяц ${MONTH_NAMES[lm].toLowerCase()} = ${overallMonth.complete ? fmt(overallMonth.total) + ' USDT' : '__ USDT'}\n`;
-
-  return out;
+  html += '</div>';
+  return html;
 }
 
-const reportText = buildReport();
-document.getElementById('reportBox').textContent = reportText;
-function copyReport() {
-  navigator.clipboard?.writeText(reportText);
-  const btn = document.querySelector('.copy-btn');
-  const old = btn.textContent;
-  btn.textContent = 'Скопировано';
-  setTimeout(() => { btn.textContent = old; }, 1500);
+function renderYesterday() {
+  let total = 0;
+  const rows = ACCOUNTS.map(a => {
+    const v = DATA[a][lastDate] || 0;
+    total += v;
+    return { a, v };
+  });
+  const dateLabel = lastDate.split('-').reverse().join('.');
+  const listHtml = rows.map(r => `
+    <div class="yesterday-row">
+      <div class="yesterday-dot" style="background:${ACCT_COLORS[r.a]}"></div>
+      <div class="yesterday-name">#${r.a.slice(-4)}</div>
+      <div class="yesterday-val">${r.v >= 0 ? '+' : ''}${fmt(r.v)}</div>
+    </div>`).join('');
+  document.getElementById('yesterdayCard').innerHTML = `
+    <div class="yesterday-date">${dateLabel}</div>
+    <div class="yesterday-total">${total >= 0 ? '+' : ''}${fmt(total)} USDT</div>
+    <div class="yesterday-list">${listHtml}</div>
+  `;
 }
 
+renderYesterday();
 render();
 </script>
 </body>
