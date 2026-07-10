@@ -9,6 +9,7 @@
   :root {
     --bg: #161311; --surface: #211c19; --surface-2: #2a2320;
     --red: #c1392b; --red-light: #e05a48; --gold: #d9b673;
+    --rust: #935a3c; --taupe: #6b5b4f;
     --text: #f3ece0; --text-2: #a89a87;
     --border: rgba(217,182,115,0.18);
   }
@@ -19,37 +20,39 @@
     color: var(--text); min-height: 100vh; padding: 20px 16px 40px;
     max-width: 430px; margin: 0 auto;
   }
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
-  .header-left h1 { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .header-left h1 { font-size: 21px; font-weight: 700; color: var(--gold); }
   .header-left .sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
-  .header-paw { width: 40px; height: 40px; background: linear-gradient(135deg, var(--red), var(--red-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+  .header-paw { width: 40px; height: 40px; background: linear-gradient(135deg, var(--red), var(--red-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+
+  .periods { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 18px; }
+  .period-btn { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); color: var(--text-2); font-size: 12px; padding: 7px 13px; border-radius: 20px; font-family: inherit; }
+  .period-btn.active { background: linear-gradient(135deg, var(--red), var(--red-light)); border-color: var(--red); color: var(--text); font-weight: 600; }
 
   .label { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); margin: 20px 0 10px; opacity: 0.85; }
 
   .kpi-row { display: flex; gap: 8px; margin-bottom: 4px; }
   .kpi { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; }
   .kpi .k-label { font-size: 10px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; }
-  .kpi .k-value { font-size: 19px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi .k-value { font-size: 18px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 9px; }
+
+  .donut-card { display: flex; align-items: center; gap: 16px; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .legend-name { flex: 1; color: var(--text-2); }
+  .legend-val { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
   .acct-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
   .acct-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .acct-total { font-size: 17px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
-  .bars { display: flex; align-items: flex-end; gap: 5px; height: 50px; margin: 8px 0 4px; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 50px; margin: 8px 0 4px; }
   .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
-  .bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
-  .bar-labels { display: flex; gap: 5px; margin-bottom: 10px; }
-  .bar-label { flex: 1; text-align: center; font-size: 8.5px; color: var(--text-2); }
-  .week-row { display: flex; justify-content: space-between; font-size: 11.5px; padding: 5px 0; border-top: 1px solid var(--border); }
-  .week-row .w-label { color: var(--text-2); }
-  .week-row .w-value { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .week-row .w-value.pending { color: var(--text-2); font-weight: 400; }
-
-  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .summary-row:last-child { border-bottom: none; }
-  .summary-row .s-label { color: var(--text-2); }
-  .summary-row .s-value { font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
-  .summary-row .s-value.pending { color: var(--text-2); font-weight: 400; }
+  .bar { width: 100%; border-radius: 2px 2px 0 0; min-height: 3px; }
+  .bar-labels { display: flex; gap: 3px; }
+  .bar-label { flex: 1; text-align: center; font-size: 8px; color: var(--text-2); white-space: nowrap; overflow: hidden; }
 
   .updated { text-align: center; font-size: 10.5px; color: var(--text-2); margin-top: 24px; }
 </style>
@@ -59,79 +62,178 @@
 <div class="header">
   <div class="header-left">
     <h1>Копитрейдинг SONIC</h1>
-    <div class="sub">Июль 2026 · 4 счёта</div>
+    <div class="sub">4 счёта · чистыми, за вычетом 30%</div>
   </div>
   <div class="header-paw">💹</div>
 </div>
 
+<div class="periods" id="periods"></div>
+
 <div class="kpi-row">
-  <div class="kpi"><div class="k-label">Чистыми за июль</div><div class="k-value" id="julyTotal">—</div></div>
-  <div class="kpi"><div class="k-label">С начала (апрель)</div><div class="k-value" id="lifeTotal">—</div></div>
+  <div class="kpi"><div class="k-label" id="periodLabel">За период</div><div class="k-value" id="periodTotal">—</div></div>
+  <div class="kpi"><div class="k-label">Всего с апреля</div><div class="k-value" id="lifeTotal">—</div></div>
+</div>
+
+<div class="label">Доли счетов за период</div>
+<div class="card donut-card">
+  <svg width="96" height="96" viewBox="0 0 96 96" id="donut"></svg>
+  <div class="donut-legend" id="donutLegend"></div>
 </div>
 
 <div class="label">По счетам</div>
 <div id="acctList"></div>
 
-<div class="label">Итого по неделям</div>
-<div class="card"><div id="weekSummary"></div></div>
-
-<div class="updated">Данные на 09.07.2026 · чистыми, за вычетом 30%</div>
+<div class="updated" id="updated"></div>
 
 <script>
-const accounts = [
-  {name: "SONIC #50559419", days: [383.07,-200.05,304.93,228.82,218.10,550.12,458.76], life: 22406.99},
-  {name: "SONIC #50665238", days: [394.42,-205.98,313.97,235.61,224.57,566.43,472.36], life: 17980.57},
-  {name: "SONIC #50680531", days: [337.38,-176.20,268.56,201.54,192.09,484.51,404.05], life: 14814.58},
-  {name: "SONIC #50784486", days: [201.17,-105.06,160.14,120.17,114.54,288.96,240.93], life: 5891.56},
-];
-const dayLabels = ["01","02","03","06","07","08","09"];
+const DATA = {"50559419": {"2026-04-01": 345.67, "2026-04-02": 385.56, "2026-04-06": 263.17, "2026-04-07": 394.94, "2026-04-08": 696.09, "2026-04-09": 381.0, "2026-04-10": 378.18, "2026-04-13": 425.71, "2026-04-14": 439.38, "2026-04-15": 309.17, "2026-04-16": 275.64, "2026-04-17": 382.0, "2026-04-20": 117.16, "2026-04-21": 481.05, "2026-04-22": 553.62, "2026-04-23": 276.25, "2026-04-24": 435.6, "2026-04-27": 398.4, "2026-04-28": 465.16, "2026-04-29": 332.49, "2026-04-30": 267.77, "2026-05-01": 201.74, "2026-05-04": 342.4, "2026-05-05": 399.04, "2026-05-06": 249.7, "2026-05-07": 386.97, "2026-05-08": 268.41, "2026-05-11": 209.04, "2026-05-12": 340.39, "2026-05-13": 208.28, "2026-05-14": 268.85, "2026-05-15": 543.98, "2026-05-18": 429.57, "2026-05-19": 337.51, "2026-05-20": 164.93, "2026-05-21": 265.2, "2026-05-22": 171.01, "2026-05-25": 566.34, "2026-05-26": 256.28, "2026-05-27": 367.62, "2026-05-28": 290.52, "2026-05-29": 270.27, "2026-06-01": 419.95, "2026-06-02": 228.23, "2026-06-03": 450.06, "2026-06-04": 49.66, "2026-06-05": 215.66, "2026-06-08": 499.69, "2026-06-09": 4.87, "2026-06-10": 92.41, "2026-06-11": 361.95, "2026-06-12": 118.49, "2026-06-15": 563.98, "2026-06-16": 47.8, "2026-06-17": 309.65, "2026-06-18": 339.48, "2026-06-19": 226.56, "2026-06-22": 304.66, "2026-06-23": 383.8, "2026-06-24": -97.65, "2026-06-25": 580.13, "2026-06-26": 204.46, "2026-06-29": 385.11, "2026-06-30": 232.25, "2026-07-01": 383.07, "2026-07-02": -200.05, "2026-07-03": 304.93, "2026-07-06": 228.82, "2026-07-07": 218.1, "2026-07-08": 550.12, "2026-07-09": 458.76}, "50665238": {"2026-04-15": 13.54, "2026-04-16": 37.2, "2026-04-17": 51.58, "2026-04-20": 113.35, "2026-04-21": 465.65, "2026-04-22": 536.16, "2026-04-23": 267.69, "2026-04-24": 422.24, "2026-04-27": 386.65, "2026-04-28": 451.64, "2026-04-29": 322.99, "2026-04-30": 260.2, "2026-05-01": 196.1, "2026-05-04": 332.84, "2026-05-05": 388.19, "2026-05-06": 242.98, "2026-05-07": 376.61, "2026-05-08": 261.25, "2026-05-11": 203.48, "2026-05-12": 331.32, "2026-05-13": 202.72, "2026-05-14": 261.68, "2026-05-15": 529.48, "2026-05-18": 418.12, "2026-05-19": 328.52, "2026-05-20": 160.53, "2026-05-21": 258.13, "2026-05-22": 166.45, "2026-05-25": 551.24, "2026-05-26": 249.45, "2026-05-27": 357.83, "2026-05-28": 312.52, "2026-05-29": 421.03, "2026-06-01": 435.48, "2026-06-02": 234.99, "2026-06-03": 463.41, "2026-06-04": 51.13, "2026-06-05": 222.05, "2026-06-08": 514.5, "2026-06-09": 5.01, "2026-06-10": 95.15, "2026-06-11": 372.68, "2026-06-12": 122.01, "2026-06-15": 580.71, "2026-06-16": 49.22, "2026-06-17": 318.84, "2026-06-18": 349.54, "2026-06-19": 233.28, "2026-06-22": 313.69, "2026-06-23": 395.18, "2026-06-24": -100.53, "2026-06-25": 597.33, "2026-06-26": 210.52, "2026-06-29": 396.52, "2026-06-30": 239.13, "2026-07-01": 394.42, "2026-07-02": -205.98, "2026-07-03": 313.97, "2026-07-06": 235.61, "2026-07-07": 224.57, "2026-07-08": 566.43, "2026-07-09": 472.36}, "50680531": {"2026-04-02": -1370.72, "2026-04-09": 126.43, "2026-04-10": 137.68, "2026-04-13": 141.53, "2026-04-14": 146.14, "2026-04-15": 103.45, "2026-04-16": 96.59, "2026-04-17": 133.91, "2026-04-20": 97.18, "2026-04-21": 399.22, "2026-04-22": 459.68, "2026-04-23": 229.51, "2026-04-24": 362.02, "2026-04-27": 331.42, "2026-04-28": 387.13, "2026-04-29": 276.83, "2026-04-30": 222.94, "2026-05-01": 167.97, "2026-05-04": 285.08, "2026-05-05": 332.22, "2026-05-06": 207.89, "2026-05-07": 322.15, "2026-05-08": 223.47, "2026-05-11": 174.05, "2026-05-12": 283.4, "2026-05-13": 173.41, "2026-05-14": 223.84, "2026-05-15": 452.91, "2026-05-18": 357.66, "2026-05-19": 281.01, "2026-05-20": 137.31, "2026-05-21": 220.8, "2026-05-22": 142.39, "2026-05-25": 471.52, "2026-05-26": 213.37, "2026-05-27": 306.08, "2026-05-28": 267.32, "2026-05-29": 360.15, "2026-06-01": 372.5, "2026-06-02": 201.0, "2026-06-03": 396.4, "2026-06-04": 43.74, "2026-06-05": 189.94, "2026-06-08": 440.09, "2026-06-09": 4.28, "2026-06-10": 81.39, "2026-06-11": 318.78, "2026-06-12": 104.36, "2026-06-15": 496.72, "2026-06-16": 42.1, "2026-06-17": 272.73, "2026-06-18": 298.99, "2026-06-19": 199.54, "2026-06-22": 268.32, "2026-06-23": 338.02, "2026-06-24": -86.0, "2026-06-25": 510.95, "2026-06-26": 180.07, "2026-06-29": 339.18, "2026-06-30": 204.55, "2026-07-01": 337.38, "2026-07-02": -176.2, "2026-07-03": 268.56, "2026-07-06": 201.54, "2026-07-07": 192.09, "2026-07-08": 484.51, "2026-07-09": 404.05}, "50784486": {"2026-05-04": 32.01, "2026-05-05": 51.12, "2026-05-06": 35.5, "2026-05-07": 59.71, "2026-05-08": 48.55, "2026-05-11": 43.72, "2026-05-12": 71.65, "2026-05-13": 44.13, "2026-05-14": 58.41, "2026-05-15": 121.19, "2026-05-18": 98.98, "2026-05-19": 89.22, "2026-05-20": 46.71, "2026-05-21": 81.18, "2026-05-22": 56.45, "2026-05-25": 203.17, "2026-05-26": 100.18, "2026-05-27": 157.88, "2026-05-28": 146.34, "2026-05-29": 213.36, "2026-06-01": 222.11, "2026-06-02": 119.85, "2026-06-03": 236.36, "2026-06-04": 26.08, "2026-06-05": 113.26, "2026-06-08": 262.42, "2026-06-09": 2.56, "2026-06-10": 48.53, "2026-06-11": 190.09, "2026-06-12": 62.23, "2026-06-15": 296.18, "2026-06-16": 25.11, "2026-06-17": 162.62, "2026-06-18": 178.28, "2026-06-19": 118.99, "2026-06-22": 160.0, "2026-06-23": 201.56, "2026-06-24": -51.28, "2026-06-25": 304.7, "2026-06-26": 107.37, "2026-06-29": 202.24, "2026-06-30": 121.97, "2026-07-01": 201.17, "2026-07-02": -105.06, "2026-07-03": 160.14, "2026-07-06": 120.17, "2026-07-07": 114.54, "2026-07-08": 288.96, "2026-07-09": 240.93}}
+;
+const ACCOUNTS = Object.keys(DATA);
+const ACCT_COLORS = { "50559419": "#c1392b", "50665238": "#d9b673", "50680531": "#935a3c", "50784486": "#6b5b4f" };
 const fmt = n => n.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-const acctList = document.getElementById('acctList');
-let julyTotal = 0, lifeTotal = 0, w1Total = 0, w2Total = 0;
+// последняя дата в данных = точка отсчёта "сегодня"
+let lastDate = "2000-01-01";
+ACCOUNTS.forEach(a => { const ks = Object.keys(DATA[a]); if (ks.length) { const m = ks[ks.length-1]; if (m > lastDate) lastDate = m; } });
+document.getElementById('updated').textContent = `Данные на ${lastDate.split('-').reverse().join('.')}`;
 
-accounts.forEach(a => {
-  const july = a.days.reduce((s,v)=>s+v, 0);
-  const w1 = a.days.slice(0,3).reduce((s,v)=>s+v, 0);
-  const w2 = a.days.slice(3,7).reduce((s,v)=>s+v, 0);
-  julyTotal += july; lifeTotal += a.life; w1Total += w1; w2Total += w2;
-
-  const maxAbs = Math.max(...a.days.map(Math.abs));
-  const barsHtml = a.days.map(v => {
-    const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
-    const color = v >= 0 ? 'linear-gradient(180deg,#e05a48,#c1392b)' : '#5a4f47';
-    return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
-  }).join('');
-  const labelsHtml = dayLabels.map(l => `<div class="bar-label">${l}</div>`).join('');
-
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <div class="acct-head"><div class="acct-name">${a.name}</div><div class="acct-total">+${fmt(july)}</div></div>
-    <div class="bars">${barsHtml}</div>
-    <div class="bar-labels">${labelsHtml}</div>
-    <div class="week-row"><span class="w-label">Неделя 01.07–03.07</span><span class="w-value">${fmt(w1)}</span></div>
-    <div class="week-row"><span class="w-label">Неделя 06.07–10.07</span><span class="w-value pending">${fmt(w2)} (без 10.07)</span></div>
-    <div class="week-row"><span class="w-label">Всего с апреля</span><span class="w-value">${fmt(a.life)}</span></div>
-  `;
-  acctList.appendChild(card);
-});
-
-document.getElementById('julyTotal').textContent = fmt(julyTotal) + ' USDT';
-document.getElementById('lifeTotal').textContent = fmt(lifeTotal) + ' USDT';
-
-const weekSummary = document.getElementById('weekSummary');
-const weeks = [
-  {label: "01.07 – 03.07", value: fmt(w1Total), pending: false},
-  {label: "06.07 – 10.07", value: fmt(w2Total) + ' (без пт)', pending: true},
-  {label: "13.07 – 17.07", value: "—", pending: true},
-  {label: "20.07 – 24.07", value: "—", pending: true},
-  {label: "27.07 – 31.07", value: "—", pending: true},
+const PERIODS = [
+  { key: '7d', label: '7 дней', days: 7 },
+  { key: '30d', label: 'Месяц', days: 30 },
+  { key: '90d', label: '3 месяца', days: 90 },
+  { key: '180d', label: '6 месяцев', days: 180 },
+  { key: 'all', label: 'Всё время', days: 99999 },
 ];
-weeks.forEach(w => {
-  weekSummary.innerHTML += `<div class="summary-row"><span class="s-label">${w.label}</span><span class="s-value ${w.pending ? 'pending' : ''}">${w.value}</span></div>`;
+let activePeriod = '30d';
+
+const periodsEl = document.getElementById('periods');
+PERIODS.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'period-btn' + (p.key === activePeriod ? ' active' : '');
+  btn.textContent = p.label;
+  btn.onclick = () => { activePeriod = p.key; render(); };
+  btn.dataset.key = p.key;
+  periodsEl.appendChild(btn);
 });
-weekSummary.innerHTML += `<div class="summary-row"><span class="s-label"><b>Итого за июль (на сейчас)</b></span><span class="s-value">${fmt(julyTotal)} USDT</span></div>`;
+
+function cutoffDate(days) {
+  const d = new Date(lastDate + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - days + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function bucketKey(dateStr, mode) {
+  if (mode === 'day') return dateStr;
+  // неделя: понедельник этой недели
+  const d = new Date(dateStr + 'T00:00:00Z');
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() - day + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function render() {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.toggle('active', b.dataset.key === activePeriod));
+  const period = PERIODS.find(p => p.key === activePeriod);
+  const cutoff = period.key === 'all' ? '2000-01-01' : cutoffDate(period.days);
+  const useDaily = period.days <= 30;
+  const bucketMode = useDaily ? 'day' : 'week';
+
+  // KPI
+  let periodTotal = 0, lifeTotal = 0;
+  const perAccountTotal = {};
+  ACCOUNTS.forEach(a => {
+    let pt = 0, lt = 0;
+    Object.entries(DATA[a]).forEach(([date, v]) => {
+      lt += v;
+      if (date >= cutoff && date <= lastDate) pt += v;
+    });
+    perAccountTotal[a] = pt;
+    periodTotal += pt;
+    lifeTotal += lt;
+  });
+  document.getElementById('periodLabel').textContent = `Чистыми · ${period.label.toLowerCase()}`;
+  document.getElementById('periodTotal').textContent = fmt(periodTotal) + ' USDT';
+  document.getElementById('lifeTotal').textContent = fmt(lifeTotal) + ' USDT';
+
+  // Донат по долям счетов
+  renderDonut(perAccountTotal, periodTotal);
+
+  // Карточки по счетам с барами
+  const acctList = document.getElementById('acctList');
+  acctList.innerHTML = '';
+  ACCOUNTS.forEach(a => {
+    const buckets = {};
+    Object.entries(DATA[a]).forEach(([date, v]) => {
+      if (date < cutoff || date > lastDate) return;
+      const k = bucketKey(date, bucketMode);
+      buckets[k] = (buckets[k] || 0) + v;
+    });
+    const keys = Object.keys(buckets).sort();
+    const vals = keys.map(k => buckets[k]);
+    const maxAbs = Math.max(1, ...vals.map(Math.abs));
+    const barsHtml = vals.map(v => {
+      const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
+      const color = v >= 0 ? `linear-gradient(180deg, ${ACCT_COLORS[a]}, #e05a48)` : '#5a4f47';
+      return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
+    }).join('');
+    const labelsHtml = keys.map(k => {
+      const [, m, d] = k.split('-');
+      return `<div class="bar-label">${d}.${m}</div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="acct-head"><div class="acct-name">SONIC #${a}</div><div class="acct-total">${perAccountTotal[a] >= 0 ? '+' : ''}${fmt(perAccountTotal[a])}</div></div>
+      <div class="bars">${barsHtml}</div>
+      <div class="bar-labels">${labelsHtml}</div>
+    `;
+    acctList.appendChild(card);
+  });
+}
+
+function renderDonut(perAccountTotal, total) {
+  const svg = document.getElementById('donut');
+  const legend = document.getElementById('donutLegend');
+  svg.innerHTML = '';
+  legend.innerHTML = '';
+  const cx = 48, cy = 48, r = 36, sw = 14;
+  const sum = ACCOUNTS.reduce((s, a) => s + Math.max(0, perAccountTotal[a]), 0) || 1;
+  let angle = -90;
+  ACCOUNTS.forEach(a => {
+    const val = Math.max(0, perAccountTotal[a]);
+    const frac = val / sum;
+    const sweep = frac * 360;
+    const largeArc = sweep > 180 ? 1 : 0;
+    const x1 = cx + r * Math.cos(angle * Math.PI / 180);
+    const y1 = cy + r * Math.sin(angle * Math.PI / 180);
+    const endAngle = angle + sweep;
+    const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
+    const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
+    if (frac > 0.001) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', ACCT_COLORS[a]);
+      path.setAttribute('stroke-width', sw);
+      svg.appendChild(path);
+    }
+    angle = endAngle;
+
+    const row = document.createElement('div');
+    row.className = 'legend-row';
+    row.innerHTML = `<div class="legend-dot" style="background:${ACCT_COLORS[a]}"></div><div class="legend-name">#${a.slice(-4)}</div><div class="legend-val">${fmt(perAccountTotal[a])}</div>`;
+    legend.appendChild(row);
+  });
+  const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  centerText.setAttribute('x', cx); centerText.setAttribute('y', cy);
+  centerText.setAttribute('text-anchor', 'middle'); centerText.setAttribute('dominant-baseline', 'central');
+  centerText.setAttribute('fill', '#f3ece0'); centerText.setAttribute('font-size', '11'); centerText.setAttribute('font-weight', '700');
+  centerText.textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : Math.round(total);
+  svg.appendChild(centerText);
+}
+
+render();
 </script>
 </body>
 </html>
