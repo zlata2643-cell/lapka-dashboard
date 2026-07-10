@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Копитрейдинг SONIC</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #161311; --surface: #211c19; --surface-2: #2a2320;
+    --red: #c1392b; --red-light: #e05a48; --gold: #d9b673;
+    --text: #f3ece0; --text-2: #a89a87;
+    --border: rgba(217,182,115,0.18);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 20% 0%, rgba(193,57,43,0.08), transparent 45%);
+    color: var(--text); min-height: 100vh; padding: 20px 16px 40px;
+    max-width: 430px; margin: 0 auto;
+  }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+  .header-left h1 { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .header-left .sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+  .header-paw { width: 40px; height: 40px; background: linear-gradient(135deg, var(--red), var(--red-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+
+  .label { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); margin: 20px 0 10px; opacity: 0.85; }
+
+  .kpi-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .kpi { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; }
+  .kpi .k-label { font-size: 10px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; }
+  .kpi .k-value { font-size: 19px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 9px; }
+  .acct-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+  .acct-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .acct-total { font-size: 17px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 50px; margin: 8px 0 4px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
+  .bar-labels { display: flex; gap: 5px; margin-bottom: 10px; }
+  .bar-label { flex: 1; text-align: center; font-size: 8.5px; color: var(--text-2); }
+  .week-row { display: flex; justify-content: space-between; font-size: 11.5px; padding: 5px 0; border-top: 1px solid var(--border); }
+  .week-row .w-label { color: var(--text-2); }
+  .week-row .w-value { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .week-row .w-value.pending { color: var(--text-2); font-weight: 400; }
+
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .s-label { color: var(--text-2); }
+  .summary-row .s-value { font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .summary-row .s-value.pending { color: var(--text-2); font-weight: 400; }
+
+  .updated { text-align: center; font-size: 10.5px; color: var(--text-2); margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Копитрейдинг SONIC</h1>
+    <div class="sub">Июль 2026 · 4 счёта</div>
+  </div>
+  <div class="header-paw">💹</div>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="k-label">Чистыми за июль</div><div class="k-value" id="julyTotal">—</div></div>
+  <div class="kpi"><div class="k-label">С начала (апрель)</div><div class="k-value" id="lifeTotal">—</div></div>
+</div>
+
+<div class="label">По счетам</div>
+<div id="acctList"></div>
+
+<div class="label">Итого по неделям</div>
+<div class="card"><div id="weekSummary"></div></div>
+
+<div class="updated">Данные на 09.07.2026 · чистыми, за вычетом 30%</div>
+
+<script>
+const accounts = [
+  {name: "SONIC #50559419", days: [383.07,-200.05,304.93,228.82,218.10,550.12,458.76], life: 22406.99},
+  {name: "SONIC #50665238", days: [394.42,-205.98,313.97,235.61,224.57,566.43,472.36], life: 17980.57},
+  {name: "SONIC #50680531", days: [337.38,-176.20,268.56,201.54,192.09,484.51,404.05], life: 14814.58},
+  {name: "SONIC #50784486", days: [201.17,-105.06,160.14,120.17,114.54,288.96,240.93], life: 5891.56},
+];
+const dayLabels = ["01","02","03","06","07","08","09"];
+const fmt = n => n.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+const acctList = document.getElementById('acctList');
+let julyTotal = 0, lifeTotal = 0, w1Total = 0, w2Total = 0;
+
+accounts.forEach(a => {
+  const july = a.days.reduce((s,v)=>s+v, 0);
+  const w1 = a.days.slice(0,3).reduce((s,v)=>s+v, 0);
+  const w2 = a.days.slice(3,7).reduce((s,v)=>s+v, 0);
+  julyTotal += july; lifeTotal += a.life; w1Total += w1; w2Total += w2;
+
+  const maxAbs = Math.max(...a.days.map(Math.abs));
+  const barsHtml = a.days.map(v => {
+    const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
+    const color = v >= 0 ? 'linear-gradient(180deg,#e05a48,#c1392b)' : '#5a4f47';
+    return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
+  }).join('');
+  const labelsHtml = dayLabels.map(l => `<div class="bar-label">${l}</div>`).join('');
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="acct-head"><div class="acct-name">${a.name}</div><div class="acct-total">+${fmt(july)}</div></div>
+    <div class="bars">${barsHtml}</div>
+    <div class="bar-labels">${labelsHtml}</div>
+    <div class="week-row"><span class="w-label">Неделя 01.07–03.07</span><span class="w-value">${fmt(w1)}</span></div>
+    <div class="week-row"><span class="w-label">Неделя 06.07–10.07</span><span class="w-value pending">${fmt(w2)} (без 10.07)</span></div>
+    <div class="week-row"><span class="w-label">Всего с апреля</span><span class="w-value">${fmt(a.life)}</span></div>
+  `;
+  acctList.appendChild(card);
+});
+
+document.getElementById('julyTotal').textContent = fmt(julyTotal) + ' USDT';
+document.getElementById('lifeTotal').textContent = fmt(lifeTotal) + ' USDT';
+
+const weekSummary = document.getElementById('weekSummary');
+const weeks = [
+  {label: "01.07 – 03.07", value: fmt(w1Total), pending: false},
+  {label: "06.07 – 10.07", value: fmt(w2Total) + ' (без пт)', pending: true},
+  {label: "13.07 – 17.07", value: "—", pending: true},
+  {label: "20.07 – 24.07", value: "—", pending: true},
+  {label: "27.07 – 31.07", value: "—", pending: true},
+];
+weeks.forEach(w => {
+  weekSummary.innerHTML += `<div class="summary-row"><span class="s-label">${w.label}</span><span class="s-value ${w.pending ? 'pending' : ''}">${w.value}</span></div>`;
+});
+weekSummary.innerHTML += `<div class="summary-row"><span class="s-label"><b>Итого за июль (на сейчас)</b></span><span class="s-value">${fmt(julyTotal)} USDT</span></div>`;
+</script>
+</body>
+</html>
