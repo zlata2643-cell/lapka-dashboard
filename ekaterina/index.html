@@ -31,7 +31,18 @@
 
   .label { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); margin: 20px 0 10px; opacity: 0.85; }
 
-  .kpi-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .kpi-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .winrate-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 11px 13px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 12.5px; color: var(--text-2); }
+  .winrate-card .wr-value { font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+  .month-row { display: flex; gap: 8px; }
+  .month-tile { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 8px; text-align: center; }
+  .month-tile.current { border-color: rgba(217,182,115,0.4); }
+  .month-tile .m-name { font-size: 10px; color: var(--text-2); text-transform: uppercase; }
+  .month-tile .m-value { font-size: 13px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .month-tile .m-delta { font-size: 9.5px; margin-top: 3px; }
+  .month-tile .m-delta.up { color: var(--red-light); }
+  .month-tile .m-delta.down { color: var(--text-2); }
   .kpi { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; }
   .kpi .k-label { font-size: 10px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; }
   .kpi .k-value { font-size: 18px; font-weight: 700; color: var(--gold); margin-top: 4px; font-variant-numeric: tabular-nums; }
@@ -101,6 +112,11 @@
   <div class="kpi"><div class="k-label" id="periodLabel">За период</div><div class="k-value" id="periodTotal">—</div></div>
   <div class="kpi"><div class="k-label">Всего с апреля</div><div class="k-value" id="lifeTotal">—</div></div>
 </div>
+
+<div class="winrate-card" id="winrateCard"></div>
+
+<div class="label">Помесячно</div>
+<div class="month-row" id="monthRow"></div>
 
 <div class="label">Рост капитала</div>
 <div class="card growth-card">
@@ -194,6 +210,9 @@ function render() {
 
   // Линия накопительного роста
   renderGrowth(cutoff, period.label);
+
+  // Win rate
+  renderWinRate(cutoff, period.label);
 
   // Карточки по счетам с барами
   const acctList = document.getElementById('acctList');
@@ -338,6 +357,52 @@ function renderGrowth(cutoff, periodLabel) {
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 }
 
+function renderWinRate(cutoff, periodLabel) {
+  const dailyTotals = {};
+  ACCOUNTS.forEach(a => {
+    Object.entries(DATA[a]).forEach(([date, v]) => {
+      if (date < cutoff || date > lastDate) return;
+      dailyTotals[date] = (dailyTotals[date] || 0) + v;
+    });
+  });
+  const days = Object.values(dailyTotals);
+  const wins = days.filter(v => v > 0).length;
+  const rate = days.length ? Math.round((wins / days.length) * 100) : 0;
+  document.getElementById('winrateCard').innerHTML =
+    `<span>Win rate · ${periodLabel.toLowerCase()}</span><span class="wr-value">${rate}% · ${wins}/${days.length} дней</span>`;
+}
+
+function renderMonthly() {
+  const MONTH_SHORT = ['', 'янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const monthTotals = {};
+  ACCOUNTS.forEach(a => {
+    Object.entries(DATA[a]).forEach(([date, v]) => {
+      const ym = date.slice(0, 7);
+      monthTotals[ym] = (monthTotals[ym] || 0) + v;
+    });
+  });
+  const months = Object.keys(monthTotals).sort();
+  const currentYm = lastDate.slice(0, 7);
+  const row = document.getElementById('monthRow');
+  row.innerHTML = '';
+  months.forEach((ym, i) => {
+    const [y, m] = ym.split('-');
+    const total = monthTotals[ym];
+    const prev = i > 0 ? monthTotals[months[i-1]] : null;
+    let deltaHtml = '';
+    if (prev !== null && prev !== 0) {
+      const pct = Math.round(((total - prev) / Math.abs(prev)) * 100);
+      const cls = pct >= 0 ? 'up' : 'down';
+      const arrow = pct >= 0 ? '↑' : '↓';
+      deltaHtml = `<div class="m-delta ${cls}">${arrow} ${Math.abs(pct)}%</div>`;
+    }
+    const tile = document.createElement('div');
+    tile.className = 'month-tile' + (ym === currentYm ? ' current' : '');
+    tile.innerHTML = `<div class="m-name">${MONTH_SHORT[+m]}${ym === currentYm ? ' (на ' + lastDate.slice(8,10) + '.' + m + ')' : ''}</div><div class="m-value">${fmt(total)}</div>${deltaHtml}`;
+    row.appendChild(tile);
+  });
+}
+
 const DOW_SHORT = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 
 function getMonthWeeks() {
@@ -408,6 +473,7 @@ function renderYesterday() {
 }
 
 renderYesterday();
+renderMonthly();
 render();
 </script>
 </body>
