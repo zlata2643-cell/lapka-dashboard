@@ -55,6 +55,10 @@
   .bar-label { flex: 1; text-align: center; font-size: 8px; color: var(--text-2); white-space: nowrap; overflow: hidden; }
 
   .updated { text-align: center; font-size: 10.5px; color: var(--text-2); margin-top: 24px; }
+
+  .report-box { white-space: pre-wrap; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.55; color: var(--text); max-height: 420px; overflow-y: auto; }
+  .copy-btn { width: 100%; margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--gold); padding: 10px; border-radius: 12px; font-size: 12px; font-family: inherit; letter-spacing: 0.4px; }
+  .copy-btn:active { border-color: var(--red-light); color: var(--red-light); }
 </style>
 </head>
 <body>
@@ -82,6 +86,12 @@
 
 <div class="label">По счетам</div>
 <div id="acctList"></div>
+
+<div class="label">Отчёт по дням</div>
+<div class="card">
+  <div class="report-box" id="reportBox"></div>
+  <button class="copy-btn" onclick="copyReport()">Скопировать текст</button>
+</div>
 
 <div class="updated" id="updated"></div>
 
@@ -231,6 +241,75 @@ function renderDonut(perAccountTotal, total) {
   centerText.setAttribute('fill', '#f3ece0'); centerText.setAttribute('font-size', '11'); centerText.setAttribute('font-weight', '700');
   centerText.textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : Math.round(total);
   svg.appendChild(centerText);
+}
+
+const MONTH_NAMES = ['', 'ЯНВАРЬ','ФЕВРАЛЬ','МАРТ','АПРЕЛЬ','МАЙ','ИЮНЬ','ИЮЛЬ','АВГУСТ','СЕНТЯБРЬ','ОКТЯБРЬ','НОЯБРЬ','ДЕКАБРЬ'];
+const DOW_SHORT = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+
+function buildReport() {
+  const [ly, lm] = lastDate.split('-').map(Number);
+  const daysInMonth = new Date(Date.UTC(ly, lm, 0)).getUTCDate();
+  const weekdays = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(Date.UTC(ly, lm - 1, day));
+    const dow = d.getUTCDay();
+    if (dow === 0 || dow === 6) continue;
+    weekdays.push({ date: `${ly}-${String(lm).padStart(2,'0')}-${String(day).padStart(2,'0')}`, dow });
+  }
+  const weeks = [];
+  let current = [];
+  weekdays.forEach(wd => {
+    if (wd.dow === 1 && current.length) { weeks.push(current); current = []; }
+    current.push(wd);
+  });
+  if (current.length) weeks.push(current);
+  const wLabel = w => `${w[0].date.slice(8,10)}.${w[0].date.slice(5,7)}-${w[w.length-1].date.slice(8,10)}.${w[w.length-1].date.slice(5,7)}`;
+
+  let out = `#${MONTH_NAMES[lm]}\n\n`;
+  const overallWeek = weeks.map(() => ({ total: 0, complete: true }));
+  let overallMonth = { total: 0, complete: true };
+
+  ACCOUNTS.forEach(a => {
+    out += `#SONIC ${a}\n\n`;
+    let monthTotal = 0, monthComplete = true;
+    weeks.forEach((week, wi) => {
+      let weekTotal = 0, weekComplete = true;
+      week.forEach(wd => {
+        const v = DATA[a][wd.date];
+        const dateLabel = `${wd.date.slice(8,10)}.${wd.date.slice(5,7)}`;
+        if (v === undefined) {
+          out += `${dateLabel} ${DOW_SHORT[wd.dow]}: \n`;
+          weekComplete = false; monthComplete = false;
+        } else {
+          out += `${dateLabel} ${DOW_SHORT[wd.dow]}: ${v < 0 ? 'минус ' + fmt(Math.abs(v)) : '+' + fmt(v)}\n`;
+          weekTotal += v; monthTotal += v;
+        }
+      });
+      out += `\nЧистый доход за неделю ${wLabel(week)} = ${weekComplete ? fmt(weekTotal) + ' USDT' : '__ USDT'}\n\n`;
+      overallWeek[wi].total += weekTotal;
+      if (!weekComplete) overallWeek[wi].complete = false;
+    });
+    out += `Чистый доход за месяц ${MONTH_NAMES[lm].toLowerCase()} = ${monthComplete ? fmt(monthTotal) + ' USDT' : '______ USDT'}\n\n----------------\n\n`;
+    overallMonth.total += monthTotal;
+    if (!monthComplete) overallMonth.complete = false;
+  });
+
+  weeks.forEach((week, wi) => {
+    out += `Общий чистый доход за неделю ${wLabel(week)} = ${overallWeek[wi].complete ? fmt(overallWeek[wi].total) + ' USDT' : '__ USDT'}\n`;
+  });
+  out += `\nОбщий чистый доход за месяц ${MONTH_NAMES[lm].toLowerCase()} = ${overallMonth.complete ? fmt(overallMonth.total) + ' USDT' : '__ USDT'}\n`;
+
+  return out;
+}
+
+const reportText = buildReport();
+document.getElementById('reportBox').textContent = reportText;
+function copyReport() {
+  navigator.clipboard?.writeText(reportText);
+  const btn = document.querySelector('.copy-btn');
+  const old = btn.textContent;
+  btn.textContent = 'Скопировано';
+  setTimeout(() => { btn.textContent = old; }, 1500);
 }
 
 render();
