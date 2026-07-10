@@ -144,13 +144,6 @@
 <div class="label">Напоминания</div>
 <div id="reminders"><div class="empty">Загрузка...</div></div>
 
-<div class="label">Копитрейдинг · июль</div>
-<div class="kpi-row">
-  <div class="kpi"><div class="k-label">За июль</div><div class="k-value" id="julyTotal">—</div></div>
-  <div class="kpi"><div class="k-label">С апреля</div><div class="k-value" id="lifeTotal">—</div></div>
-</div>
-<div id="acctList"></div>
-
 <div class="label">Проекты в работе</div>
 <div id="projects"></div>
 
@@ -250,38 +243,6 @@ async function loadReminders() {
   }
 }
 loadReminders();
-
-// Копитрейдинг
-const accounts = [
-  {name: "SONIC #50559419", days: [383.07,-200.05,304.93,228.82,218.10,550.12,458.76], july: 1943.75, life: 22406.99},
-  {name: "SONIC #50665238", days: [394.42,-205.98,313.97,235.61,224.57,566.43,472.36], july: 2001.38, life: 17980.57},
-  {name: "SONIC #50680531", days: [337.38,-176.20,268.56,201.54,192.09,484.51,404.05], july: 1711.93, life: 14814.58},
-  {name: "SONIC #50784486", days: [201.17,-105.06,160.14,120.17,114.54,288.96,240.93], july: 1020.85, life: 5891.56},
-];
-const dayLabels = ["01","02","03","06","07","08","09"];
-const fmt = n => n.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const acctList = document.getElementById('acctList');
-let julyTotal = 0, lifeTotal = 0;
-accounts.forEach(a => {
-  julyTotal += a.july; lifeTotal += a.life;
-  const maxAbs = Math.max(...a.days.map(Math.abs));
-  const barsHtml = a.days.map(v => {
-    const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 40));
-    const color = v >= 0 ? 'linear-gradient(180deg,#e05a48,#c1392b)' : '#5a4f47';
-    return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
-  }).join('');
-  const labelsHtml = dayLabels.map(l => `<div class="bar-label">${l}</div>`).join('');
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <div class="acct-head"><div class="acct-name">${a.name}</div><div class="acct-total">+${fmt(a.july)}</div></div>
-    <div class="bars">${barsHtml}</div>
-    <div class="bar-labels">${labelsHtml}</div>
-    <div class="acct-lifetime">Всего с апреля: ${fmt(a.life)} USDT</div>`;
-  acctList.appendChild(card);
-});
-document.getElementById('julyTotal').textContent = fmt(julyTotal);
-document.getElementById('lifeTotal').textContent = fmt(lifeTotal);
 
 // ЛАБС
 const events = [
