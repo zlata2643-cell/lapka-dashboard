@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Здоровье · Екатерина</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg1: #2A1810; --bg2: #3A2016; --bg3: #241512; --bg4: #1E1410;
+
+    --surface: rgba(255,236,214,0.09);
+    --surface-solid: #3A2418;
+    --surface-alt: rgba(255,236,214,0.07);
+    --border: rgba(255,236,214,0.14);
+    --card-border: rgba(255,224,190,0.14);
+
+    --text-primary: #FBF0E4;
+    --text-secondary: #D9BFA8;
+    --text-muted: #A98A72;
+
+    --ready-1: #FFB067; --ready-2: #E8843A; --ready-tint: rgba(255,176,103,0.16);
+    --sleep-1: #C9A0FF; --sleep-2: #9A5FE8; --sleep-tint: rgba(201,160,255,0.16);
+    --activity-1: #6BE0B8; --activity-2: #2FBE8F; --activity-tint: rgba(107,224,184,0.16);
+    --body-1: #FFB27A; --body-2: #F2803D; --body-tint: rgba(255,178,122,0.16);
+    --nutrition-1: #FF8FAE; --nutrition-2: #E85878; --nutrition-tint: rgba(255,143,174,0.16);
+    --checkup-1: #C4A88C; --checkup-2: #9A7A5A; --checkup-tint: rgba(196,168,140,0.16);
+
+    --good: #2FBE8F;
+    --warn: #F0A94A;
+    --shadow: 0 4px 16px rgba(0,0,0,0.35), 0 20px 48px rgba(0,0,0,0.45);
+    --radius: 22px;
+  }
+
+  /* Тема всегда светлая и цветная — сознательно не переключается на системный тёмный режим */
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { background: var(--bg1); }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(900px 700px at 15% -10%, #5A3420 0%, transparent 60%),
+      radial-gradient(900px 700px at 100% 0%, #E8843A 0%, transparent 45%),
+      radial-gradient(800px 700px at -10% 60%, #3A2A18 0%, transparent 55%),
+      radial-gradient(900px 800px at 100% 100%, #2A1810 0%, transparent 55%),
+      linear-gradient(160deg, #2A1810, #1E1410);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 44px;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 22px 16px 8px;
+  }
+
+  header.top {
+    padding: 6px 4px 22px;
+  }
+  header.top .greeting {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 27px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    background: linear-gradient(100deg, var(--nutrition-2), var(--sleep-2) 60%, var(--body-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header.top .date {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-tile {
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    isolation: isolate;
+  }
+  .stat-tile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0) 55%);
+    z-index: 1;
+  }
+  .stat-tile::after {
+    content: "";
+    position: absolute;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.16);
+    right: -28px; bottom: -30px;
+    z-index: 0;
+  }
+  .stat-tile > * { position: relative; z-index: 2; }
+  .stat-tile .label {
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stat-tile .value {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 10px;
+  }
+  .stat-tile .value .unit {
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0.88;
+    margin-left: 3px;
+  }
+  .tile-sleep { background: linear-gradient(135deg, var(--sleep-1), var(--sleep-2)); }
+  .tile-activity { background: linear-gradient(135deg, var(--activity-1), var(--activity-2)); }
+  .tile-body { background: linear-gradient(135deg, var(--body-1), var(--body-2)); }
+  .tile-nutrition { background: linear-gradient(135deg, var(--nutrition-1), var(--nutrition-2)); }
+
+  section.card {
+    background: var(--surface);
+    backdrop-filter: blur(28px) saturate(1.6);
+    -webkit-backdrop-filter: blur(28px) saturate(1.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 19px 22px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  section.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  }
+  .card-ready { --accent-1: var(--ready-1); --accent-2: var(--ready-2); }
+  .card-sleep { --accent-1: var(--sleep-1); --accent-2: var(--sleep-2); }
+  .card-activity { --accent-1: var(--activity-1); --accent-2: var(--activity-2); }
+  .card-body { --accent-1: var(--body-1); --accent-2: var(--body-2); }
+  .card-nutrition { --accent-1: var(--nutrition-1); --accent-2: var(--nutrition-2); }
+  .card-checkup { --accent-1: var(--checkup-1); --accent-2: var(--checkup-2); }
+
+  section.card .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  section.card .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  section.card .card-title .icon-badge {
+    width: 30px; height: 30px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px -2px rgba(0,0,0,0.25);
+  }
+  section.card .card-sub {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 3px 0 15px;
+    font-weight: 500;
+  }
+
+  .badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+  }
+  .badge-good { background: var(--activity-tint); color: var(--good); }
+
+  /* Sleep ring */
+  .sleep-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .ring-wrap { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-center .n { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; line-height: 1; color: var(--sleep-2); }
+  .ring-center .of100 { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500;}
+
+  .sleep-meta { flex: 1; }
+  .sleep-meta .row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 6px 0; border-bottom: 1px dashed var(--card-border); }
+  .sleep-meta .row:last-child { border-bottom: none; }
+  .sleep-meta .row .k { color: var(--text-secondary); font-weight: 500; }
+  .sleep-meta .row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .trend-chart { margin-top: 18px; }
+  .trend-chart .axis-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 5px; padding: 0 2px; font-weight: 500; }
+
+  /* body comp */
+  .body-cards { display: flex; gap: 10px; margin-top: 16px; }
+  .mini-stat { flex: 1; background: var(--surface-alt); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 12px; }
+  .mini-stat .k { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .mini-stat .v { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin-top: 4px; }
+  .mini-stat .v .delta { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .delta-down { color: var(--good); }
+  .delta-up { color: var(--warn); }
+
+  /* nutrition macro bars */
+  .macro-row { margin-bottom: 13px; }
+  .macro-row:last-child { margin-bottom: 0; }
+  .macro-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .macro-label .name { color: var(--text-secondary); font-weight: 600; }
+  .macro-label .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .macro-bar-bg { height: 9px; border-radius: 6px; background: var(--surface-alt); overflow: hidden; }
+  .macro-bar-fill { height: 100%; border-radius: 6px; }
+
+  .week-avg-strip {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--card-border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .week-avg-strip b { color: var(--text-primary); font-variant-numeric: tabular-nums; font-family: 'Fraunces', serif; font-weight: 600; }
+
+  /* activity bars */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 104px; margin-top: 16px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 7px; }
+  .bar-col .bar { width: 100%; max-width: 28px; border-radius: 8px 8px 4px 4px; background: linear-gradient(180deg, var(--activity-1), var(--activity-2)); min-height: 4px; }
+  .bar-col .bar.today { box-shadow: 0 0 0 2px var(--activity-tint), 0 4px 10px -2px rgba(23,166,127,0.5); }
+  .bar-col .day-label { font-size: 10.5px; color: var(--text-muted); font-weight: 500; }
+
+  .workout-list { margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }
+  .workout-item {
+    display: flex; align-items: center; gap: 13px;
+    background: var(--surface-alt); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 13px;
+  }
+  .workout-item .icon { font-size: 20px; width: 30px; height: 30px; border-radius: 10px; background: var(--activity-tint); display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
+  .workout-item .info { flex: 1; }
+  .workout-item .info .t { font-size: 13.5px; font-weight: 700; }
+  .workout-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+  .workout-item .dur { font-size: 12.5px; font-weight: 700; color: var(--activity-2); font-variant-numeric: tabular-nums; }
+
+  /* checkups */
+  .checkup-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .checkup-item {
+    display: flex; align-items: flex-start; gap: 13px;
+    padding: 12px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border);
+  }
+  .checkup-item .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
+  }
+  .status-done { background: var(--good); box-shadow: 0 0 0 3px var(--activity-tint); }
+  .status-due { background: var(--warn); box-shadow: 0 0 0 3px #FCEEDA; }
+  .checkup-item .info { flex: 1; }
+  .checkup-item .info .t { font-size: 13.5px; font-weight: 700; }
+  .checkup-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+  .checkup-item .when { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
+
+  .disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 20px 20px 4px;
+    line-height: 1.6;
+  }
+
+  .mock-flag-wrap { text-align: center; margin-bottom: 20px; }
+  .mock-flag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--checkup-2);
+    background: var(--checkup-tint);
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+  }
+
+  /* HERO focus card */
+  .hero {
+    position: relative;
+    border-radius: 26px;
+    padding: 26px 24px 24px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    color: #fff;
+    background:
+      radial-gradient(120% 140% at 100% 0%, #FFC98A 0%, transparent 55%),
+      radial-gradient(120% 140% at 0% 0%, #C9A0FF 0%, transparent 55%),
+      radial-gradient(140% 160% at 50% 100%, #6BE0B8 0%, transparent 55%),
+      linear-gradient(135deg, #9A5FE8, #E85878 60%, #E8843A);
+    box-shadow: var(--shadow);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 60% at 85% 15%, rgba(255,255,255,0.28), transparent 70%);
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .hero .eyebrow {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hero .focus-text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 25px;
+    font-weight: 600;
+    margin: 10px 0 6px;
+    max-width: 92%;
+    line-height: 1.15;
+  }
+  .hero .focus-sub {
+    font-size: 13px;
+    opacity: 0.9;
+    font-weight: 500;
+    max-width: 88%;
+    line-height: 1.5;
+  }
+
+  /* Balance wheel card */
+  .balance-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 14px;
+    justify-content: center;
+  }
+  .balance-legend .item {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .balance-legend .sw { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Stat tiles v2 */
+  .stat-tile .top-row { display: flex; align-items: center; justify-content: space-between; }
+  .stat-tile .icon-circle {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+  .stat-tile .spark-mini { display: block; margin-top: 6px; opacity: 0.9; }
+
+  /* Insights */
+  .insight-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .insight-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border);
+  }
+  .insight-item .ico { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .insight-item .txt { font-size: 13px; line-height: 1.5; }
+  .insight-item .txt b { font-weight: 700; }
+  .insight-item .delta-chip {
+    margin-left: 6px; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+    background: var(--activity-tint); color: var(--good); white-space: nowrap;
+  }
+  .insight-note { font-size: 11px; color: var(--text-muted); margin-top: 13px; line-height: 1.5; }
+
+  .wheel-legend-note {
+    font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; text-align: center;
+  }
+
+  .score-badge-row { display: flex; gap: 8px; margin-top: 14px; }
+  .score-chip {
+    flex: 1; text-align: center; padding: 9px 6px; border-radius: 12px; background: var(--surface-alt); border: 1px solid var(--card-border);
+  }
+  .score-chip .k { font-size: 10.5px; color: var(--text-secondary); font-weight: 600; }
+  .score-chip .v { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="greeting">Здравствуйте, Екатерина</p>
+    <p class="date" id="todayDate"></p>
+  </header>
+
+  <div class="mock-flag-wrap"><span class="mock-flag">✦ Демо-данные — реальные показатели подключим следующим шагом</span></div>
+
+  <!-- HERO: focus of the day -->
+  <div class="hero">
+    <div class="eyebrow">✦ Фокус дня</div>
+    <div class="focus-text">Восстановление и лёгкость</div>
+    <div class="focus-sub">Сон в норме, ВСР растёт третий день подряд — хороший момент для спокойной тренировки и белкового завтрака.</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-tile tile-sleep">
+      <div class="top-row">
+        <div class="label">Сон</div>
+        <div class="icon-circle">🌙</div>
+      </div>
+      <div class="value">84<span class="unit">/100</span></div>
+      <svg class="spark-mini" width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <polyline fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,14 20,10 40,12 60,6 80,8 100,3"/>
+      </svg>
+    </div>
+    <div class="stat-tile tile-activity">
+      <div class="top-row">
+        <div class="label">Активность</div>
+        <div class="icon-circle">🏃</div>
+      </div>
+      <div class="value">7 240<span class="unit">шаг</span></div>
+      <svg class="spark-mini" width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <polyline fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,10 20,13 40,6 60,15 80,9 100,4"/>
+      </svg>
+    </div>
+    <div class="stat-tile tile-body">
+      <div class="top-row">
+        <div class="label">Вес</div>
+        <div class="icon-circle">⚖️</div>
+      </div>
+      <div class="value">61.4<span class="unit">кг</span></div>
+      <svg class="spark-mini" width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <polyline fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,5 20,7 40,6 60,10 80,12 100,15"/>
+      </svg>
+    </div>
+    <div class="stat-tile tile-nutrition">
+      <div class="top-row">
+        <div class="label">Белок</div>
+        <div class="icon-circle">🍽</div>
+      </div>
+      <div class="value">78<span class="unit">/95 г</span></div>
+      <svg class="spark-mini" width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+        <polyline fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,15 20,11 40,13 60,8 80,10 100,6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- READINESS -->
+  <section class="card card-ready">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">✦</span>Готовность к дню</div>
+      <span class="badge badge-good">Хорошо</span>
+    </div>
+    <p class="card-sub">по данным Oura Ring · рассчитано в 07:02</p>
+
+    <div class="sleep-row">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <defs>
+            <linearGradient id="readyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--ready-1)"/>
+              <stop offset="100%" stop-color="var(--ready-2)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="url(#readyGrad)" stroke-width="9"
+            stroke-linecap="round"
+            stroke-dasharray="257.6"
+            stroke-dashoffset="51.5"/>
+        </svg>
+        <div class="ring-center">
+          <div class="n" style="color:var(--ready-2)">80</div>
+          <div class="of100">из 100</div>
+        </div>
+      </div>
+      <div class="sleep-meta">
+        <div class="row"><span class="k">ВСР к норме</span><span class="v">+8%</span></div>
+        <div class="row"><span class="k">Температура</span><span class="v">в норме</span></div>
+        <div class="row"><span class="k">Баланс нагрузки</span><span class="v">оптимально</span></div>
+      </div>
+    </div>
+    <p class="insight-note">Готовность считается из ВСР, пульса покоя, отклонения температуры и баланса нагрузки за последние дни — это и есть ось «Готовность» на колесе баланса ниже.</p>
+  </section>
+
+  <!-- BALANCE WHEEL -->
+  <section class="card card-checkup">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">✦</span>Колесо баланса</div>
+    </div>
+    <p class="card-sub">5 опор здоровья за сегодня</p>
+
+    <svg width="100%" height="220" viewBox="0 0 220 220">
+      <polygon points="110,34 182.3,86.5 154.7,171.5 65.3,171.5 37.7,86.5" fill="none" stroke="var(--card-border)" stroke-width="1"/>
+      <polygon points="110,53 164.23,92.37 143.53,156.13 76.47,156.13 55.77,92.37" fill="none" stroke="var(--card-border)" stroke-width="1"/>
+      <polygon points="110,72 146.15,98.25 132.35,140.75 87.65,140.75 73.85,98.25" fill="none" stroke="var(--card-border)" stroke-width="1"/>
+      <polygon points="110,91 128.08,104.12 121.18,125.38 98.82,125.38 91.92,104.12" fill="none" stroke="var(--card-border)" stroke-width="1"/>
+      <line x1="110" y1="110" x2="110" y2="34" stroke="var(--card-border)" stroke-width="1"/>
+      <line x1="110" y1="110" x2="182.3" y2="86.5" stroke="var(--card-border)" stroke-width="1"/>
+      <line x1="110" y1="110" x2="154.7" y2="171.5" stroke="var(--card-border)" stroke-width="1"/>
+      <line x1="110" y1="110" x2="65.3" y2="171.5" stroke="var(--card-border)" stroke-width="1"/>
+      <line x1="110" y1="110" x2="37.7" y2="86.5" stroke="var(--card-border)" stroke-width="1"/>
+
+      <defs>
+        <linearGradient id="balanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--sleep-1)"/>
+          <stop offset="100%" stop-color="var(--nutrition-2)"/>
+        </linearGradient>
+      </defs>
+      <polygon points="110,46.2 162.1,93.1 144.0,156.7 79.6,151.8 52.2,91.2"
+        fill="url(#balanceGrad)" fill-opacity="0.32" stroke="url(#balanceGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="110" cy="46.2" r="4" fill="var(--sleep-2)"/>
+      <circle cx="162.1" cy="93.1" r="4" fill="var(--activity-2)"/>
+      <circle cx="144.0" cy="156.7" r="4" fill="var(--nutrition-2)"/>
+      <circle cx="79.6" cy="151.8" r="4" fill="var(--body-2)"/>
+      <circle cx="52.2" cy="91.2" r="4" fill="var(--checkup-2)"/>
+
+      <text x="110" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text-secondary)">Сон · 84</text>
+      <text x="196" y="83" text-anchor="start" font-size="11" font-weight="700" fill="var(--text-secondary)">Активн. · 72</text>
+      <text x="160" y="192" text-anchor="start" font-size="11" font-weight="700" fill="var(--text-secondary)">Питание · 76</text>
+      <text x="60" y="192" text-anchor="end" font-size="11" font-weight="700" fill="var(--text-secondary)">Тело · 68</text>
+      <text x="24" y="83" text-anchor="end" font-size="11" font-weight="700" fill="var(--text-secondary)">Готовность · 80</text>
+    </svg>
+    <p class="wheel-legend-note">Сон и Готовность — баллы Oura напрямую. Активность — нормализованные шаги/движение к цели. Тело — тренд состава от Withings за месяц. Питание — % выполнения целей по БЖУ.</p>
+  </section>
+
+  <!-- SLEEP -->
+  <section class="card card-sleep">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">🌙</span>Сон</div>
+      <span class="badge badge-good">Хорошо</span>
+    </div>
+    <p class="card-sub">по данным Oura Ring · сегодня, 06:40</p>
+
+    <div class="sleep-row">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <defs>
+            <linearGradient id="sleepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--sleep-1)"/>
+              <stop offset="100%" stop-color="var(--sleep-2)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="url(#sleepGrad)" stroke-width="9"
+            stroke-linecap="round"
+            stroke-dasharray="257.6"
+            stroke-dashoffset="41.2"/>
+        </svg>
+        <div class="ring-center">
+          <div class="n">84</div>
+          <div class="of100">из 100</div>
+        </div>
+      </div>
+      <div class="sleep-meta">
+        <div class="row"><span class="k">Длительность</span><span class="v">7 ч 42 мин</span></div>
+        <div class="row"><span class="k">ВСР (HRV)</span><span class="v">52 мс</span></div>
+        <div class="row"><span class="k">Пульс покоя</span><span class="v">58 уд/мин</span></div>
+      </div>
+    </div>
+
+    <div class="trend-chart">
+      <svg width="100%" height="46" viewBox="0 0 300 46" preserveAspectRatio="none">
+        <polyline fill="none" stroke="var(--sleep-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+          points="0,30 42,22 84,26 126,14 168,18 210,10 252,16 294,8"/>
+        <circle cx="294" cy="8" r="4" fill="var(--sleep-2)"/>
+      </svg>
+      <div class="axis-labels">
+        <span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY COMPOSITION -->
+  <section class="card card-body">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">⚖️</span>Состав тела</div>
+    </div>
+    <p class="card-sub">по данным Withings Body Comp · сегодня, 07:15</p>
+
+    <svg width="100%" height="70" viewBox="0 0 300 70" preserveAspectRatio="none">
+      <polyline fill="none" stroke="var(--body-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+        points="0,20 50,26 100,24 150,32 200,30 250,40 300,38"/>
+      <circle cx="300" cy="38" r="4" fill="var(--body-2)"/>
+    </svg>
+    <div class="axis-labels" style="margin-top:-4px;">
+      <span>6 нед. назад</span><span>сегодня</span>
+    </div>
+
+    <div class="body-cards">
+      <div class="mini-stat">
+        <div class="k">% жира</div>
+        <div class="v">24.1<span class="delta delta-down">▼0.6</span></div>
+      </div>
+      <div class="mini-stat">
+        <div class="k">Мышечная масса</div>
+        <div class="v">44.8 кг<span class="delta" style="color:var(--good)">▲0.3</span></div>
+      </div>
+      <div class="mini-stat">
+        <div class="k">Вес</div>
+        <div class="v">61.4 кг<span class="delta delta-down">▼0.4</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUTRITION -->
+  <section class="card card-nutrition">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">🍽</span>Питание</div>
+    </div>
+    <p class="card-sub">сегодня · 1 640 ккал из 1 850 ккал</p>
+
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Белок</span><span class="val">78 / 95 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:82%; background:linear-gradient(90deg,var(--nutrition-1),var(--nutrition-2));"></div></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Жиры</span><span class="val">54 / 65 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:83%; background:linear-gradient(90deg,var(--body-1),var(--body-2));"></div></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Углеводы</span><span class="val">142 / 190 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:75%; background:linear-gradient(90deg,#F4D06F,#E0A93C);"></div></div>
+    </div>
+
+    <div class="week-avg-strip">
+      <span>Среднее за неделю: <b>1 720</b> ккал</span>
+      <span>Белок: <b>84 г</b>/день</span>
+    </div>
+  </section>
+
+  <!-- ACTIVITY / SPORT -->
+  <section class="card card-activity">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">🏃</span>Активность и спорт</div>
+    </div>
+    <p class="card-sub">шаги за неделю</p>
+
+    <div class="bar-chart">
+      <div class="bar-col"><div class="bar" style="height:58%"></div><div class="day-label">Чт</div></div>
+      <div class="bar-col"><div class="bar" style="height:71%"></div><div class="day-label">Пт</div></div>
+      <div class="bar-col"><div class="bar" style="height:40%"></div><div class="day-label">Сб</div></div>
+      <div class="bar-col"><div class="bar" style="height:85%"></div><div class="day-label">Вс</div></div>
+      <div class="bar-col"><div class="bar" style="height:62%"></div><div class="day-label">Пн</div></div>
+      <div class="bar-col"><div class="bar" style="height:77%"></div><div class="day-label">Вт</div></div>
+      <div class="bar-col"><div class="bar today" style="height:66%"></div><div class="day-label">Ср</div></div>
+    </div>
+
+    <div class="workout-list">
+      <div class="workout-item">
+        <div class="icon">🧘</div>
+        <div class="info"><div class="t">Йога</div><div class="d">Сегодня, утро</div></div>
+        <div class="dur">40 мин</div>
+      </div>
+      <div class="workout-item">
+        <div class="icon">🚶</div>
+        <div class="info"><div class="t">Прогулка</div><div class="d">Вчера, вечер</div></div>
+        <div class="dur">35 мин</div>
+      </div>
+      <div class="workout-item">
+        <div class="icon">🏋️</div>
+        <div class="info"><div class="t">Силовая тренировка</div><div class="d">Позавчера</div></div>
+        <div class="dur">55 мин</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="card card-nutrition">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">💡</span>Что работает именно для тебя</div>
+    </div>
+    <p class="card-sub">анализ за 30 дней · сравниваю дни с привычкой и без</p>
+
+    <div class="insight-list">
+      <div class="insight-item">
+        <div class="ico">🌙</div>
+        <div class="txt">В дни с белком <b>90+ г</b> — Готовность в среднем выше<span class="delta-chip">+6 баллов</span></div>
+      </div>
+      <div class="insight-item">
+        <div class="ico">🚶</div>
+        <div class="txt">Прогулка после ужина — сон глубже, засыпание быстрее<span class="delta-chip">+4 балла</span></div>
+      </div>
+      <div class="insight-item">
+        <div class="ico">😴</div>
+        <div class="txt">Меньше <b>7 ч</b> сна — ВСР на следующий день ниже нормы<span class="delta-chip" style="background:var(--body-tint);color:var(--body-2)">−9%</span></div>
+      </div>
+    </div>
+    <p class="insight-note">Это не медицинский вывод, а твоя личная закономерность за месяц — подсказка, куда вкладываться, не более.</p>
+  </section>
+
+  <!-- CHECKUPS -->
+  <section class="card card-checkup">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">🩺</span>Анализы и чекапы</div>
+    </div>
+    <p class="card-sub">история и рекомендации с учётом твоих показателей</p>
+
+    <div class="checkup-list">
+      <div class="checkup-item">
+        <div class="status-dot status-due"></div>
+        <div class="info">
+          <div class="t">Ферритин + общий анализ крови</div>
+          <div class="d">Рекомендовано раз в 6 мес. — последний раз сдавали давно</div>
+        </div>
+        <div class="when">пора</div>
+      </div>
+      <div class="checkup-item">
+        <div class="status-dot status-done"></div>
+        <div class="info">
+          <div class="t">Витамин D</div>
+          <div class="d">Норма по последнему результату</div>
+        </div>
+        <div class="when">2 мес. назад</div>
+      </div>
+      <div class="checkup-item">
+        <div class="status-dot status-done"></div>
+        <div class="info">
+          <div class="t">УЗИ щитовидной железы</div>
+          <div class="d">Без отклонений</div>
+        </div>
+        <div class="when">4 мес. назад</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="disclaimer">Это образовательная информация, не медицинская консультация.<br>Данные пока демонстрационные — подключим Oura, Withings и дневник питания следующим шагом.</p>
+
+</div>
+
+<script>
+  const today = new Date();
+  const opts = { day: 'numeric', month: 'long', weekday: 'long' };
+  document.getElementById('todayDate').textContent =
+    today.toLocaleDateString('ru-RU', opts).replace(/^./, c => c.toUpperCase());
+</script>
+</body>
+</html>
