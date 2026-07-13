@@ -35,35 +35,7 @@
     --radius: 22px;
   }
 
-  :root[data-theme="dark"] {
-    --bg1: #1A1526; --bg2: #211A2E; --bg3: #191E2C; --bg4: #14211D;
-    --surface: rgba(38,32,54,0.72);
-    --surface-solid: #251f34;
-    --surface-alt: rgba(255,255,255,0.06);
-    --border: rgba(255,255,255,0.08);
-    --card-border: rgba(255,255,255,0.07);
-    --text-primary: #F1EEFA;
-    --text-secondary: #B3ACC8;
-    --text-muted: #7E7796;
-    --sleep-tint: #2C2650; --activity-tint: #16332B; --body-tint: #3A2A20; --nutrition-tint: #3A2030; --checkup-tint: #232A3D;
-    --shadow: 0 2px 8px rgba(0,0,0,0.25), 0 16px 40px rgba(0,0,0,0.35);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg1: #1A1526; --bg2: #211A2E; --bg3: #191E2C; --bg4: #14211D;
-      --surface: rgba(38,32,54,0.72);
-      --surface-solid: #251f34;
-      --surface-alt: rgba(255,255,255,0.06);
-      --border: rgba(255,255,255,0.08);
-      --card-border: rgba(255,255,255,0.07);
-      --text-primary: #F1EEFA;
-      --text-secondary: #B3ACC8;
-      --text-muted: #7E7796;
-      --sleep-tint: #2C2650; --activity-tint: #16332B; --body-tint: #3A2A20; --nutrition-tint: #3A2030; --checkup-tint: #232A3D;
-      --shadow: 0 2px 8px rgba(0,0,0,0.25), 0 16px 40px rgba(0,0,0,0.35);
-    }
-  }
+  /* Тема всегда светлая и цветная — сознательно не переключается на системный тёмный режим */
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
