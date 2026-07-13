@@ -265,7 +265,23 @@
   .macro-label .name { color: var(--text-secondary); font-weight: 600; }
   .macro-label .val { font-weight: 700; font-variant-numeric: tabular-nums; }
   .macro-bar-bg { height: 9px; border-radius: 6px; background: var(--surface-alt); overflow: hidden; }
-  .macro-bar-fill { height: 100%; border-radius: 6px; }
+  .macro-bar-fill { height: 100%; border-radius: 6px; transition: width .25s ease; }
+
+  /* Manual quick entry */
+  .quick-entry { display: flex; gap: 8px; margin-top: 16px; }
+  .quick-entry input {
+    flex: 1; min-width: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--card-border);
+    background: var(--surface-alt); color: var(--text-primary); font-size: 13px; font-family: 'Inter', sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+  .quick-entry input::placeholder { color: var(--text-muted); }
+  .add-btn {
+    display: block; text-align: center; margin-top: 10px; padding: 11px 14px; border-radius: 12px;
+    background: linear-gradient(120deg, var(--accent-1), var(--accent-2)); color: #fff; font-size: 13px; font-weight: 700;
+    text-decoration: none; border: none; cursor: pointer; width: 100%; font-family: 'Inter', sans-serif;
+  }
+  .add-btn-outline { background: none; border: 1.5px solid var(--accent-2); color: var(--accent-2); }
+  .entry-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center; line-height: 1.5; }
 
   .week-avg-strip {
     display: flex;
@@ -756,6 +772,11 @@
         <div class="v">61.4 кг<span class="delta delta-down">▼0.4</span></div>
       </div>
     </div>
+
+    <div class="quick-entry">
+      <input type="number" step="0.1" inputmode="decimal" id="weightInput" placeholder="Внести вес сегодня, кг">
+      <button class="add-btn" id="weightSaveBtn" style="width:auto; margin-top:0; padding:10px 16px; white-space:nowrap;">Сохранить</button>
+    </div>
   </section>
 
   <!-- NUTRITION -->
@@ -782,6 +803,15 @@
       <span>Среднее за неделю: <b>1 720</b> ккал</span>
       <span>Белок: <b>84 г</b>/день</span>
     </div>
+
+    <div class="quick-entry">
+      <input type="number" inputmode="numeric" id="proteinInput" placeholder="Белки, г">
+      <input type="number" inputmode="numeric" id="fatInput" placeholder="Жиры, г">
+      <input type="number" inputmode="numeric" id="carbInput" placeholder="Углев., г">
+    </div>
+    <button class="add-btn" id="addMealBtn">+ Добавить приём пищи</button>
+    <a href="#" class="add-btn add-btn-outline" id="sendPlateBtn" style="margin-top:8px;">📷 Прислать тарелку агенту</a>
+    <p class="entry-note" id="plateNote" style="display:none;">Заработает, когда подключим агента Екатерины — сейчас это просто заглушка кнопки.</p>
   </section>
 
   <!-- ACTIVITY / SPORT -->
@@ -930,6 +960,79 @@
     }
   }
   renderWater();
+
+  // Manual weight quick-entry — saved per day, updates tile + mini-stat instantly
+  const weightKey = `weight_${dayKey}`;
+  const weightInput = document.getElementById('weightInput');
+  const weightSaveBtn = document.getElementById('weightSaveBtn');
+  function applyWeight(val) {
+    document.querySelectorAll('.mini-stat').forEach(ms => {
+      const label = ms.querySelector('.k');
+      if (label && label.textContent.trim() === 'Вес') {
+        const v = ms.querySelector('.v');
+        if (v && v.childNodes[0]) v.childNodes[0].textContent = val.toFixed(1) + ' кг ';
+      }
+    });
+    document.querySelectorAll('.tile-body .value').forEach(v => {
+      v.innerHTML = val.toFixed(1) + '<span class="unit">кг</span>';
+    });
+  }
+  const storedWeight = localStorage.getItem(weightKey);
+  if (storedWeight) applyWeight(parseFloat(storedWeight));
+  if (weightSaveBtn) {
+    weightSaveBtn.addEventListener('click', () => {
+      const val = parseFloat(weightInput.value);
+      if (!val || val <= 0) return;
+      localStorage.setItem(weightKey, String(val));
+      applyWeight(val);
+      weightInput.value = '';
+    });
+  }
+
+  // Manual nutrition quick-entry — adds to today's running totals, redraws macro bars
+  const nutritionGoals = { protein: 95, fat: 65, carb: 190 };
+  function nutritionKey(k) { return `nutrition_${k}_${dayKey}`; }
+  function getNutritionTotal(k) { return parseFloat(localStorage.getItem(nutritionKey(k)) || '0'); }
+  function renderNutrition() {
+    const rows = document.querySelectorAll('.macro-row');
+    const keys = ['protein', 'fat', 'carb'];
+    keys.forEach((k, i) => {
+      const total = getNutritionTotal(k);
+      const goal = nutritionGoals[k];
+      const pct = Math.min(100, Math.round((total / goal) * 100));
+      const row = rows[i];
+      if (!row) return;
+      row.querySelector('.val').textContent = `${Math.round(total)} / ${goal} г`;
+      row.querySelector('.macro-bar-fill').style.width = pct + '%';
+    });
+  }
+  if (localStorage.getItem(nutritionKey('protein')) !== null) renderNutrition();
+  const addMealBtn = document.getElementById('addMealBtn');
+  if (addMealBtn) {
+    addMealBtn.addEventListener('click', () => {
+      const p = parseFloat(document.getElementById('proteinInput').value) || 0;
+      const f = parseFloat(document.getElementById('fatInput').value) || 0;
+      const c = parseFloat(document.getElementById('carbInput').value) || 0;
+      if (!p && !f && !c) return;
+      localStorage.setItem(nutritionKey('protein'), String(getNutritionTotal('protein') + p));
+      localStorage.setItem(nutritionKey('fat'), String(getNutritionTotal('fat') + f));
+      localStorage.setItem(nutritionKey('carb'), String(getNutritionTotal('carb') + c));
+      document.getElementById('proteinInput').value = '';
+      document.getElementById('fatInput').value = '';
+      document.getElementById('carbInput').value = '';
+      renderNutrition();
+    });
+  }
+
+  // "Send plate" — honest placeholder until Ekaterina's agent/bot actually exists
+  const sendPlateBtn = document.getElementById('sendPlateBtn');
+  if (sendPlateBtn) {
+    sendPlateBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const note = document.getElementById('plateNote');
+      if (note) note.style.display = 'block';
+    });
+  }
 </script>
 </body>
 </html>
