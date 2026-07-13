@@ -452,6 +452,43 @@
   .orb-6 { width: 150px; height: 150px; bottom: -40px; right: 10px; background: radial-gradient(circle at 35% 35%, var(--checkup-1), var(--checkup-2)); opacity: 0.4; }
 
   .wrap { position: relative; z-index: 1; }
+
+  /* Ritual checklist */
+  .ritual-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .ritual-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border);
+    cursor: pointer; user-select: none; transition: opacity .15s ease;
+  }
+  .ritual-item .check {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--accent-2); display: flex; align-items: center; justify-content: center;
+    transition: background .15s ease;
+  }
+  .ritual-item .txt { font-size: 13.5px; font-weight: 600; flex: 1; }
+  .ritual-item.checked .check { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); border-color: transparent; }
+  .ritual-item.checked .txt { text-decoration: line-through; opacity: 0.55; }
+
+  .water-row { margin-top: 16px; padding-top: 15px; border-top: 1px dashed var(--card-border); }
+  .water-label { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
+  .water-glasses { display: flex; gap: 7px; margin-top: 10px; }
+  .glass {
+    flex: 1; height: 34px; border-radius: 6px 6px 10px 10px;
+    border: 2px solid var(--accent-2); background: var(--surface-alt);
+    cursor: pointer; transition: background .15s ease;
+  }
+  .glass.filled { background: linear-gradient(180deg, var(--accent-1), var(--accent-2)); }
+
+  /* Recommendations */
+  .reco-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .reco-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border); }
+  .reco-item .num {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: #fff;
+    font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .reco-item .txt { font-size: 13.5px; line-height: 1.5; }
+  .reco-item .txt .why { display: block; font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -557,6 +594,51 @@
       </div>
     </div>
     <p class="insight-note">Готовность считается из ВСР, пульса покоя, отклонения температуры и баланса нагрузки за последние дни — это и есть ось «Готовность» на колесе баланса ниже.</p>
+  </section>
+
+  <!-- RECOMMENDATIONS -->
+  <section class="card card-sleep">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">🎯</span>Рекомендации для тебя</div>
+    </div>
+    <p class="card-sub">на сегодня, с учётом готовности и последних дней</p>
+
+    <div class="reco-list">
+      <div class="reco-item">
+        <div class="num">1</div>
+        <div class="txt">Сегодня хороший день для силовой тренировки<span class="why">Готовность 80/100 — организм восстановился</span></div>
+      </div>
+      <div class="reco-item">
+        <div class="num">2</div>
+        <div class="txt">Добавь белка на завтрак<span class="why">Вчера недобор 15 г до цели — влияет на восстановление ночью</span></div>
+      </div>
+      <div class="reco-item">
+        <div class="num">3</div>
+        <div class="txt">Ляг спать до 23:00<span class="why">Три дня подряд короткий сон снижают ВСР на следующее утро</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RITUALS + WATER -->
+  <section class="card card-activity">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">✓</span>Ритуалы дня</div>
+      <span class="badge badge-good" id="ritualsProgress">0/5</span>
+    </div>
+    <p class="card-sub">тапни, чтобы отметить — сохраняется на сегодня, на этом телефоне</p>
+
+    <div class="ritual-list" id="ritualList">
+      <div class="ritual-item" data-key="steps"><span class="check"></span><span class="txt">10 000 шагов</span></div>
+      <div class="ritual-item" data-key="protein"><span class="check"></span><span class="txt">Белок на завтрак</span></div>
+      <div class="ritual-item" data-key="walk"><span class="check"></span><span class="txt">Прогулка после ужина</span></div>
+      <div class="ritual-item" data-key="screens"><span class="check"></span><span class="txt">Экраны выкл. за час до сна</span></div>
+      <div class="ritual-item" data-key="soul"><span class="check"></span><span class="txt">Дело для души</span></div>
+    </div>
+
+    <div class="water-row">
+      <span class="water-label">Вода сегодня — тапни по стакану</span>
+      <div class="water-glasses" id="waterGlasses"></div>
+    </div>
   </section>
 
   <!-- BALANCE WHEEL -->
@@ -809,6 +891,48 @@
   const opts = { day: 'numeric', month: 'long', weekday: 'long' };
   document.getElementById('todayDate').textContent =
     today.toLocaleDateString('ru-RU', opts).replace(/^./, c => c.toUpperCase());
+
+  const dayKey = today.toISOString().slice(0, 10);
+
+  // Ritual checklist — persists per day in this browser (localStorage)
+  const ritualItems = document.querySelectorAll('.ritual-item');
+  function ritualStorageKey(k) { return `ritual_${dayKey}_${k}`; }
+  function updateRitualProgress() {
+    const done = document.querySelectorAll('.ritual-item.checked').length;
+    const el = document.getElementById('ritualsProgress');
+    if (el) el.textContent = `${done}/${ritualItems.length}`;
+  }
+  ritualItems.forEach(item => {
+    const key = ritualStorageKey(item.dataset.key);
+    if (localStorage.getItem(key) === '1') item.classList.add('checked');
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+      localStorage.setItem(key, item.classList.contains('checked') ? '1' : '0');
+      updateRitualProgress();
+    });
+  });
+  updateRitualProgress();
+
+  // Water tracker — tap a glass to fill up to it, tap the last filled one to empty back
+  const waterTotal = 8;
+  const waterKey = `water_${dayKey}`;
+  let waterCount = parseInt(localStorage.getItem(waterKey) || '0', 10);
+  const waterWrap = document.getElementById('waterGlasses');
+  function renderWater() {
+    if (!waterWrap) return;
+    waterWrap.innerHTML = '';
+    for (let i = 0; i < waterTotal; i++) {
+      const g = document.createElement('div');
+      g.className = 'glass' + (i < waterCount ? ' filled' : '');
+      g.addEventListener('click', () => {
+        waterCount = (i + 1 <= waterCount) ? i : i + 1;
+        localStorage.setItem(waterKey, String(waterCount));
+        renderWater();
+      });
+      waterWrap.appendChild(g);
+    }
+  }
+  renderWater();
 </script>
 </body>
 </html>
