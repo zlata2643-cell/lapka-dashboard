@@ -5,165 +5,206 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Здоровье · Екатерина</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap');
 
   :root {
-    --bg: #f6f5fb;
-    --surface: #ffffff;
-    --surface-alt: #f0eef9;
-    --border: #e6e2f2;
-    --text-primary: #2c2a3a;
-    --text-secondary: #6b6780;
-    --text-muted: #9a96ab;
+    --bg1: #FFF6EC;
+    --bg2: #FDEEF7;
+    --bg3: #F1EEFC;
+    --bg4: #EAF7F1;
 
-    --sleep: #6C63C9;
-    --sleep-soft: #ECE9FA;
-    --activity: #3FA383;
-    --activity-soft: #E4F4EE;
-    --body: #D98A5E;
-    --body-soft: #FBEBE0;
-    --nutrition: #C7628D;
-    --nutrition-soft: #FAE6EF;
-    --checkup: #6B7A99;
-    --checkup-soft: #EAEDF3;
+    --surface: rgba(255,255,255,0.78);
+    --surface-solid: #ffffff;
+    --surface-alt: rgba(255,255,255,0.55);
+    --border: rgba(255,255,255,0.65);
+    --card-border: rgba(120,100,150,0.10);
 
-    --good: #3FA383;
-    --warn: #D9A441;
-    --shadow: 0 1px 2px rgba(44,42,58,0.04), 0 4px 16px rgba(44,42,58,0.06);
-    --radius: 18px;
+    --text-primary: #2E2A3D;
+    --text-secondary: #6B6480;
+    --text-muted: #9891A8;
+
+    --sleep-1: #9A8CF0; --sleep-2: #6A5AD9; --sleep-tint: #EFEBFD;
+    --activity-1: #3FD1A6; --activity-2: #17A67F; --activity-tint: #E4FAF2;
+    --body-1: #FFAA7A; --body-2: #F2703D; --body-tint: #FFEEE3;
+    --nutrition-1: #FF86B3; --nutrition-2: #E8447A; --nutrition-tint: #FFEAF2;
+    --checkup-1: #93A4CC; --checkup-2: #5F6F9B; --checkup-tint: #ECEFF8;
+
+    --good: #17A67F;
+    --warn: #E0973C;
+    --shadow: 0 2px 8px rgba(90,70,120,0.06), 0 12px 32px rgba(90,70,120,0.10);
+    --radius: 22px;
   }
 
   :root[data-theme="dark"] {
-    --bg: #17151f;
-    --surface: #201d2c;
-    --surface-alt: #262233;
-    --border: #322d40;
-    --text-primary: #eeecf5;
-    --text-secondary: #a8a4bd;
-    --text-muted: #736f88;
-
-    --sleep-soft: #2c2850;
-    --activity-soft: #1d3830;
-    --body-soft: #3a2a20;
-    --nutrition-soft: #3a2130;
-    --checkup-soft: #262c3a;
-
-    --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.3);
+    --bg1: #1A1526; --bg2: #211A2E; --bg3: #191E2C; --bg4: #14211D;
+    --surface: rgba(38,32,54,0.72);
+    --surface-solid: #251f34;
+    --surface-alt: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+    --card-border: rgba(255,255,255,0.07);
+    --text-primary: #F1EEFA;
+    --text-secondary: #B3ACC8;
+    --text-muted: #7E7796;
+    --sleep-tint: #2C2650; --activity-tint: #16332B; --body-tint: #3A2A20; --nutrition-tint: #3A2030; --checkup-tint: #232A3D;
+    --shadow: 0 2px 8px rgba(0,0,0,0.25), 0 16px 40px rgba(0,0,0,0.35);
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #17151f;
-      --surface: #201d2c;
-      --surface-alt: #262233;
-      --border: #322d40;
-      --text-primary: #eeecf5;
-      --text-secondary: #a8a4bd;
-      --text-muted: #736f88;
-
-      --sleep-soft: #2c2850;
-      --activity-soft: #1d3830;
-      --body-soft: #3a2a20;
-      --nutrition-soft: #3a2130;
-      --checkup-soft: #262c3a;
-
-      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.3);
+      --bg1: #1A1526; --bg2: #211A2E; --bg3: #191E2C; --bg4: #14211D;
+      --surface: rgba(38,32,54,0.72);
+      --surface-solid: #251f34;
+      --surface-alt: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.07);
+      --text-primary: #F1EEFA;
+      --text-secondary: #B3ACC8;
+      --text-muted: #7E7796;
+      --sleep-tint: #2C2650; --activity-tint: #16332B; --body-tint: #3A2A20; --nutrition-tint: #3A2030; --checkup-tint: #232A3D;
+      --shadow: 0 2px 8px rgba(0,0,0,0.25), 0 16px 40px rgba(0,0,0,0.35);
     }
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { background: var(--bg1); }
 
   body {
     margin: 0;
-    background: var(--bg);
+    min-height: 100vh;
+    background:
+      radial-gradient(720px 480px at 12% -6%, var(--bg1) 0%, transparent 60%),
+      radial-gradient(720px 520px at 100% 10%, var(--bg2) 0%, transparent 55%),
+      radial-gradient(640px 520px at 0% 55%, var(--bg3) 0%, transparent 60%),
+      radial-gradient(760px 620px at 100% 100%, var(--bg4) 0%, transparent 55%),
+      var(--bg1);
+    background-attachment: fixed;
     color: var(--text-primary);
-    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
-    padding-bottom: 40px;
+    padding-bottom: 44px;
   }
 
   h1, h2, h3, .display {
-    font-family: 'Manrope', -apple-system, sans-serif;
-    font-weight: 700;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
     letter-spacing: -0.01em;
   }
 
   .wrap {
     max-width: 480px;
     margin: 0 auto;
-    padding: 20px 16px 8px;
+    padding: 22px 16px 8px;
   }
 
   header.top {
-    padding: 8px 4px 20px;
+    padding: 6px 4px 22px;
   }
   header.top .greeting {
-    font-size: 22px;
-    font-weight: 800;
-    margin: 0 0 2px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-size: 27px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    background: linear-gradient(100deg, var(--nutrition-2), var(--sleep-2) 60%, var(--body-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   header.top .date {
     color: var(--text-secondary);
     font-size: 14px;
+    font-weight: 500;
   }
 
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 22px;
+    gap: 12px;
+    margin-bottom: 24px;
   }
   .stat-tile {
     border-radius: var(--radius);
-    padding: 16px 14px;
+    padding: 18px 16px;
     color: #fff;
     position: relative;
     overflow: hidden;
-    min-height: 92px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: var(--shadow);
+    isolation: isolate;
   }
+  .stat-tile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0) 55%);
+    z-index: 1;
+  }
+  .stat-tile::after {
+    content: "";
+    position: absolute;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.16);
+    right: -28px; bottom: -30px;
+    z-index: 0;
+  }
+  .stat-tile > * { position: relative; z-index: 2; }
   .stat-tile .label {
     font-size: 12.5px;
     font-weight: 600;
-    opacity: 0.92;
+    opacity: 0.95;
     display: flex;
     align-items: center;
     gap: 5px;
   }
   .stat-tile .value {
-    font-family: 'Manrope', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
     line-height: 1;
-    margin-top: 8px;
+    margin-top: 10px;
   }
   .stat-tile .value .unit {
-    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
     font-weight: 600;
-    opacity: 0.85;
-    margin-left: 2px;
+    opacity: 0.88;
+    margin-left: 3px;
   }
-  .stat-tile .spark {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    opacity: 0.85;
-  }
-  .tile-sleep { background: linear-gradient(135deg, #7A70DA, #6C63C9); }
-  .tile-activity { background: linear-gradient(135deg, #4CB897, #3FA383); }
-  .tile-body { background: linear-gradient(135deg, #E29A6E, #D98A5E); }
-  .tile-nutrition { background: linear-gradient(135deg, #D3729B, #C7628D); }
+  .tile-sleep { background: linear-gradient(135deg, var(--sleep-1), var(--sleep-2)); }
+  .tile-activity { background: linear-gradient(135deg, var(--activity-1), var(--activity-2)); }
+  .tile-body { background: linear-gradient(135deg, var(--body-1), var(--body-2)); }
+  .tile-nutrition { background: linear-gradient(135deg, var(--nutrition-1), var(--nutrition-2)); }
 
   section.card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius);
-    padding: 18px 18px 20px;
-    margin-bottom: 14px;
+    padding: 20px 19px 22px;
+    margin-bottom: 15px;
     box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
   }
+  section.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  }
+  .card-sleep { --accent-1: var(--sleep-1); --accent-2: var(--sleep-2); }
+  .card-activity { --accent-1: var(--activity-1); --accent-2: var(--activity-2); }
+  .card-body { --accent-1: var(--body-1); --accent-2: var(--body-2); }
+  .card-nutrition { --accent-1: var(--nutrition-1); --accent-2: var(--nutrition-2); }
+  .card-checkup { --accent-1: var(--checkup-1); --accent-2: var(--checkup-2); }
+
   section.card .card-head {
     display: flex;
     align-items: center;
@@ -171,115 +212,119 @@
     margin-bottom: 4px;
   }
   section.card .card-title {
-    font-size: 15.5px;
-    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
   }
-  section.card .card-title .dot {
-    width: 9px; height: 9px; border-radius: 50%;
-    display: inline-block;
+  section.card .card-title .icon-badge {
+    width: 30px; height: 30px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
     flex-shrink: 0;
+    box-shadow: 0 3px 8px -2px rgba(0,0,0,0.25);
   }
   section.card .card-sub {
     font-size: 12.5px;
     color: var(--text-muted);
-    margin: 2px 0 14px;
+    margin: 3px 0 15px;
+    font-weight: 500;
   }
 
   .badge {
     font-size: 11.5px;
     font-weight: 700;
-    padding: 3px 9px;
+    padding: 4px 11px;
     border-radius: 999px;
   }
-  .badge-good { background: var(--activity-soft); color: var(--good); }
-  .badge-warn { background: #FCEED9; color: var(--warn); }
-  :root[data-theme="dark"] .badge-warn, @media (prefers-color-scheme: dark) { }
+  .badge-good { background: var(--activity-tint); color: var(--good); }
 
   /* Sleep ring */
   .sleep-row {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
   }
-  .ring-wrap { position: relative; width: 92px; height: 92px; flex-shrink: 0; }
+  .ring-wrap { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
   .ring-wrap svg { transform: rotate(-90deg); }
   .ring-center {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .ring-center .n { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; line-height: 1;}
-  .ring-center .of100 { font-size: 10.5px; color: var(--text-muted); margin-top: 2px;}
+  .ring-center .n { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; line-height: 1; color: var(--sleep-2); }
+  .ring-center .of100 { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500;}
 
   .sleep-meta { flex: 1; }
-  .sleep-meta .row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .sleep-meta .row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 6px 0; border-bottom: 1px dashed var(--card-border); }
   .sleep-meta .row:last-child { border-bottom: none; }
-  .sleep-meta .row .k { color: var(--text-secondary); }
+  .sleep-meta .row .k { color: var(--text-secondary); font-weight: 500; }
   .sleep-meta .row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
 
-  .trend-chart { margin-top: 16px; }
-  .trend-chart .axis-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 4px; padding: 0 2px; }
+  .trend-chart { margin-top: 18px; }
+  .trend-chart .axis-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 5px; padding: 0 2px; font-weight: 500; }
 
   /* body comp */
-  .body-cards { display: flex; gap: 10px; margin-top: 14px; }
-  .mini-stat { flex: 1; background: var(--surface-alt); border-radius: 12px; padding: 10px 12px; }
-  .mini-stat .k { font-size: 11.5px; color: var(--text-secondary); font-weight: 600; }
-  .mini-stat .v { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 800; margin-top: 3px; }
-  .mini-stat .v .delta { font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .body-cards { display: flex; gap: 10px; margin-top: 16px; }
+  .mini-stat { flex: 1; background: var(--surface-alt); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 12px; }
+  .mini-stat .k { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .mini-stat .v { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin-top: 4px; }
+  .mini-stat .v .delta { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; margin-left: 4px; }
   .delta-down { color: var(--good); }
   .delta-up { color: var(--warn); }
 
   /* nutrition macro bars */
-  .macro-row { margin-bottom: 12px; }
+  .macro-row { margin-bottom: 13px; }
   .macro-row:last-child { margin-bottom: 0; }
-  .macro-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .macro-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
   .macro-label .name { color: var(--text-secondary); font-weight: 600; }
   .macro-label .val { font-weight: 700; font-variant-numeric: tabular-nums; }
-  .macro-bar-bg { height: 8px; border-radius: 6px; background: var(--surface-alt); overflow: hidden; }
+  .macro-bar-bg { height: 9px; border-radius: 6px; background: var(--surface-alt); overflow: hidden; }
   .macro-bar-fill { height: 100%; border-radius: 6px; }
 
   .week-avg-strip {
     display: flex;
     justify-content: space-between;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--card-border);
     font-size: 12px;
     color: var(--text-secondary);
+    font-weight: 500;
   }
-  .week-avg-strip b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .week-avg-strip b { color: var(--text-primary); font-variant-numeric: tabular-nums; font-family: 'Fraunces', serif; font-weight: 600; }
 
   /* activity bars */
-  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 14px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; }
-  .bar-col .bar { width: 100%; max-width: 26px; border-radius: 6px 6px 3px 3px; background: var(--activity); min-height: 4px; }
-  .bar-col .bar.today { background: var(--activity); box-shadow: 0 0 0 2px var(--activity-soft) inset; }
-  .bar-col .day-label { font-size: 10.5px; color: var(--text-muted); }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 104px; margin-top: 16px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 7px; }
+  .bar-col .bar { width: 100%; max-width: 28px; border-radius: 8px 8px 4px 4px; background: linear-gradient(180deg, var(--activity-1), var(--activity-2)); min-height: 4px; }
+  .bar-col .bar.today { box-shadow: 0 0 0 2px var(--activity-tint), 0 4px 10px -2px rgba(23,166,127,0.5); }
+  .bar-col .day-label { font-size: 10.5px; color: var(--text-muted); font-weight: 500; }
 
-  .workout-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .workout-list { margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }
   .workout-item {
-    display: flex; align-items: center; gap: 12px;
-    background: var(--surface-alt); border-radius: 12px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 13px;
+    background: var(--surface-alt); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 13px;
   }
-  .workout-item .icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .workout-item .icon { font-size: 20px; width: 30px; height: 30px; border-radius: 10px; background: var(--activity-tint); display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
   .workout-item .info { flex: 1; }
   .workout-item .info .t { font-size: 13.5px; font-weight: 700; }
   .workout-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
-  .workout-item .dur { font-size: 12.5px; font-weight: 700; color: var(--activity); font-variant-numeric: tabular-nums; }
+  .workout-item .dur { font-size: 12.5px; font-weight: 700; color: var(--activity-2); font-variant-numeric: tabular-nums; }
 
   /* checkups */
-  .checkup-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .checkup-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
   .checkup-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 11px 12px; border-radius: 12px; background: var(--surface-alt);
+    display: flex; align-items: flex-start; gap: 13px;
+    padding: 12px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border);
   }
   .checkup-item .status-dot {
     width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
   }
-  .status-done { background: var(--good); }
-  .status-due { background: var(--warn); }
+  .status-done { background: var(--good); box-shadow: 0 0 0 3px var(--activity-tint); }
+  .status-due { background: var(--warn); box-shadow: 0 0 0 3px #FCEEDA; }
   .checkup-item .info { flex: 1; }
   .checkup-item .info .t { font-size: 13.5px; font-weight: 700; }
   .checkup-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
@@ -289,32 +334,32 @@
     text-align: center;
     font-size: 11px;
     color: var(--text-muted);
-    padding: 18px 20px 4px;
-    line-height: 1.5;
+    padding: 20px 20px 4px;
+    line-height: 1.6;
   }
 
+  .mock-flag-wrap { text-align: center; margin-bottom: 20px; }
   .mock-flag {
-    text-align: center;
     font-size: 11px;
-    color: var(--checkup);
-    background: var(--checkup-soft);
+    font-weight: 600;
+    color: var(--checkup-2);
+    background: var(--checkup-tint);
     display: inline-block;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 999px;
-    margin: 0 auto 18px;
+    border: 1px solid var(--card-border);
   }
-  .mock-flag-wrap { text-align: center; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="top">
-    <p class="greeting">Здравствуйте, Екатерина 🌿</p>
+    <p class="greeting">Здравствуйте, Екатерина</p>
     <p class="date" id="todayDate"></p>
   </header>
 
-  <div class="mock-flag-wrap"><span class="mock-flag">Демо-данные — реальные показатели подключим позже</span></div>
+  <div class="mock-flag-wrap"><span class="mock-flag">✦ Демо-данные — реальные показатели подключим следующим шагом</span></div>
 
   <div class="stat-grid">
     <div class="stat-tile tile-sleep">
@@ -336,21 +381,27 @@
   </div>
 
   <!-- SLEEP -->
-  <section class="card">
+  <section class="card card-sleep">
     <div class="card-head">
-      <div class="card-title"><span class="dot" style="background:var(--sleep)"></span>Сон</div>
+      <div class="card-title"><span class="icon-badge">🌙</span>Сон</div>
       <span class="badge badge-good">Хорошо</span>
     </div>
     <p class="card-sub">по данным Oura Ring · сегодня, 06:40</p>
 
     <div class="sleep-row">
       <div class="ring-wrap">
-        <svg width="92" height="92" viewBox="0 0 92 92">
-          <circle cx="46" cy="46" r="40" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
-          <circle cx="46" cy="46" r="40" fill="none" stroke="var(--sleep)" stroke-width="9"
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <defs>
+            <linearGradient id="sleepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--sleep-1)"/>
+              <stop offset="100%" stop-color="var(--sleep-2)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="url(#sleepGrad)" stroke-width="9"
             stroke-linecap="round"
-            stroke-dasharray="251.2"
-            stroke-dashoffset="40.2"/>
+            stroke-dasharray="257.6"
+            stroke-dashoffset="41.2"/>
         </svg>
         <div class="ring-center">
           <div class="n">84</div>
@@ -366,9 +417,9 @@
 
     <div class="trend-chart">
       <svg width="100%" height="46" viewBox="0 0 300 46" preserveAspectRatio="none">
-        <polyline fill="none" stroke="var(--sleep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+        <polyline fill="none" stroke="var(--sleep-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
           points="0,30 42,22 84,26 126,14 168,18 210,10 252,16 294,8"/>
-        <circle cx="294" cy="8" r="4" fill="var(--sleep)"/>
+        <circle cx="294" cy="8" r="4" fill="var(--sleep-2)"/>
       </svg>
       <div class="axis-labels">
         <span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span>
@@ -377,16 +428,16 @@
   </section>
 
   <!-- BODY COMPOSITION -->
-  <section class="card">
+  <section class="card card-body">
     <div class="card-head">
-      <div class="card-title"><span class="dot" style="background:var(--body)"></span>Состав тела</div>
+      <div class="card-title"><span class="icon-badge">⚖️</span>Состав тела</div>
     </div>
     <p class="card-sub">по данным Withings Body Comp · сегодня, 07:15</p>
 
     <svg width="100%" height="70" viewBox="0 0 300 70" preserveAspectRatio="none">
-      <polyline fill="none" stroke="var(--body)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+      <polyline fill="none" stroke="var(--body-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
         points="0,20 50,26 100,24 150,32 200,30 250,40 300,38"/>
-      <circle cx="300" cy="38" r="4" fill="var(--body)"/>
+      <circle cx="300" cy="38" r="4" fill="var(--body-2)"/>
     </svg>
     <div class="axis-labels" style="margin-top:-4px;">
       <span>6 нед. назад</span><span>сегодня</span>
@@ -399,7 +450,7 @@
       </div>
       <div class="mini-stat">
         <div class="k">Мышечная масса</div>
-        <div class="v">44.8 кг<span class="delta delta-down" style="color:var(--good)">▲0.3</span></div>
+        <div class="v">44.8 кг<span class="delta" style="color:var(--good)">▲0.3</span></div>
       </div>
       <div class="mini-stat">
         <div class="k">Вес</div>
@@ -409,23 +460,23 @@
   </section>
 
   <!-- NUTRITION -->
-  <section class="card">
+  <section class="card card-nutrition">
     <div class="card-head">
-      <div class="card-title"><span class="dot" style="background:var(--nutrition)"></span>Питание</div>
+      <div class="card-title"><span class="icon-badge">🍽</span>Питание</div>
     </div>
     <p class="card-sub">сегодня · 1 640 ккал из 1 850 ккал</p>
 
     <div class="macro-row">
       <div class="macro-label"><span class="name">Белок</span><span class="val">78 / 95 г</span></div>
-      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:82%; background:var(--nutrition);"></div></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:82%; background:linear-gradient(90deg,var(--nutrition-1),var(--nutrition-2));"></div></div>
     </div>
     <div class="macro-row">
       <div class="macro-label"><span class="name">Жиры</span><span class="val">54 / 65 г</span></div>
-      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:83%; background:#D9A47A;"></div></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:83%; background:linear-gradient(90deg,var(--body-1),var(--body-2));"></div></div>
     </div>
     <div class="macro-row">
       <div class="macro-label"><span class="name">Углеводы</span><span class="val">142 / 190 г</span></div>
-      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:75%; background:#C9B36A;"></div></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:75%; background:linear-gradient(90deg,#F4D06F,#E0A93C);"></div></div>
     </div>
 
     <div class="week-avg-strip">
@@ -435,9 +486,9 @@
   </section>
 
   <!-- ACTIVITY / SPORT -->
-  <section class="card">
+  <section class="card card-activity">
     <div class="card-head">
-      <div class="card-title"><span class="dot" style="background:var(--activity)"></span>Активность и спорт</div>
+      <div class="card-title"><span class="icon-badge">🏃</span>Активность и спорт</div>
     </div>
     <p class="card-sub">шаги за неделю</p>
 
@@ -471,9 +522,9 @@
   </section>
 
   <!-- CHECKUPS -->
-  <section class="card">
+  <section class="card card-checkup">
     <div class="card-head">
-      <div class="card-title"><span class="dot" style="background:var(--checkup)"></span>Анализы и чекапы</div>
+      <div class="card-title"><span class="icon-badge">🩺</span>Анализы и чекапы</div>
     </div>
     <p class="card-sub">история и рекомендации с учётом твоих показателей</p>
 
