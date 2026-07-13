@@ -432,9 +432,34 @@
   }
   .score-chip .k { font-size: 10.5px; color: var(--text-secondary); font-weight: 600; }
   .score-chip .v { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-top: 2px; }
+
+  /* Glassmorphism: floating orbs behind glass cards so blur has something to refract */
+  .bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(2px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orb-1 { width: 220px; height: 220px; top: -60px; left: -60px; background: radial-gradient(circle at 35% 35%, var(--sleep-1), var(--sleep-2)); opacity: 0.55; }
+  .orb-2 { width: 160px; height: 160px; top: 90px; right: -50px; background: radial-gradient(circle at 35% 35%, var(--nutrition-1), var(--nutrition-2)); opacity: 0.5; }
+  .orb-3 { width: 130px; height: 130px; top: 380px; left: -40px; background: radial-gradient(circle at 35% 35%, var(--activity-1), var(--activity-2)); opacity: 0.45; }
+  .orb-4 { width: 190px; height: 190px; top: 640px; right: -70px; background: radial-gradient(circle at 35% 35%, var(--body-1), var(--body-2)); opacity: 0.5; }
+  .orb-5 { width: 110px; height: 110px; bottom: 220px; left: 20px; background: radial-gradient(circle at 35% 35%, var(--ready-1), var(--ready-2)); opacity: 0.4; }
+  .orb-6 { width: 150px; height: 150px; bottom: -40px; right: 10px; background: radial-gradient(circle at 35% 35%, var(--checkup-1), var(--checkup-2)); opacity: 0.4; }
+
+  .wrap { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+  <div class="bg-orb orb-4"></div>
+  <div class="bg-orb orb-5"></div>
+  <div class="bg-orb orb-6"></div>
+
 <div class="wrap">
 
   <header class="top">
