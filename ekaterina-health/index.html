@@ -23,6 +23,7 @@
     --text-secondary: #6B6480;
     --text-muted: #9891A8;
 
+    --ready-1: #4FC3D9; --ready-2: #1F92B0; --ready-tint: #E4F6FA;
     --sleep-1: #9A8CF0; --sleep-2: #6A5AD9; --sleep-tint: #EFEBFD;
     --activity-1: #3FD1A6; --activity-2: #17A67F; --activity-tint: #E4FAF2;
     --body-1: #FFAA7A; --body-2: #F2703D; --body-tint: #FFEEE3;
@@ -171,6 +172,7 @@
     height: 4px;
     background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
   }
+  .card-ready { --accent-1: var(--ready-1); --accent-2: var(--ready-2); }
   .card-sleep { --accent-1: var(--sleep-1); --accent-2: var(--sleep-2); }
   .card-activity { --accent-1: var(--activity-1); --accent-2: var(--activity-2); }
   .card-body { --accent-1: var(--body-1); --accent-2: var(--body-2); }
@@ -395,6 +397,32 @@
     font-size: 15px;
   }
   .stat-tile .spark-mini { display: block; margin-top: 6px; opacity: 0.9; }
+
+  /* Insights */
+  .insight-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .insight-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 13px; border-radius: 14px; background: var(--surface-alt); border: 1px solid var(--card-border);
+  }
+  .insight-item .ico { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .insight-item .txt { font-size: 13px; line-height: 1.5; }
+  .insight-item .txt b { font-weight: 700; }
+  .insight-item .delta-chip {
+    margin-left: 6px; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+    background: var(--activity-tint); color: var(--good); white-space: nowrap;
+  }
+  .insight-note { font-size: 11px; color: var(--text-muted); margin-top: 13px; line-height: 1.5; }
+
+  .wheel-legend-note {
+    font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.5; text-align: center;
+  }
+
+  .score-badge-row { display: flex; gap: 8px; margin-top: 14px; }
+  .score-chip {
+    flex: 1; text-align: center; padding: 9px 6px; border-radius: 12px; background: var(--surface-alt); border: 1px solid var(--card-border);
+  }
+  .score-chip .k { font-size: 10.5px; color: var(--text-secondary); font-weight: 600; }
+  .score-chip .v { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -457,6 +485,43 @@
     </div>
   </div>
 
+  <!-- READINESS -->
+  <section class="card card-ready">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">✦</span>Готовность к дню</div>
+      <span class="badge badge-good">Хорошо</span>
+    </div>
+    <p class="card-sub">по данным Oura Ring · рассчитано в 07:02</p>
+
+    <div class="sleep-row">
+      <div class="ring-wrap">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <defs>
+            <linearGradient id="readyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--ready-1)"/>
+              <stop offset="100%" stop-color="var(--ready-2)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
+          <circle cx="48" cy="48" r="41" fill="none" stroke="url(#readyGrad)" stroke-width="9"
+            stroke-linecap="round"
+            stroke-dasharray="257.6"
+            stroke-dashoffset="51.5"/>
+        </svg>
+        <div class="ring-center">
+          <div class="n" style="color:var(--ready-2)">80</div>
+          <div class="of100">из 100</div>
+        </div>
+      </div>
+      <div class="sleep-meta">
+        <div class="row"><span class="k">ВСР к норме</span><span class="v">+8%</span></div>
+        <div class="row"><span class="k">Температура</span><span class="v">в норме</span></div>
+        <div class="row"><span class="k">Баланс нагрузки</span><span class="v">оптимально</span></div>
+      </div>
+    </div>
+    <p class="insight-note">Готовность считается из ВСР, пульса покоя, отклонения температуры и баланса нагрузки за последние дни — это и есть ось «Готовность» на колесе баланса ниже.</p>
+  </section>
+
   <!-- BALANCE WHEEL -->
   <section class="card card-checkup">
     <div class="card-head">
@@ -493,8 +558,9 @@
       <text x="196" y="83" text-anchor="start" font-size="11" font-weight="700" fill="var(--text-secondary)">Активн. · 72</text>
       <text x="160" y="192" text-anchor="start" font-size="11" font-weight="700" fill="var(--text-secondary)">Питание · 76</text>
       <text x="60" y="192" text-anchor="end" font-size="11" font-weight="700" fill="var(--text-secondary)">Тело · 68</text>
-      <text x="24" y="83" text-anchor="end" font-size="11" font-weight="700" fill="var(--text-secondary)">Восст. · 80</text>
+      <text x="24" y="83" text-anchor="end" font-size="11" font-weight="700" fill="var(--text-secondary)">Готовность · 80</text>
     </svg>
+    <p class="wheel-legend-note">Сон и Готовность — баллы Oura напрямую. Активность — нормализованные шаги/движение к цели. Тело — тренд состава от Withings за месяц. Питание — % выполнения целей по БЖУ.</p>
   </section>
 
   <!-- SLEEP -->
@@ -636,6 +702,30 @@
         <div class="dur">55 мин</div>
       </div>
     </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="card card-nutrition">
+    <div class="card-head">
+      <div class="card-title"><span class="icon-badge">💡</span>Что работает именно для тебя</div>
+    </div>
+    <p class="card-sub">анализ за 30 дней · сравниваю дни с привычкой и без</p>
+
+    <div class="insight-list">
+      <div class="insight-item">
+        <div class="ico">🌙</div>
+        <div class="txt">В дни с белком <b>90+ г</b> — Готовность в среднем выше<span class="delta-chip">+6 баллов</span></div>
+      </div>
+      <div class="insight-item">
+        <div class="ico">🚶</div>
+        <div class="txt">Прогулка после ужина — сон глубже, засыпание быстрее<span class="delta-chip">+4 балла</span></div>
+      </div>
+      <div class="insight-item">
+        <div class="ico">😴</div>
+        <div class="txt">Меньше <b>7 ч</b> сна — ВСР на следующий день ниже нормы<span class="delta-chip" style="background:var(--body-tint);color:var(--body-2)">−9%</span></div>
+      </div>
+    </div>
+    <p class="insight-note">Это не медицинский вывод, а твоя личная закономерность за месяц — подсказка, куда вкладываться, не более.</p>
   </section>
 
   <!-- CHECKUPS -->
