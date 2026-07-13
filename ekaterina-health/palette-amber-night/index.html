@@ -151,7 +151,7 @@
   .tile-nutrition { background: linear-gradient(135deg, var(--nutrition-1), var(--nutrition-2)); }
 
   section.card {
-    background: linear-gradient(160deg, color-mix(in srgb, var(--accent-1) 12%, transparent), transparent 60%), var(--surface);
+    background: linear-gradient(160deg, var(--accent-tint), transparent 65%), var(--surface);
     backdrop-filter: blur(28px) saturate(1.6);
     -webkit-backdrop-filter: blur(28px) saturate(1.6);
     border: 1px solid var(--card-border);
@@ -180,12 +180,12 @@
     z-index: 1;
     transform: rotate(-8deg);
   }
-  .card-ready { --accent-1: var(--ready-1); --accent-2: var(--ready-2); }
-  .card-sleep { --accent-1: var(--sleep-1); --accent-2: var(--sleep-2); }
-  .card-activity { --accent-1: var(--activity-1); --accent-2: var(--activity-2); }
-  .card-body { --accent-1: var(--body-1); --accent-2: var(--body-2); }
-  .card-nutrition { --accent-1: var(--nutrition-1); --accent-2: var(--nutrition-2); }
-  .card-checkup { --accent-1: var(--checkup-1); --accent-2: var(--checkup-2); }
+  .card-ready { --accent-1: var(--ready-1); --accent-2: var(--ready-2); --accent-tint: var(--ready-tint); }
+  .card-sleep { --accent-1: var(--sleep-1); --accent-2: var(--sleep-2); --accent-tint: var(--sleep-tint); }
+  .card-activity { --accent-1: var(--activity-1); --accent-2: var(--activity-2); --accent-tint: var(--activity-tint); }
+  .card-body { --accent-1: var(--body-1); --accent-2: var(--body-2); --accent-tint: var(--body-tint); }
+  .card-nutrition { --accent-1: var(--nutrition-1); --accent-2: var(--nutrition-2); --accent-tint: var(--nutrition-tint); }
+  .card-checkup { --accent-1: var(--checkup-1); --accent-2: var(--checkup-2); --accent-tint: var(--checkup-tint); }
 
   section.card .card-head {
     display: flex;
@@ -250,7 +250,7 @@
 
   /* body comp */
   .body-cards { display: flex; gap: 10px; margin-top: 16px; }
-  .mini-stat { flex: 1; background: linear-gradient(150deg, color-mix(in srgb, var(--accent-1) 16%, var(--surface-alt)), var(--surface-alt)); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 12px; }
+  .mini-stat { flex: 1; background: linear-gradient(150deg, var(--accent-tint), var(--surface-alt) 70%); border: 1px solid var(--card-border); border-radius: 14px; padding: 11px 12px; }
   .mini-stat .k { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
   .mini-stat .v { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin-top: 4px; }
   .mini-stat .v .delta { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; margin-left: 4px; }
@@ -427,7 +427,7 @@
 
   .score-badge-row { display: flex; gap: 8px; margin-top: 14px; }
   .score-chip {
-    flex: 1; text-align: center; padding: 9px 6px; border-radius: 12px; background: linear-gradient(150deg, color-mix(in srgb, var(--accent-1) 14%, var(--surface-alt)), var(--surface-alt)); border: 1px solid var(--card-border);
+    flex: 1; text-align: center; padding: 9px 6px; border-radius: 12px; background: linear-gradient(150deg, var(--accent-tint), var(--surface-alt) 70%); border: 1px solid var(--card-border);
   }
   .score-chip .k { font-size: 10.5px; color: var(--text-secondary); font-weight: 600; }
   .score-chip .v { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-top: 2px; }
