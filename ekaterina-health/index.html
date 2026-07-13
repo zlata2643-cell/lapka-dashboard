@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Здоровье · Екатерина</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f6f5fb;
+    --surface: #ffffff;
+    --surface-alt: #f0eef9;
+    --border: #e6e2f2;
+    --text-primary: #2c2a3a;
+    --text-secondary: #6b6780;
+    --text-muted: #9a96ab;
+
+    --sleep: #6C63C9;
+    --sleep-soft: #ECE9FA;
+    --activity: #3FA383;
+    --activity-soft: #E4F4EE;
+    --body: #D98A5E;
+    --body-soft: #FBEBE0;
+    --nutrition: #C7628D;
+    --nutrition-soft: #FAE6EF;
+    --checkup: #6B7A99;
+    --checkup-soft: #EAEDF3;
+
+    --good: #3FA383;
+    --warn: #D9A441;
+    --shadow: 0 1px 2px rgba(44,42,58,0.04), 0 4px 16px rgba(44,42,58,0.06);
+    --radius: 18px;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17151f;
+    --surface: #201d2c;
+    --surface-alt: #262233;
+    --border: #322d40;
+    --text-primary: #eeecf5;
+    --text-secondary: #a8a4bd;
+    --text-muted: #736f88;
+
+    --sleep-soft: #2c2850;
+    --activity-soft: #1d3830;
+    --body-soft: #3a2a20;
+    --nutrition-soft: #3a2130;
+    --checkup-soft: #262c3a;
+
+    --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17151f;
+      --surface: #201d2c;
+      --surface-alt: #262233;
+      --border: #322d40;
+      --text-primary: #eeecf5;
+      --text-secondary: #a8a4bd;
+      --text-muted: #736f88;
+
+      --sleep-soft: #2c2850;
+      --activity-soft: #1d3830;
+      --body-soft: #3a2a20;
+      --nutrition-soft: #3a2130;
+      --checkup-soft: #262c3a;
+
+      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.3);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 40px;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 8px;
+  }
+
+  header.top {
+    padding: 8px 4px 20px;
+  }
+  header.top .greeting {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 2px;
+  }
+  header.top .date {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .stat-tile {
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 92px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .stat-tile .label {
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0.92;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stat-tile .value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 8px;
+  }
+  .stat-tile .value .unit {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-left: 2px;
+  }
+  .stat-tile .spark {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0.85;
+  }
+  .tile-sleep { background: linear-gradient(135deg, #7A70DA, #6C63C9); }
+  .tile-activity { background: linear-gradient(135deg, #4CB897, #3FA383); }
+  .tile-body { background: linear-gradient(135deg, #E29A6E, #D98A5E); }
+  .tile-nutrition { background: linear-gradient(135deg, #D3729B, #C7628D); }
+
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  section.card .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  section.card .card-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  section.card .card-title .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  section.card .card-sub {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 2px 0 14px;
+  }
+
+  .badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .badge-good { background: var(--activity-soft); color: var(--good); }
+  .badge-warn { background: #FCEED9; color: var(--warn); }
+  :root[data-theme="dark"] .badge-warn, @media (prefers-color-scheme: dark) { }
+
+  /* Sleep ring */
+  .sleep-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .ring-wrap { position: relative; width: 92px; height: 92px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-center .n { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; line-height: 1;}
+  .ring-center .of100 { font-size: 10.5px; color: var(--text-muted); margin-top: 2px;}
+
+  .sleep-meta { flex: 1; }
+  .sleep-meta .row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .sleep-meta .row:last-child { border-bottom: none; }
+  .sleep-meta .row .k { color: var(--text-secondary); }
+  .sleep-meta .row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .trend-chart { margin-top: 16px; }
+  .trend-chart .axis-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 4px; padding: 0 2px; }
+
+  /* body comp */
+  .body-cards { display: flex; gap: 10px; margin-top: 14px; }
+  .mini-stat { flex: 1; background: var(--surface-alt); border-radius: 12px; padding: 10px 12px; }
+  .mini-stat .k { font-size: 11.5px; color: var(--text-secondary); font-weight: 600; }
+  .mini-stat .v { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 800; margin-top: 3px; }
+  .mini-stat .v .delta { font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .delta-down { color: var(--good); }
+  .delta-up { color: var(--warn); }
+
+  /* nutrition macro bars */
+  .macro-row { margin-bottom: 12px; }
+  .macro-row:last-child { margin-bottom: 0; }
+  .macro-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .macro-label .name { color: var(--text-secondary); font-weight: 600; }
+  .macro-label .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .macro-bar-bg { height: 8px; border-radius: 6px; background: var(--surface-alt); overflow: hidden; }
+  .macro-bar-fill { height: 100%; border-radius: 6px; }
+
+  .week-avg-strip {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .week-avg-strip b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  /* activity bars */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 14px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; }
+  .bar-col .bar { width: 100%; max-width: 26px; border-radius: 6px 6px 3px 3px; background: var(--activity); min-height: 4px; }
+  .bar-col .bar.today { background: var(--activity); box-shadow: 0 0 0 2px var(--activity-soft) inset; }
+  .bar-col .day-label { font-size: 10.5px; color: var(--text-muted); }
+
+  .workout-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .workout-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-alt); border-radius: 12px; padding: 10px 12px;
+  }
+  .workout-item .icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .workout-item .info { flex: 1; }
+  .workout-item .info .t { font-size: 13.5px; font-weight: 700; }
+  .workout-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+  .workout-item .dur { font-size: 12.5px; font-weight: 700; color: var(--activity); font-variant-numeric: tabular-nums; }
+
+  /* checkups */
+  .checkup-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .checkup-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 12px; border-radius: 12px; background: var(--surface-alt);
+  }
+  .checkup-item .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
+  }
+  .status-done { background: var(--good); }
+  .status-due { background: var(--warn); }
+  .checkup-item .info { flex: 1; }
+  .checkup-item .info .t { font-size: 13.5px; font-weight: 700; }
+  .checkup-item .info .d { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+  .checkup-item .when { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
+
+  .disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 18px 20px 4px;
+    line-height: 1.5;
+  }
+
+  .mock-flag {
+    text-align: center;
+    font-size: 11px;
+    color: var(--checkup);
+    background: var(--checkup-soft);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin: 0 auto 18px;
+  }
+  .mock-flag-wrap { text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="greeting">Здравствуйте, Екатерина 🌿</p>
+    <p class="date" id="todayDate"></p>
+  </header>
+
+  <div class="mock-flag-wrap"><span class="mock-flag">Демо-данные — реальные показатели подключим позже</span></div>
+
+  <div class="stat-grid">
+    <div class="stat-tile tile-sleep">
+      <div class="label">🌙 Сон</div>
+      <div class="value">84<span class="unit">/100</span></div>
+    </div>
+    <div class="stat-tile tile-activity">
+      <div class="label">🏃 Активность</div>
+      <div class="value">7 240<span class="unit">шаг</span></div>
+    </div>
+    <div class="stat-tile tile-body">
+      <div class="label">⚖️ Вес</div>
+      <div class="value">61.4<span class="unit">кг</span></div>
+    </div>
+    <div class="stat-tile tile-nutrition">
+      <div class="label">🍽 Белок</div>
+      <div class="value">78<span class="unit">/95 г</span></div>
+    </div>
+  </div>
+
+  <!-- SLEEP -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot" style="background:var(--sleep)"></span>Сон</div>
+      <span class="badge badge-good">Хорошо</span>
+    </div>
+    <p class="card-sub">по данным Oura Ring · сегодня, 06:40</p>
+
+    <div class="sleep-row">
+      <div class="ring-wrap">
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          <circle cx="46" cy="46" r="40" fill="none" stroke="var(--surface-alt)" stroke-width="9"/>
+          <circle cx="46" cy="46" r="40" fill="none" stroke="var(--sleep)" stroke-width="9"
+            stroke-linecap="round"
+            stroke-dasharray="251.2"
+            stroke-dashoffset="40.2"/>
+        </svg>
+        <div class="ring-center">
+          <div class="n">84</div>
+          <div class="of100">из 100</div>
+        </div>
+      </div>
+      <div class="sleep-meta">
+        <div class="row"><span class="k">Длительность</span><span class="v">7 ч 42 мин</span></div>
+        <div class="row"><span class="k">ВСР (HRV)</span><span class="v">52 мс</span></div>
+        <div class="row"><span class="k">Пульс покоя</span><span class="v">58 уд/мин</span></div>
+      </div>
+    </div>
+
+    <div class="trend-chart">
+      <svg width="100%" height="46" viewBox="0 0 300 46" preserveAspectRatio="none">
+        <polyline fill="none" stroke="var(--sleep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+          points="0,30 42,22 84,26 126,14 168,18 210,10 252,16 294,8"/>
+        <circle cx="294" cy="8" r="4" fill="var(--sleep)"/>
+      </svg>
+      <div class="axis-labels">
+        <span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span><span>Пн</span><span>Вт</span><span>Ср</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY COMPOSITION -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot" style="background:var(--body)"></span>Состав тела</div>
+    </div>
+    <p class="card-sub">по данным Withings Body Comp · сегодня, 07:15</p>
+
+    <svg width="100%" height="70" viewBox="0 0 300 70" preserveAspectRatio="none">
+      <polyline fill="none" stroke="var(--body)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+        points="0,20 50,26 100,24 150,32 200,30 250,40 300,38"/>
+      <circle cx="300" cy="38" r="4" fill="var(--body)"/>
+    </svg>
+    <div class="axis-labels" style="margin-top:-4px;">
+      <span>6 нед. назад</span><span>сегодня</span>
+    </div>
+
+    <div class="body-cards">
+      <div class="mini-stat">
+        <div class="k">% жира</div>
+        <div class="v">24.1<span class="delta delta-down">▼0.6</span></div>
+      </div>
+      <div class="mini-stat">
+        <div class="k">Мышечная масса</div>
+        <div class="v">44.8 кг<span class="delta delta-down" style="color:var(--good)">▲0.3</span></div>
+      </div>
+      <div class="mini-stat">
+        <div class="k">Вес</div>
+        <div class="v">61.4 кг<span class="delta delta-down">▼0.4</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUTRITION -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot" style="background:var(--nutrition)"></span>Питание</div>
+    </div>
+    <p class="card-sub">сегодня · 1 640 ккал из 1 850 ккал</p>
+
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Белок</span><span class="val">78 / 95 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:82%; background:var(--nutrition);"></div></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Жиры</span><span class="val">54 / 65 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:83%; background:#D9A47A;"></div></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-label"><span class="name">Углеводы</span><span class="val">142 / 190 г</span></div>
+      <div class="macro-bar-bg"><div class="macro-bar-fill" style="width:75%; background:#C9B36A;"></div></div>
+    </div>
+
+    <div class="week-avg-strip">
+      <span>Среднее за неделю: <b>1 720</b> ккал</span>
+      <span>Белок: <b>84 г</b>/день</span>
+    </div>
+  </section>
+
+  <!-- ACTIVITY / SPORT -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot" style="background:var(--activity)"></span>Активность и спорт</div>
+    </div>
+    <p class="card-sub">шаги за неделю</p>
+
+    <div class="bar-chart">
+      <div class="bar-col"><div class="bar" style="height:58%"></div><div class="day-label">Чт</div></div>
+      <div class="bar-col"><div class="bar" style="height:71%"></div><div class="day-label">Пт</div></div>
+      <div class="bar-col"><div class="bar" style="height:40%"></div><div class="day-label">Сб</div></div>
+      <div class="bar-col"><div class="bar" style="height:85%"></div><div class="day-label">Вс</div></div>
+      <div class="bar-col"><div class="bar" style="height:62%"></div><div class="day-label">Пн</div></div>
+      <div class="bar-col"><div class="bar" style="height:77%"></div><div class="day-label">Вт</div></div>
+      <div class="bar-col"><div class="bar today" style="height:66%"></div><div class="day-label">Ср</div></div>
+    </div>
+
+    <div class="workout-list">
+      <div class="workout-item">
+        <div class="icon">🧘</div>
+        <div class="info"><div class="t">Йога</div><div class="d">Сегодня, утро</div></div>
+        <div class="dur">40 мин</div>
+      </div>
+      <div class="workout-item">
+        <div class="icon">🚶</div>
+        <div class="info"><div class="t">Прогулка</div><div class="d">Вчера, вечер</div></div>
+        <div class="dur">35 мин</div>
+      </div>
+      <div class="workout-item">
+        <div class="icon">🏋️</div>
+        <div class="info"><div class="t">Силовая тренировка</div><div class="d">Позавчера</div></div>
+        <div class="dur">55 мин</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKUPS -->
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="dot" style="background:var(--checkup)"></span>Анализы и чекапы</div>
+    </div>
+    <p class="card-sub">история и рекомендации с учётом твоих показателей</p>
+
+    <div class="checkup-list">
+      <div class="checkup-item">
+        <div class="status-dot status-due"></div>
+        <div class="info">
+          <div class="t">Ферритин + общий анализ крови</div>
+          <div class="d">Рекомендовано раз в 6 мес. — последний раз сдавали давно</div>
+        </div>
+        <div class="when">пора</div>
+      </div>
+      <div class="checkup-item">
+        <div class="status-dot status-done"></div>
+        <div class="info">
+          <div class="t">Витамин D</div>
+          <div class="d">Норма по последнему результату</div>
+        </div>
+        <div class="when">2 мес. назад</div>
+      </div>
+      <div class="checkup-item">
+        <div class="status-dot status-done"></div>
+        <div class="info">
+          <div class="t">УЗИ щитовидной железы</div>
+          <div class="d">Без отклонений</div>
+        </div>
+        <div class="when">4 мес. назад</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="disclaimer">Это образовательная информация, не медицинская консультация.<br>Данные пока демонстрационные — подключим Oura, Withings и дневник питания следующим шагом.</p>
+
+</div>
+
+<script>
+  const today = new Date();
+  const opts = { day: 'numeric', month: 'long', weekday: 'long' };
+  document.getElementById('todayDate').textContent =
+    today.toLocaleDateString('ru-RU', opts).replace(/^./, c => c.toUpperCase());
+</script>
+</body>
+</html>
