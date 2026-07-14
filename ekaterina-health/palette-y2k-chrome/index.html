@@ -43,12 +43,24 @@
     margin: 0;
     min-height: 100vh;
     background:
+      /* soft out-of-focus bokeh circles, varying size — like the diamond/water reference */
+      radial-gradient(60px 60px at 12% 8%, rgba(255,255,255,0.9), rgba(255,255,255,0) 70%),
+      radial-gradient(34px 34px at 30% 4%, rgba(180,215,255,0.8), rgba(180,215,255,0) 70%),
+      radial-gradient(90px 90px at 78% 10%, rgba(255,255,255,0.7), rgba(255,255,255,0) 70%),
+      radial-gradient(46px 46px at 92% 5%, rgba(160,200,255,0.75), rgba(160,200,255,0) 70%),
+      radial-gradient(70px 70px at 6% 34%, rgba(200,225,255,0.7), rgba(200,225,255,0) 70%),
+      radial-gradient(38px 38px at 55% 28%, rgba(255,255,255,0.8), rgba(255,255,255,0) 70%),
+      radial-gradient(100px 100px at 88% 40%, rgba(180,215,255,0.6), rgba(180,215,255,0) 70%),
+      radial-gradient(50px 50px at 20% 58%, rgba(255,255,255,0.75), rgba(255,255,255,0) 70%),
+      radial-gradient(80px 80px at 68% 62%, rgba(160,200,255,0.65), rgba(160,200,255,0) 70%),
+      radial-gradient(40px 40px at 8% 82%, rgba(200,225,255,0.7), rgba(200,225,255,0) 70%),
+      radial-gradient(64px 64px at 44% 86%, rgba(255,255,255,0.7), rgba(255,255,255,0) 70%),
+      radial-gradient(96px 96px at 84% 88%, rgba(180,215,255,0.6), rgba(180,215,255,0) 70%),
       radial-gradient(900px 700px at 10% -10%, #FFFFFF 0%, transparent 55%),
       radial-gradient(900px 700px at 100% 0%, #BFD4EE 0%, transparent 50%),
       radial-gradient(800px 700px at 0% 70%, #D6DEEA 0%, transparent 55%),
       radial-gradient(900px 800px at 100% 100%, #A9C2E6 0%, transparent 50%),
-      repeating-linear-gradient(100deg, rgba(255,255,255,0.7) 0px, rgba(255,255,255,0.7) 1px, transparent 1px, transparent 4px),
-      linear-gradient(160deg, #E4E9F0, #DCE4EE);
+      linear-gradient(160deg, #E9EFF7, #D8E2F0);
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -72,6 +84,7 @@
 
   header.top {
     padding: 6px 4px 22px;
+    position: relative;
   }
   header.top .greeting {
     font-family: 'Fraunces', Georgia, serif;
@@ -469,9 +482,8 @@
 
   .wrap { position: relative; z-index: 1; }
 
-  /* Sparkle glints + shimmer sweep — rendered ABOVE cards (mix-blend-mode: screen
-     lightens what's underneath without hiding text) since backdrop-filter blur
-     would otherwise erase small glints placed behind the glass. */
+  /* Crisp droplet highlights — a handful of sharp bright glints, like light
+     catching water drops in the reference photo. Few and deliberate, not scattered dust. */
   .sparkle-overlay {
     position: fixed;
     inset: 0;
@@ -479,39 +491,42 @@
     pointer-events: none;
     mix-blend-mode: screen;
     background:
-      radial-gradient(5px 5px at 8% 10%, rgba(255,255,255,1), transparent 65%),
-      radial-gradient(3px 3px at 20% 5%, rgba(255,255,255,0.95), transparent 65%),
-      radial-gradient(6px 6px at 35% 16%, rgba(220,240,255,0.95), transparent 65%),
-      radial-gradient(3px 3px at 52% 8%, rgba(255,255,255,1), transparent 65%),
-      radial-gradient(5px 5px at 68% 20%, rgba(255,255,255,0.9), transparent 65%),
-      radial-gradient(3px 3px at 85% 12%, rgba(220,240,255,1), transparent 65%),
-      radial-gradient(6px 6px at 12% 35%, rgba(255,255,255,0.9), transparent 65%),
-      radial-gradient(3px 3px at 42% 42%, rgba(255,255,255,0.95), transparent 65%),
-      radial-gradient(5px 5px at 62% 48%, rgba(220,240,255,0.9), transparent 65%),
-      radial-gradient(3px 3px at 90% 38%, rgba(255,255,255,1), transparent 65%),
-      radial-gradient(6px 6px at 6% 62%, rgba(255,255,255,0.9), transparent 65%),
-      radial-gradient(3px 3px at 30% 68%, rgba(220,240,255,0.95), transparent 65%),
-      radial-gradient(5px 5px at 55% 75%, rgba(255,255,255,1), transparent 65%),
-      radial-gradient(3px 3px at 78% 65%, rgba(255,255,255,0.9), transparent 65%),
-      radial-gradient(6px 6px at 95% 80%, rgba(220,240,255,0.95), transparent 65%),
-      radial-gradient(3px 3px at 18% 88%, rgba(255,255,255,1), transparent 65%),
-      radial-gradient(5px 5px at 45% 92%, rgba(255,255,255,0.9), transparent 65%),
-      radial-gradient(3px 3px at 70% 95%, rgba(220,240,255,0.95), transparent 65%);
+      radial-gradient(4px 4px at 85% 7%, rgba(255,255,255,1), transparent 70%),
+      radial-gradient(2.5px 2.5px at 90% 11%, rgba(255,255,255,0.9), transparent 70%),
+      radial-gradient(3px 3px at 6% 15%, rgba(255,255,255,1), transparent 70%),
+      radial-gradient(5px 5px at 93% 46%, rgba(255,255,255,0.95), transparent 70%),
+      radial-gradient(2.5px 2.5px at 10% 63%, rgba(255,255,255,0.9), transparent 70%),
+      radial-gradient(3.5px 3.5px at 80% 90%, rgba(255,255,255,1), transparent 70%);
     animation: twinkle 3.5s ease-in-out infinite alternate;
   }
   @keyframes twinkle {
-    0% { opacity: 0.55; }
+    0% { opacity: 0.5; }
     100% { opacity: 1; }
   }
+
+  /* Faceted gem accent — decorative diamond echoing the reference photo */
+  .gem-accent {
+    position: absolute;
+    top: 14px; right: 4px;
+    width: 34px; height: 30px;
+    z-index: 2;
+    filter: drop-shadow(0 2px 6px rgba(60,100,160,0.35));
+    animation: gemFloat 4.5s ease-in-out infinite;
+  }
+  @keyframes gemFloat {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-5px) rotate(4deg); }
+  }
+
   .shimmer-sweep {
     position: fixed;
     top: 0; left: -45%;
     width: 45%; height: 100%;
-    background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.5) 42%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.5) 58%, transparent 100%);
+    background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.32) 44%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.32) 56%, transparent 100%);
     z-index: 5;
     pointer-events: none;
     mix-blend-mode: screen;
-    animation: shimmerSweep 5s linear infinite;
+    animation: shimmerSweep 6s linear infinite;
   }
   @keyframes shimmerSweep {
     0% { left: -45%; }
@@ -520,6 +535,7 @@
   @media (prefers-reduced-motion: reduce) {
     .shimmer-sweep { animation: none; opacity: 0; }
     .sparkle-overlay { animation: none; opacity: 0.85; }
+    .gem-accent { animation: none; }
   }
 
   /* Ritual checklist */
@@ -576,6 +592,26 @@
   <header class="top">
     <p class="greeting">Здравствуйте, Екатерина</p>
     <p class="date" id="todayDate"></p>
+    <svg class="gem-accent" viewBox="0 0 40 34" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gemTop" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#DFF1FF"/>
+          <stop offset="100%" stop-color="#8FC4F2"/>
+        </linearGradient>
+        <linearGradient id="gemLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#5CA8E8"/>
+          <stop offset="100%" stop-color="#1C6FCC"/>
+        </linearGradient>
+        <linearGradient id="gemRight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#2C7FDE"/>
+          <stop offset="100%" stop-color="#0E4FA8"/>
+        </linearGradient>
+      </defs>
+      <polygon points="4,10 20,2 36,10 20,10" fill="url(#gemTop)"/>
+      <polygon points="4,10 20,10 20,32" fill="url(#gemLeft)"/>
+      <polygon points="36,10 20,10 20,32" fill="url(#gemRight)"/>
+      <polygon points="20,2 12,10 28,10" fill="#F2FAFF" opacity="0.85"/>
+    </svg>
   </header>
 
   <div class="mock-flag-wrap"><span class="mock-flag">✦ Демо-данные — реальные показатели подключим следующим шагом</span></div>
