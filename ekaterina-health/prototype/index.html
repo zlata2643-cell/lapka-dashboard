@@ -376,6 +376,90 @@
   .activity-item .info .s{ font-size:11px; color:var(--muted); margin-top:2px; }
   .activity-item .kcal{ font-size:13px; font-weight:700; color:var(--gold-light); }
 
+  /* ---------- Инсайты / рекомендации ---------- */
+  .insight-card{
+    background:linear-gradient(160deg, rgba(203,161,53,0.1), rgba(10,18,28,0.4));
+    border:1px solid rgba(203,161,53,0.35);
+    border-radius:22px;
+    padding:18px 18px 16px;
+    margin-bottom:16px;
+    box-shadow:0 0 30px rgba(203,161,53,0.14);
+  }
+  .insight-card .section-label{ color:var(--gold-light); }
+  .insight-text{ font-size:13px; line-height:1.6; color:var(--warm-white); }
+  .insight-text b{ color:var(--gold-light); font-weight:700; }
+
+  .rec-card{
+    background:var(--gradient-panel);
+    border:1px solid rgba(53,199,255,0.3);
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:20px;
+    box-shadow:0 0 30px rgba(53,199,255,0.15);
+  }
+  .rec-item{ display:flex; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .rec-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .rec-item .ic{
+    width:30px; height:30px; border-radius:50%; flex-shrink:0;
+    background:rgba(53,199,255,0.12); color:var(--neon-core);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .rec-item .ic svg{ width:15px; height:15px; }
+  .rec-item .txt{ font-size:13px; line-height:1.5; color:var(--warm-white); padding-top:4px; }
+  .rec-item .txt span{ color:var(--muted); }
+
+  /* ---------- Ритуалы дня ---------- */
+  .ritual-card{
+    background:var(--gradient-panel);
+    border:1px solid rgba(53,199,255,0.25);
+    border-radius:22px;
+    padding:16px 18px;
+    margin-bottom:16px;
+  }
+  .ritual-progress{ font-size:11px; color:var(--muted); font-weight:600; }
+  .ritual-list{ margin-top:10px; }
+  .ritual-item{
+    display:flex; align-items:center; gap:12px;
+    padding:9px 0;
+    cursor:pointer;
+  }
+  .ritual-check{
+    width:22px; height:22px; border-radius:50%; flex-shrink:0;
+    border:1.5px solid rgba(53,199,255,0.4);
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  .ritual-check svg{ width:12px; height:12px; opacity:0; transition:opacity .15s; }
+  .ritual-item.done .ritual-check{ background:var(--neon); border-color:var(--neon); box-shadow:0 0 14px rgba(53,199,255,0.6); }
+  .ritual-item.done .ritual-check svg{ opacity:1; stroke:var(--noir); }
+  .ritual-item .lbl{ font-size:13px; color:var(--warm-white); transition:color .15s, opacity .15s; }
+  .ritual-item.done .lbl{ color:var(--muted); opacity:0.7; }
+
+  /* ---------- Вода ---------- */
+  .water-card{
+    background:var(--gradient-panel);
+    border:1px solid rgba(53,199,255,0.25);
+    border-radius:22px;
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .water-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+  .water-amount{ font-family:var(--font-display); font-size:15px; color:var(--neon-core); font-weight:600; }
+  .water-row{ display:flex; gap:7px; justify-content:space-between; }
+  .water-glass{
+    flex:1; height:34px; border-radius:8px 8px 4px 4px;
+    border:1.5px solid rgba(53,199,255,0.3);
+    background:rgba(255,255,255,0.02);
+    position:relative; overflow:hidden; cursor:pointer;
+  }
+  .water-glass-fill{
+    position:absolute; left:0; right:0; bottom:0; height:0%;
+    background:linear-gradient(180deg, var(--neon-core), var(--indigo-deep));
+    box-shadow:0 0 10px rgba(111,232,255,0.6);
+    transition:height .2s;
+  }
+  .water-glass.filled .water-glass-fill{ height:100%; }
+
   /* ---------- Таб-бар ---------- */
   .tabbar{
     display:flex; flex-shrink:0;
@@ -478,6 +562,45 @@
           </div>
           <div class="stat-card-value">7.4 ч</div>
           <div class="stat-card-sub">глубокий сон 1.8 ч</div>
+        </div>
+      </div>
+
+      <div class="divider-label">Ритм дня</div>
+
+      <div class="ritual-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="section-label" style="margin-bottom:0;">Ритуалы дня</div>
+          <div class="ritual-progress" id="ritualProgress">3 / 5</div>
+        </div>
+        <div class="ritual-list" id="ritualList"></div>
+      </div>
+
+      <div class="water-card">
+        <div class="water-head">
+          <div class="section-label" style="margin-bottom:0;">Вода</div>
+          <div class="water-amount" id="waterAmount">1.2 / 2.0 л</div>
+        </div>
+        <div class="water-row" id="waterRow"></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="section-label">Что работает именно для тебя</div>
+        <div class="insight-text">В дни, когда <b>сон начинается до 23:00</b>, готовность утром в среднем на <b>14% выше</b>, а тренировки ощущаются легче. Заметен и обратный паттерн — поздний плотный ужин снижает глубокий сон почти на треть.</div>
+      </div>
+
+      <div class="rec-card">
+        <div class="section-label">Рекомендации для тебя</div>
+        <div class="rec-item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg></div>
+          <div class="txt">Сегодня лечь до 23:00 — <span>нагрузка недели выше обычной, телу нужно время на восстановление</span></div>
+        </div>
+        <div class="rec-item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg></div>
+          <div class="txt">До конца дня ещё 360 ккал и 42г белка — <span>оставь их на ужин, а не перекусы</span></div>
+        </div>
+        <div class="rec-item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg></div>
+          <div class="txt">Готовность высокая (92) — <span>хороший день для силовой, тело восстановилось</span></div>
         </div>
       </div>
     </div>
@@ -857,6 +980,54 @@ document.getElementById('activitySave').addEventListener('click', ()=>{
 
 recomputeKcal();
 renderTabbars('home');
+
+/* ---------- Ритуалы дня ---------- */
+const rituals = [
+  { label: 'Стакан воды натощак', done: true },
+  { label: '10 минут растяжки', done: true },
+  { label: 'Прогулка на улице', done: true },
+  { label: 'Без экрана за час до сна', done: false },
+  { label: 'Дневник благодарности', done: false }
+];
+
+function renderRituals(){
+  const list = document.getElementById('ritualList');
+  list.innerHTML = rituals.map((r,i) => `
+    <div class="ritual-item ${r.done?'done':''}" data-i="${i}">
+      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
+      <div class="lbl">${r.label}</div>
+    </div>`).join('');
+  document.getElementById('ritualProgress').textContent = `${rituals.filter(r=>r.done).length} / ${rituals.length}`;
+  list.querySelectorAll('.ritual-item').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const i = +el.dataset.i;
+      rituals[i].done = !rituals[i].done;
+      renderRituals();
+    });
+  });
+}
+renderRituals();
+
+/* ---------- Вода ---------- */
+const WATER_GOAL = 8; // стаканов по 250мл = 2.0л
+let waterFilled = 5;
+
+function renderWater(){
+  const row = document.getElementById('waterRow');
+  row.innerHTML = '';
+  for(let i=0;i<WATER_GOAL;i++){
+    const g = document.createElement('div');
+    g.className = 'water-glass' + (i < waterFilled ? ' filled' : '');
+    g.innerHTML = '<div class="water-glass-fill"></div>';
+    g.addEventListener('click', ()=>{
+      waterFilled = (i+1 === waterFilled) ? i : i+1;
+      renderWater();
+    });
+    row.appendChild(g);
+  }
+  document.getElementById('waterAmount').textContent = `${(waterFilled*0.25).toFixed(1)} / ${(WATER_GOAL*0.25).toFixed(1)} л`;
+}
+renderWater();
 </script>
 </body>
 </html>
