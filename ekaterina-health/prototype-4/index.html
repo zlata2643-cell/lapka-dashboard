@@ -124,17 +124,6 @@
   }
   .readiness-decode b{ color:var(--warm-white); font-weight:600; }
 
-  .readiness-delta{ display:flex; justify-content:center; margin:0 0 14px; }
-  .readiness-delta-pill{
-    display:inline-flex; align-items:center; gap:5px;
-    padding:5px 13px; border-radius:var(--r-pill);
-    font-size:12px; font-weight:700;
-  }
-  .readiness-delta-pill svg{ width:10px; height:10px; flex-shrink:0; }
-  .readiness-delta-pill.up{ background:rgba(53,199,255,0.12); border:1px solid rgba(53,199,255,0.35); color:var(--neon-core); }
-  .readiness-delta-pill.down{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:var(--muted-2); }
-  .readiness-delta-pill.flat{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:var(--muted); }
-
   .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .week-card-head .section-label{ margin-bottom:0; }
   .week-view-toggle{ display:flex; gap:2px; background:rgba(255,255,255,0.05); border-radius:var(--r-pill); padding:2px; flex-shrink:0; }
@@ -667,7 +656,6 @@
           </div>
         </div>
       </div>
-      <div class="readiness-delta" id="readinessDelta"></div>
       <div class="readiness-decode" id="readinessDecode">по данным дня и твоей самооценке выше</div>
 
       <div class="radar-card">
@@ -1058,26 +1046,6 @@ function syncReadinessHistoryToday(val){
   renderReadinessHistory();
 }
 
-const WEEK_AGO_REF = readinessHistory[0];
-const DELTA_ARROW_UP = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 10H4z"/></svg>';
-const DELTA_ARROW_DOWN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20L4 10h16z"/></svg>';
-const DELTA_ARROW_FLAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>';
-
-function renderReadinessDelta(val){
-  const el = document.getElementById('readinessDelta');
-  if(!el) return;
-  const delta = val - WEEK_AGO_REF;
-  let icon, label, cls;
-  if(delta > 0){
-    icon = DELTA_ARROW_UP; label = `+${delta} к прошлой неделе`; cls = 'up';
-  } else if(delta < 0){
-    icon = DELTA_ARROW_DOWN; label = `${delta} к прошлой неделе`; cls = 'down';
-  } else {
-    icon = DELTA_ARROW_FLAT; label = 'без изменений за неделю'; cls = 'flat';
-  }
-  el.innerHTML = `<span class="readiness-delta-pill ${cls}">${icon}${label}</span>`;
-}
-
 const GOOD_DAY_THRESHOLD = 70;
 function renderWeeklyGoal(){
   const total = readinessHistory.length;
@@ -1127,7 +1095,6 @@ function updateReadinessRing(){
   document.getElementById('readinessRing').style.background =
     `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
-  renderReadinessDelta(val);
   renderWeeklyGoal();
   renderReadinessLog();
   const recEl = document.getElementById('recReadinessTxt');
