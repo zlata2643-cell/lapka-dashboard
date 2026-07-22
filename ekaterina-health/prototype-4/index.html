@@ -912,7 +912,7 @@
         <div class="slider-fill" id="sliderFill" style="width:64%"></div>
         <div class="slider-thumb" id="sliderThumb" style="left:64%"></div>
       </div>
-      <div class="slider-caption"><span>Лёгкая</span><b id="intensityLabel">Средняя</b><span>Высокая</span></div>
+      <div class="slider-caption"><span id="intensityLowLabel">Лёгкая</span><b id="intensityLabel">Средняя</b><span id="intensityHighLabel">Высокая</span></div>
 
       <div class="kcal-estimate">
         <div class="kcal-chip" id="kcalEstimate">≈ 360 ккал</div>
@@ -921,6 +921,12 @@
       <button class="btn-primary" id="activitySave">Сохранить</button>
 
       <div style="height:26px"></div>
+
+      <div class="radar-card">
+        <div class="rb-row"><span>Силовых на этой неделе</span><b id="strengthWeekCount">—</b></div>
+        <div class="rb-row locked"><span>VO2max</span><b>появится с трекером</b></div>
+      </div>
+
       <div class="segment">
         <button class="segment-btn active" data-range="today">Сегодня</button>
         <button class="segment-btn" data-range="week">Неделя</button>
@@ -1567,12 +1573,23 @@ function parseDuration(){
 function recomputeKcal(){
   const duration = parseDuration();
   const mult = intensityPct < 33 ? 0.85 : (intensityPct > 66 ? 1.15 : 1.0);
-  const label = intensityPct < 33 ? 'Лёгкая' : (intensityPct > 66 ? 'Высокая' : 'Средняя');
-  document.getElementById('intensityLabel').textContent = label;
+  const activeChip = document.querySelector('.type-chip.active');
+  const isCardio = activeChip && (activeChip.dataset.type === 'run' || activeChip.dataset.type === 'walk');
+  const labels = isCardio ? ['Zone 2', 'Zone 3-4', 'Zone 5'] : ['Лёгкая', 'Средняя', 'Высокая'];
+  document.getElementById('intensityLowLabel').textContent = labels[0];
+  document.getElementById('intensityLabel').textContent = intensityPct < 33 ? labels[0] : (intensityPct > 66 ? labels[2] : labels[1]);
+  document.getElementById('intensityHighLabel').textContent = labels[2];
   const kcalPerMin = activeType.met * 3.5 * weightKg / 200;
   const kcal = Math.round(duration * kcalPerMin * mult);
   document.getElementById('kcalEstimate').textContent = `≈ ${kcal} ккал`;
 }
+
+function renderStrengthFrequency(){
+  const count = activityData.week.filter(i => i.icon === 'strength').length;
+  const qualifier = count < 2 ? 'мало для маркера долголетия (Аттиа)' : count <= 3 ? 'в норме по Аттиа' : 'отлично';
+  document.getElementById('strengthWeekCount').textContent = `${count} — ${qualifier}`;
+}
+renderStrengthFrequency();
 
 document.getElementById('durationInput').addEventListener('input', recomputeKcal);
 
@@ -1587,8 +1604,12 @@ setupSlider(
 document.getElementById('activitySave').addEventListener('click', ()=>{
   const duration = parseDuration();
   const kcalText = document.getElementById('kcalEstimate').textContent.replace(/[^0-9]/g,'');
-  activityData.today.unshift({ icon: document.querySelector('.type-chip.active').dataset.type, t: activeType.label, s: `${duration} мин · сейчас`, kcal: parseInt(kcalText||'0',10) });
+  const icon = document.querySelector('.type-chip.active').dataset.type;
+  const kcal = parseInt(kcalText||'0',10);
+  activityData.today.unshift({ icon, t: activeType.label, s: `${duration} мин · сейчас`, kcal });
+  activityData.week.unshift({ icon, t: activeType.label, s: `Сегодня · ${duration} мин`, kcal });
   if(document.querySelector('.segment-btn.active').dataset.range === 'today') renderActivityList('today');
+  renderStrengthFrequency();
   showToast('activityToast', `Записала: ${activeType.label} · ${duration} мин`);
 });
 
