@@ -9,41 +9,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --noir:#EEF4F8;
-    --noir-2:#FFFFFF;
-    --panel:#FFFFFF;
-    --neon:#1B76AC;
-    --neon-core:#0E5C8A;
-    --indigo-deep:#0A3A5C;
-    --gold:#7A1830;
-    --gold-light:#A8304F;
-    --warm-white:#16202E;
-    --muted:#5A6B80;
-    --muted-2:#8798AC;
+    --noir:#050B14;
+    --noir-2:#070E18;
+    --panel:#0A121C;
+    --neon:#2E9BEA;
+    --neon-core:#8FC8F5;
+    --indigo-deep:#0F2E52;
+    --gold:#CBA135;
+    --gold-light:#E8CE84;
+    --warm-white:#F2F0EA;
+    --muted:#8996A8;
+    --muted-2:#6C7C8E;
     --font-display:'Playfair Display', Georgia, serif;
     --font-text:'Manrope', -apple-system, 'Segoe UI', sans-serif;
     --r-chip:10px;
     --r-card:20px;
     --r-panel:32px;
     --r-pill:999px;
-    --glow-1:0 0 0 1px rgba(27,118,172,0.14);
-    --glow-2:0 0 42px rgba(27,118,172,0.3);
-    --glow-3:0 0 80px rgba(27,118,172,0.4), 0 0 150px rgba(27,118,172,0.18);
-    --glow-gold:0 0 40px rgba(122,24,48,0.4);
-    --gradient-neon:linear-gradient(135deg, #16202E 0%, #0E5C8A 40%, #0A3A5C 100%);
-    --gradient-gold:linear-gradient(135deg, #5A1020, #7A1830 55%, #A8304F);
-    --gradient-panel:linear-gradient(160deg, #FFFFFF, #F2F7FA);
+    --glow-1:0 0 0 1px rgba(46,155,234,0.1);
+    --glow-2:0 0 42px rgba(46,155,234,0.4);
+    --glow-3:0 0 80px rgba(46,155,234,0.65), 0 0 150px rgba(46,155,234,0.3);
+    --glow-gold:0 0 50px rgba(203,161,53,0.7);
+    --gradient-neon:linear-gradient(135deg, #F2F0EA 0%, #8FC8F5 40%, #0F2E52 100%);
+    --gradient-gold:linear-gradient(135deg, #8A6A1F, #CBA135 55%, #F2DDA0);
+    --gradient-panel:linear-gradient(160deg, #0F1A2C, #0A121C);
     --starfield:
-      radial-gradient(240px 240px at 12% -5%, rgba(27,118,172,0.10), transparent),
-      radial-gradient(280px 280px at 105% 20%, rgba(122,24,48,0.08), transparent),
-      radial-gradient(260px 260px at -5% 100%, rgba(27,118,172,0.08), transparent);
+      radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.28), transparent),
+      radial-gradient(1.5px 1.5px at 300px 160px, rgba(143,200,245,0.32), transparent),
+      radial-gradient(1px 1px at 200px 380px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1.5px 1.5px at 90px 520px, rgba(143,200,245,0.3), transparent),
+      radial-gradient(1px 1px at 340px 640px, rgba(255,255,255,0.22), transparent);
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
   body{
     min-height:100vh;
-    background:#C7D2DC;
+    background:#000;
     display:flex;
     justify-content:center;
     align-items:flex-start;
@@ -58,7 +60,7 @@
     flex-shrink:0;
     background:var(--starfield), var(--noir);
     border-radius:var(--r-panel) var(--r-panel) 0 0;
-    box-shadow:0 0 90px rgba(27,118,172,0.12), 0 30px 80px rgba(16,32,46,0.25);
+    box-shadow:0 0 90px rgba(46,155,234,0.1), 0 30px 80px rgba(0,0,0,0.6);
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -98,7 +100,7 @@
   .greeting-date{ font-size:12px; color:var(--muted-2); }
   .summary-btn{
     width:32px; height:32px; border-radius:50%; flex-shrink:0;
-    background:rgba(27,118,172,0.08); border:1px solid rgba(27,118,172,0.25);
+    background:rgba(46,155,234,0.08); border:1px solid rgba(46,155,234,0.25);
     color:var(--neon-core); display:flex; align-items:center; justify-content:center;
     cursor:pointer;
   }
@@ -107,9 +109,9 @@
   .ring-wrap{ display:flex; justify-content:center; margin-bottom:16px; }
   .ring{
     width:180px; height:180px; border-radius:50%;
-    background:conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) 248deg, rgba(16,32,46,0.08) 248deg, rgba(16,32,46,0.08) 360deg);
+    background:conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) 248deg, rgba(255,255,255,0.05) 248deg, rgba(255,255,255,0.05) 360deg);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 0 70px rgba(27,118,172,0.5);
+    box-shadow:0 0 70px rgba(46,155,234,0.5);
     cursor:pointer;
   }
   .ring-inner{
@@ -120,7 +122,7 @@
   .ring-value{
     font-family:var(--font-display); font-weight:600; font-size:46px;
     color:var(--warm-white); line-height:1;
-    text-shadow:0 0 30px rgba(14,92,138,0.5);
+    text-shadow:0 0 30px rgba(143,200,245,0.5);
   }
   .ring-label{ font-size:11px; color:var(--neon-core); margin-top:4px; }
 
@@ -130,8 +132,8 @@
   }
   .readiness-decode b{ color:var(--warm-white); font-weight:600; }
 
-  .readiness-breakdown{ background:rgba(16,32,46,0.04); border:1px solid rgba(27,118,172,0.15); border-radius:16px; padding:14px 16px; margin-bottom:20px; }
-  .rb-row{ display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid rgba(16,32,46,0.08); font-size:12.5px; }
+  .readiness-breakdown{ background:rgba(255,255,255,0.03); border:1px solid rgba(46,155,234,0.15); border-radius:16px; padding:14px 16px; margin-bottom:20px; }
+  .rb-row{ display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:12.5px; }
   .rb-row:last-child{ border-bottom:none; padding-bottom:0; }
   .rb-row span{ color:var(--muted); }
   .rb-row span i{ font-style:normal; color:var(--muted-2); font-size:10.5px; margin-left:4px; }
@@ -140,7 +142,7 @@
 
   .low-readiness-banner{
     display:flex; gap:12px; align-items:flex-start;
-    background:rgba(122,24,48,0.08); border:1px solid rgba(122,24,48,0.35);
+    background:rgba(203,161,53,0.08); border:1px solid rgba(203,161,53,0.35);
     border-radius:18px; padding:14px 16px; margin-bottom:20px;
   }
   .low-readiness-banner svg{ width:20px; height:20px; color:var(--gold-light); flex-shrink:0; margin-top:1px; }
@@ -154,31 +156,31 @@
   .readiness-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
   .readiness-num{ font-size:11px; color:var(--muted-2); font-weight:700; font-variant-numeric:tabular-nums; }
   .readiness-col.today .readiness-num{ color:var(--neon-core); }
-  .readiness-bar{ width:9px; height:38px; border-radius:2px; background:rgba(27,118,172,0.35); }
-  .readiness-bar.today{ background:var(--neon-core); box-shadow:0 0 10px rgba(14,92,138,0.7); }
+  .readiness-bar{ width:9px; height:38px; border-radius:2px; background:rgba(46,155,234,0.35); }
+  .readiness-bar.today{ background:var(--neon-core); box-shadow:0 0 10px rgba(143,200,245,0.7); }
   .readiness-day{ font-size:8px; color:var(--muted-2); }
 
   .radar-legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin-top:12px; }
   .radar-legend-item{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted-2); }
-  .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(14,92,138,0.7); flex-shrink:0; }
+  .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(143,200,245,0.7); flex-shrink:0; }
   .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
 
   .focus-label{ font-size:11px; color:var(--muted-2); text-align:center; margin-top:18px; margin-bottom:10px; line-height:1.4; }
   .focus-row{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
   .focus-chip{
     font-size:12px; font-weight:600; padding:7px 14px; border-radius:var(--r-pill);
-    background:rgba(16,32,46,0.04); border:1px solid rgba(16,32,46,0.12);
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);
     color:var(--muted-2); cursor:pointer;
   }
-  .focus-chip.active{ background:rgba(122,24,48,0.15); border-color:rgba(122,24,48,0.5); color:var(--gold-light); }
+  .focus-chip.active{ background:rgba(203,161,53,0.15); border-color:rgba(203,161,53,0.5); color:var(--gold-light); }
 
   .checkin-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(122,24,48,0.3);
+    border:1px solid rgba(203,161,53,0.3);
     border-radius:20px;
     padding:16px 18px 14px;
     margin-bottom:20px;
-    box-shadow:0 0 30px rgba(122,24,48,0.12);
+    box-shadow:0 0 30px rgba(203,161,53,0.12);
   }
   .checkin-question{
     font-family:var(--font-display); font-size:16px; font-weight:600;
@@ -186,21 +188,21 @@
   }
   .checkin-card .slider-fill{
     background:linear-gradient(90deg, var(--gold), var(--gold-light));
-    box-shadow:0 0 20px rgba(122,24,48,0.6);
+    box-shadow:0 0 20px rgba(203,161,53,0.6);
   }
   .checkin-card .slider-thumb{
     background:radial-gradient(circle, var(--warm-white), var(--gold-light));
-    box-shadow:0 0 26px rgba(168,48,79,0.9);
+    box-shadow:0 0 26px rgba(232,206,132,0.9);
   }
   .checkin-card .slider-caption b{ color:var(--gold-light); }
 
 
   .radar-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.3);
+    border:1px solid rgba(46,155,234,0.3);
     border-radius:24px;
     padding:20px 16px 16px;
-    box-shadow:0 0 40px rgba(27,118,172,0.22);
+    box-shadow:0 0 40px rgba(46,155,234,0.22);
     margin-bottom:20px;
   }
   .radar-card .section-label{ text-align:center; margin-bottom:4px; }
@@ -210,20 +212,20 @@
     display:grid; grid-template-columns:1fr 1fr; gap:12px;
   }
   .stat-card{
-    background:rgba(16,32,46,0.04);
-    border:1px solid rgba(27,118,172,0.18);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(46,155,234,0.18);
     border-radius:16px;
     padding:14px 16px;
     cursor:pointer;
     transition:border-color .15s, background .15s;
   }
-  .stat-card:active{ background:rgba(16,32,46,0.08); border-color:rgba(27,118,172,0.4); }
+  .stat-card:active{ background:rgba(255,255,255,0.06); border-color:rgba(46,155,234,0.4); }
   .stat-card-top{ display:flex; align-items:center; gap:6px; color:var(--muted-2); margin-bottom:10px; }
   .stat-card-top svg{ width:14px; height:14px; }
   .stat-card-top span{ font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
   .stat-card-value{
     font-family:var(--font-display); font-weight:600; font-size:22px;
-    color:var(--warm-white); text-shadow:0 0 20px rgba(27,118,172,0.35);
+    color:var(--warm-white); text-shadow:0 0 20px rgba(46,155,234,0.35);
   }
   .stat-card-sub{ font-size:11px; color:var(--muted); margin-top:4px; }
 
@@ -245,24 +247,24 @@
     width:100%;
     background:transparent;
     color:var(--neon-core);
-    border:1px solid rgba(14,92,138,0.4);
+    border:1px solid rgba(143,200,245,0.4);
     border-radius:var(--r-pill);
     padding:16px 0;
     font-family:var(--font-text);
     font-weight:700;
     font-size:15px;
-    box-shadow:0 0 20px rgba(14,92,138,0.2);
+    box-shadow:0 0 20px rgba(143,200,245,0.2);
     cursor:pointer;
   }
 
   .toast{
     position:absolute; left:20px; right:20px; bottom:96px;
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.4);
+    border:1px solid rgba(46,155,234,0.4);
     border-radius:14px;
     padding:12px 16px;
     font-size:13px; color:var(--warm-white);
-    box-shadow:0 0 30px rgba(27,118,172,0.35);
+    box-shadow:0 0 30px rgba(46,155,234,0.35);
     text-align:center;
     opacity:0; transform:translateY(8px);
     transition:opacity .25s, transform .25s;
@@ -276,24 +278,24 @@
   .weight-row{ display:flex; align-items:center; gap:22px; margin-bottom:18px; }
   .stepper-btn{
     width:44px; height:44px; border-radius:50%;
-    background:rgba(16,32,46,0.05);
-    border:1px solid rgba(27,118,172,0.25);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(46,155,234,0.25);
     display:flex; align-items:center; justify-content:center;
     font-family:var(--font-text); font-size:20px; color:var(--warm-white);
     cursor:pointer; user-select:none;
   }
-  .stepper-btn:active{ background:rgba(27,118,172,0.15); }
+  .stepper-btn:active{ background:rgba(46,155,234,0.15); }
   .weight-figure{ text-align:center; min-width:150px; }
   .weight-value{
     font-family:var(--font-display); font-weight:600; font-size:64px;
     color:var(--warm-white); line-height:1;
-    text-shadow:0 0 55px rgba(27,118,172,0.7);
+    text-shadow:0 0 55px rgba(46,155,234,0.7);
   }
   .weight-unit{ font-size:13px; color:var(--neon-core); margin-top:6px; }
 
   .weight-graph{ display:flex; align-items:flex-end; gap:7px; height:40px; margin:22px 0 10px; }
-  .weight-bar{ width:9px; border-radius:2px; background:rgba(27,118,172,0.4); }
-  .weight-bar.current{ background:var(--neon-core); box-shadow:0 0 12px rgba(14,92,138,0.75); }
+  .weight-bar{ width:9px; border-radius:2px; background:rgba(46,155,234,0.4); }
+  .weight-bar.current{ background:var(--neon-core); box-shadow:0 0 12px rgba(143,200,245,0.75); }
   .weight-labels{ display:flex; gap:7px; margin-bottom:18px; }
   .weight-labels span{ width:9px; font-size:8px; color:var(--muted-2); text-align:center; }
 
@@ -301,7 +303,7 @@
   .weight-delta b{ color:var(--neon-core); font-weight:700; }
 
   .sleep-time-row{ display:flex; gap:10px; margin:16px 0 10px; width:100%; }
-  .sleep-time-field{ flex:1; background:rgba(16,32,46,0.04); border:1px solid rgba(122,24,48,0.3); border-radius:14px; padding:8px 10px; text-align:center; }
+  .sleep-time-field{ flex:1; background:rgba(255,255,255,0.03); border:1px solid rgba(203,161,53,0.3); border-radius:14px; padding:8px 10px; text-align:center; }
   .sleep-time-field span{ display:block; font-size:10px; color:var(--muted-2); margin-bottom:4px; }
   .sleep-time-input{
     width:100%; background:none; border:none; text-align:center;
@@ -324,14 +326,14 @@
   /* ---------- Питание ---------- */
   .dropzone{
     width:100%; border-radius:20px;
-    background:repeating-linear-gradient(135deg, rgba(16,32,46,0.05) 0px, rgba(16,32,46,0.05) 12px, rgba(16,32,46,0.02) 12px, rgba(16,32,46,0.02) 24px);
-    border:1px dashed rgba(27,118,172,0.35);
+    background:repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 12px, rgba(255,255,255,0.01) 12px, rgba(255,255,255,0.01) 24px);
+    border:1px dashed rgba(46,155,234,0.35);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
     padding:26px 20px;
     margin-bottom:18px;
     cursor:pointer;
   }
-  .dropzone svg{ width:30px; height:30px; color:var(--neon-core); filter:drop-shadow(0 0 8px rgba(14,92,138,0.6)); }
+  .dropzone svg{ width:30px; height:30px; color:var(--neon-core); filter:drop-shadow(0 0 8px rgba(143,200,245,0.6)); }
   .dropzone-title{ font-weight:700; font-size:15px; color:var(--warm-white); }
   .dropzone-sub{ font-size:11px; color:var(--muted); font-family:'SFMono-Regular', Consolas, monospace; }
 
@@ -339,19 +341,19 @@
   .recognized.show{ display:block; }
   .macro-chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
   .macro-chip{
-    background:rgba(16,32,46,0.05);
-    border:1px solid rgba(27,118,172,0.25);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(46,155,234,0.25);
     border-radius:var(--r-pill);
     padding:8px 14px;
     font-size:12px; color:var(--warm-white);
   }
   .kcal-chip{
-    background:linear-gradient(135deg, rgba(122,24,48,0.28), rgba(122,24,48,0.08));
-    border:1px solid rgba(122,24,48,0.6);
+    background:linear-gradient(135deg, rgba(203,161,53,0.28), rgba(203,161,53,0.08));
+    border:1px solid rgba(203,161,53,0.6);
     border-radius:var(--r-pill);
     padding:8px 14px;
     font-size:12px; font-weight:700; color:var(--gold-light);
-    box-shadow:0 0 26px rgba(122,24,48,0.45);
+    box-shadow:0 0 26px rgba(203,161,53,0.45);
   }
   .agent-note{ font-size:12px; color:var(--muted-2); line-height:1.6; margin-bottom:14px; }
   .split-hint{ font-size:12px; color:var(--muted-2); line-height:1.5; margin:-8px 0 18px; }
@@ -369,26 +371,26 @@
     margin:22px 0 16px;
   }
   .divider-label::before, .divider-label::after{
-    content:""; flex:1; height:1px; background:rgba(16,32,46,0.1);
+    content:""; flex:1; height:1px; background:rgba(255,255,255,0.08);
   }
 
   .macro-form-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.3);
+    border:1px solid rgba(46,155,234,0.3);
     border-radius:22px;
     padding:20px;
-    box-shadow:0 0 36px rgba(27,118,172,0.2);
+    box-shadow:0 0 36px rgba(46,155,234,0.2);
   }
   .macro-row{ margin-bottom:16px; }
   .macro-row:last-of-type{ margin-bottom:20px; }
   .macro-row-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
   .macro-row-top .name{ font-size:13px; font-weight:600; color:var(--warm-white); }
   .macro-row-top .val{ font-size:12px; color:var(--muted); }
-  .macro-bar-track{ height:7px; border-radius:var(--r-pill); background:rgba(16,32,46,0.1); overflow:hidden; margin-bottom:10px; }
-  .macro-bar-fill{ height:100%; border-radius:var(--r-pill); background:var(--neon); box-shadow:0 0 14px rgba(27,118,172,0.6); transition:width .3s; }
+  .macro-bar-track{ height:7px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:10px; }
+  .macro-bar-fill{ height:100%; border-radius:var(--r-pill); background:var(--neon); box-shadow:0 0 14px rgba(46,155,234,0.6); transition:width .3s; }
   .macro-input-row{ display:flex; gap:8px; }
   .macro-input{
-    flex:1; background:var(--noir-2); border:1px solid rgba(27,118,172,0.25);
+    flex:1; background:var(--noir-2); border:1px solid rgba(46,155,234,0.25);
     border-radius:12px; padding:10px 12px; font-family:var(--font-text); font-size:14px;
     color:var(--warm-white); outline:none;
   }
@@ -398,9 +400,9 @@
   .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
   .type-chip{
     display:flex; align-items:center; gap:7px;
-    background:rgba(16,32,46,0.04);
-    color:#3E7CA0;
-    border:1px solid rgba(27,118,172,0.2);
+    background:rgba(255,255,255,0.03);
+    color:#8FE0F5;
+    border:1px solid rgba(46,155,234,0.2);
     box-shadow:none;
     border-radius:var(--r-pill);
     padding:9px 15px;
@@ -412,12 +414,12 @@
     background:var(--neon);
     color:var(--noir);
     border:1px solid var(--neon);
-    box-shadow:0 0 20px rgba(27,118,172,0.6);
+    box-shadow:0 0 20px rgba(46,155,234,0.6);
   }
 
   .input-field{
     width:100%; background:var(--noir-2);
-    border:1px solid rgba(27,118,172,0.25);
+    border:1px solid rgba(46,155,234,0.25);
     border-radius:14px; padding:14px 16px;
     font-family:var(--font-display); font-size:20px; color:var(--warm-white);
     outline:none; margin-bottom:22px;
@@ -425,18 +427,18 @@
 
   .slider-track{
     position:relative; height:6px; border-radius:3px;
-    background:rgba(16,32,46,0.1);
+    background:rgba(255,255,255,0.08);
     margin-bottom:10px;
   }
   .slider-fill{
     position:absolute; left:0; top:0; height:6px; border-radius:3px;
     background:linear-gradient(90deg, var(--indigo-deep), var(--neon-core));
-    box-shadow:0 0 20px rgba(27,118,172,0.7);
+    box-shadow:0 0 20px rgba(46,155,234,0.7);
   }
   .slider-thumb{
     position:absolute; top:-7px; width:20px; height:20px; border-radius:50%;
     background:radial-gradient(circle, var(--warm-white), var(--neon-core));
-    box-shadow:0 0 26px rgba(14,92,138,0.95);
+    box-shadow:0 0 26px rgba(143,200,245,0.95);
     cursor:grab; margin-left:-10px;
   }
   .slider-caption{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:20px; }
@@ -449,13 +451,13 @@
 
   .segment{ display:flex; gap:8px; margin-bottom:14px; }
   .segment-btn{
-    background:rgba(16,32,46,0.04); color:#3E7CA0;
-    border:1px solid rgba(27,118,172,0.2);
+    background:rgba(255,255,255,0.03); color:#8FE0F5;
+    border:1px solid rgba(46,155,234,0.2);
     border-radius:var(--r-pill); padding:7px 16px;
     font-family:var(--font-text); font-size:12px; font-weight:700;
     cursor:pointer;
   }
-  .segment-btn.active{ background:var(--neon); color:var(--noir); border-color:var(--neon); box-shadow:0 0 16px rgba(27,118,172,0.5); }
+  .segment-btn.active{ background:var(--neon); color:var(--noir); border-color:var(--neon); box-shadow:0 0 16px rgba(46,155,234,0.5); }
 
   .summary-empty{ font-size:12.5px; line-height:1.6; color:var(--muted); margin-top:12px; }
   .experiment-hypothesis{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--warm-white); margin-bottom:14px; line-height:1.4; }
@@ -463,19 +465,19 @@
   .raw-table-wrap{ overflow-x:auto; margin-top:12px; }
   .raw-table{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
   .raw-table th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted-2); padding:0 10px 8px 0; white-space:nowrap; }
-  .raw-table td{ font-size:12.5px; color:var(--warm-white); padding:7px 10px 7px 0; border-top:1px solid rgba(16,32,46,0.08); white-space:nowrap; }
+  .raw-table td{ font-size:12.5px; color:var(--warm-white); padding:7px 10px 7px 0; border-top:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
   .raw-table tr:first-child td{ border-top:none; }
 
   .activity-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
   .activity-item{
     display:flex; align-items:center; gap:12px;
-    background:rgba(16,32,46,0.04);
-    border:1px solid rgba(16,32,46,0.1);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
     border-radius:14px; padding:12px 14px;
   }
   .activity-item .ic{
     width:34px; height:34px; border-radius:50%;
-    background:rgba(27,118,172,0.12); color:var(--neon-core);
+    background:rgba(46,155,234,0.12); color:var(--neon-core);
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
   .activity-item .ic svg{ width:17px; height:17px; }
@@ -490,37 +492,37 @@
     transition:background .15s, color .15s;
   }
   .activity-item .del:active{ color:var(--warm-white); }
-  .activity-item .del.confirm{ background:rgba(255,90,90,0.18); color:#C0392B; }
+  .activity-item .del.confirm{ background:rgba(255,90,90,0.18); color:#ff8a80; }
   .activity-item .del svg{ width:14px; height:14px; }
 
   /* ---------- Инсайты / рекомендации ---------- */
   .insight-card{
-    background:linear-gradient(160deg, rgba(122,24,48,0.1), rgba(10,18,28,0.4));
-    border:1px solid rgba(122,24,48,0.35);
+    background:linear-gradient(160deg, rgba(203,161,53,0.1), rgba(10,18,28,0.4));
+    border:1px solid rgba(203,161,53,0.35);
     border-radius:22px;
     padding:18px 18px 16px;
     margin-bottom:16px;
-    box-shadow:0 0 30px rgba(122,24,48,0.14);
+    box-shadow:0 0 30px rgba(203,161,53,0.14);
   }
   .insight-card .section-label{ color:var(--gold-light); }
   .insight-text{ font-size:13px; line-height:1.6; color:var(--warm-white); }
   .insight-text b{ color:var(--gold-light); font-weight:700; }
-  .insight-text + .insight-text{ margin-top:14px; padding-top:14px; border-top:1px solid rgba(122,24,48,0.15); }
+  .insight-text + .insight-text{ margin-top:14px; padding-top:14px; border-top:1px solid rgba(203,161,53,0.15); }
   .insight-caveat{ font-size:11px; line-height:1.5; color:var(--muted-2); margin-top:10px; }
 
   .rec-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.3);
+    border:1px solid rgba(46,155,234,0.3);
     border-radius:22px;
     padding:18px;
     margin-bottom:20px;
-    box-shadow:0 0 30px rgba(27,118,172,0.15);
+    box-shadow:0 0 30px rgba(46,155,234,0.15);
   }
-  .rec-item{ display:flex; gap:12px; padding:10px 0; border-bottom:1px solid rgba(16,32,46,0.08); }
+  .rec-item{ display:flex; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
   .rec-item:last-child{ border-bottom:none; padding-bottom:0; }
   .rec-item .ic{
     width:30px; height:30px; border-radius:50%; flex-shrink:0;
-    background:rgba(27,118,172,0.12); color:var(--neon-core);
+    background:rgba(46,155,234,0.12); color:var(--neon-core);
     display:flex; align-items:center; justify-content:center;
   }
   .rec-item .ic svg{ width:15px; height:15px; }
@@ -530,7 +532,7 @@
   /* ---------- Ритуалы дня ---------- */
   .ritual-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.25);
+    border:1px solid rgba(46,155,234,0.25);
     border-radius:22px;
     padding:16px 18px;
     margin-bottom:16px;
@@ -545,12 +547,12 @@
   }
   .ritual-check{
     width:22px; height:22px; border-radius:50%; flex-shrink:0;
-    border:1.5px solid rgba(27,118,172,0.4);
+    border:1px solid rgba(46,155,234,0.4);
     display:flex; align-items:center; justify-content:center;
     transition:background .15s, border-color .15s;
   }
   .ritual-check svg{ width:12px; height:12px; opacity:0; transition:opacity .15s; }
-  .ritual-item.done .ritual-check{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 14px rgba(122,24,48,0.6); }
+  .ritual-item.done .ritual-check{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 14px rgba(203,161,53,0.6); }
   .ritual-item.done .ritual-check svg{ opacity:1; stroke:var(--noir); }
   .ritual-item .lbl{ font-size:13px; color:var(--warm-white); transition:color .15s, opacity .15s; }
   .ritual-item.done .lbl{ color:var(--muted); opacity:0.7; }
@@ -558,7 +560,7 @@
   /* ---------- Вода ---------- */
   .water-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.25);
+    border:1px solid rgba(46,155,234,0.25);
     border-radius:22px;
     padding:16px 18px;
     margin-bottom:20px;
@@ -568,21 +570,21 @@
   .water-row{ display:flex; gap:7px; justify-content:space-between; }
   .electrolytes-toggle{
     display:flex; align-items:center; gap:7px; margin-top:12px; padding:8px 12px;
-    border-radius:var(--r-pill); border:1px solid rgba(16,32,46,0.12);
+    border-radius:var(--r-pill); border:1px solid rgba(255,255,255,0.1);
     color:var(--muted-2); font-size:12px; cursor:pointer; width:fit-content;
   }
   .electrolytes-toggle svg{ width:15px; height:15px; }
-  .electrolytes-toggle.on{ border-color:rgba(122,24,48,0.4); background:rgba(122,24,48,0.1); color:var(--gold-light); }
+  .electrolytes-toggle.on{ border-color:rgba(203,161,53,0.4); background:rgba(203,161,53,0.1); color:var(--gold-light); }
   .water-glass{
     flex:1; height:34px; border-radius:8px 8px 4px 4px;
-    border:1.5px solid rgba(27,118,172,0.3);
-    background:rgba(16,32,46,0.03);
+    border:1px solid rgba(46,155,234,0.3);
+    background:rgba(255,255,255,0.02);
     position:relative; overflow:hidden; cursor:pointer;
   }
   .water-glass-fill{
     position:absolute; left:0; right:0; bottom:0; height:0%;
     background:linear-gradient(180deg, var(--neon-core), var(--neon));
-    box-shadow:0 0 10px rgba(27,118,172,0.6);
+    box-shadow:0 0 10px rgba(46,155,234,0.6);
     transition:height .2s;
   }
   .water-glass.filled .water-glass-fill{ height:100%; }
@@ -591,7 +593,7 @@
   .tabbar{
     display:flex; flex-shrink:0;
     background:var(--panel);
-    border-top:1px solid rgba(16,32,46,0.09);
+    border-top:1px solid rgba(255,255,255,0.07);
     padding:10px 6px 14px;
   }
   .tab-btn{
@@ -603,15 +605,15 @@
   }
   .tab-btn svg{ width:22px; height:22px; }
   .tab-btn.active{ color:var(--gold-light); }
-  .tab-btn.active svg{ filter:drop-shadow(0 0 6px rgba(168,48,79,0.85)); }
+  .tab-btn.active svg{ filter:drop-shadow(0 0 6px rgba(232,206,132,0.85)); }
 
   .toggle{
     width:46px; height:26px; border-radius:var(--r-pill);
     position:relative; cursor:pointer; transition:background .2s;
-    background:rgba(16,32,46,0.15);
+    background:rgba(255,255,255,0.12);
     flex-shrink:0;
   }
-  .toggle.on{ background:var(--neon); box-shadow:0 0 16px rgba(27,118,172,0.6); }
+  .toggle.on{ background:var(--neon); box-shadow:0 0 16px rgba(46,155,234,0.6); }
   .toggle-knob{
     position:absolute; top:2px; left:2px; width:22px; height:22px; border-radius:50%;
     background:var(--warm-white); transition:left .2s;
@@ -620,7 +622,7 @@
 
   .settings-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(27,118,172,0.4);
+    border:1px solid rgba(46,155,234,0.4);
     border-radius:24px; padding:22px;
     display:flex; flex-direction:column; gap:18px;
     margin-top:20px;
@@ -633,16 +635,16 @@
   .lab-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
   .lab-item{
     display:flex; align-items:center; gap:12px;
-    background:rgba(16,32,46,0.04);
-    border:1px solid rgba(16,32,46,0.1);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
     border-radius:14px; padding:12px 14px;
   }
-  .lab-item.warn{ border-color:rgba(122,24,48,0.4); background:rgba(122,24,48,0.06); }
-  .lab-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; background:var(--neon-core); box-shadow:0 0 8px rgba(14,92,138,0.8); }
+  .lab-item.warn{ border-color:rgba(203,161,53,0.4); background:rgba(203,161,53,0.06); }
+  .lab-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; background:var(--neon-core); box-shadow:0 0 8px rgba(143,200,245,0.8); }
   .lab-item.warn .lab-dot{
     width:18px; height:18px; border-radius:0; background:none;
     color:var(--gold-light); box-shadow:none;
-    filter:drop-shadow(0 0 6px rgba(122,24,48,0.8));
+    filter:drop-shadow(0 0 6px rgba(203,161,53,0.8));
   }
   .lab-item.warn .lab-dot svg{ width:100%; height:100%; }
   .lab-info{ flex:1; }
@@ -655,7 +657,7 @@
 
   .lab-retest-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(122,24,48,0.35);
+    border:1px solid rgba(203,161,53,0.35);
     border-radius:20px; padding:16px 18px;
     display:flex; align-items:center; gap:12px;
     margin-bottom:6px;
@@ -676,10 +678,10 @@
         <div class="greeting-date">Вторник, 21 июля</div>
         <div style="display:flex; gap:8px;">
           <div class="summary-btn" id="experimentBtn" data-goto="experiment" title="Эксперимент">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/></svg>
           </div>
           <div class="summary-btn" id="summaryBtn" data-goto="summary" title="Сводка по дням/неделям/месяцам">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
           </div>
         </div>
       </div>
@@ -710,7 +712,7 @@
       </div>
 
       <div class="low-readiness-banner" id="lowReadinessBanner" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
         <div class="lrb-body">
           <div class="lrb-text">Готовность низкая — сегодня стоит облегчить нагрузку</div>
           <div class="lrb-btn" id="lrbSuggestBtn">Предложить лёгкую тренировку →</div>
@@ -728,7 +730,7 @@
       <div class="stat-grid">
         <div class="stat-card" data-goto="activity">
           <div class="stat-card-top">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg>
             <span>Активность</span>
           </div>
           <div class="stat-card-value" id="statActivityVal">420 ккал</div>
@@ -737,7 +739,7 @@
 
         <div class="stat-card" data-goto="nutrition">
           <div class="stat-card-top">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg>
             <span>Питание</span>
           </div>
           <div class="stat-card-value" id="statNutritionVal">1840 <span style="font-size:13px;color:var(--muted)">/ 2200</span></div>
@@ -746,7 +748,7 @@
 
         <div class="stat-card" data-goto="weight">
           <div class="stat-card-top">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="15" width="16" height="5" rx="2"/><circle cx="12" cy="9" r="5"/><line x1="12" y1="9" x2="14.2" y2="6.2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="15" width="16" height="5" rx="2"/><circle cx="12" cy="9" r="5"/><line x1="12" y1="9" x2="14.2" y2="6.2"/></svg>
             <span>Тело</span>
           </div>
           <div class="stat-card-value" id="statWeightVal">62.4 кг</div>
@@ -755,7 +757,7 @@
 
         <div class="stat-card" data-goto="sleep">
           <div class="stat-card-top">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg>
             <span>Сон</span>
           </div>
           <div class="stat-card-value" id="statSleepVal">7.4 ч</div>
@@ -784,7 +786,7 @@
         </div>
         <div class="water-row" id="waterRow"></div>
         <div class="electrolytes-toggle" id="electrolytesToggle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 12a7 7 0 1 1-14 0z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 12a7 7 0 1 1-14 0z"/></svg>
           <span id="electrolytesLabel">Добавить электролиты</span>
         </div>
       </div>
@@ -800,15 +802,15 @@
       <div class="rec-card" id="recCard">
         <div class="section-label">Рекомендации для тебя</div>
         <div class="rec-item">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg></div>
           <div class="txt" id="recSleepTxt">Сегодня лечь до 23:00 — <span>нагрузка недели выше обычной, телу нужно время на восстановление</span></div>
         </div>
         <div class="rec-item">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg></div>
           <div class="txt" id="recNutritionTxt">До конца дня ещё 360 ккал и 42г белка — <span>оставь их на ужин, а не перекусы</span></div>
         </div>
         <div class="rec-item">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg></div>
           <div class="txt" id="recReadinessTxt">Готовность высокая (92) — <span>хороший день для силовой, тело восстановилось</span></div>
         </div>
       </div>
@@ -868,7 +870,7 @@
       </div>
 
       <div class="dropzone" id="plateBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l2-3h12l2 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="14" r="3.2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l2-3h12l2 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="14" r="3.2"/></svg>
         <div class="dropzone-title">Прислать тарелку</div>
         <div class="dropzone-sub">фото еды · агент посчитает калории</div>
       </div>
@@ -932,16 +934,16 @@
 
       <div class="chip-row" id="typeChips">
         <button class="type-chip" data-type="run" data-met="9.8">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20l3-6 2 2M9 14l3-9 3 3-2 5 4 5M12 5l2-2 2 2"/></svg>Бег
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 20l3-6 2 2M9 14l3-9 3 3-2 5 4 5M12 5l2-2 2 2"/></svg>Бег
         </button>
         <button class="type-chip active" data-type="strength" data-met="6">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="4.5" cy="12" r="2.3"/><circle cx="19.5" cy="12" r="2.3"/><line x1="6.8" y1="12" x2="17.2" y2="12"/></svg>Силовая
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4.5" cy="12" r="2.3"/><circle cx="19.5" cy="12" r="2.3"/><line x1="6.8" y1="12" x2="17.2" y2="12"/></svg>Силовая
         </button>
         <button class="type-chip" data-type="walk" data-met="3.5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="9" cy="9" rx="2" ry="3" transform="rotate(-15 9 9)"/><ellipse cx="16" cy="16" rx="2" ry="3" transform="rotate(15 16 16)"/></svg>Ходьба
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><ellipse cx="9" cy="9" rx="2" ry="3" transform="rotate(-15 9 9)"/><ellipse cx="16" cy="16" rx="2" ry="3" transform="rotate(15 16 16)"/></svg>Ходьба
         </button>
         <button class="type-chip" data-type="yoga" data-met="2.5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="6" r="2"/><path d="M4 18c2-5 6-6 8-6s6 1 8 6"/></svg>Йога
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="6" r="2"/><path d="M4 18c2-5 6-6 8-6s6 1 8 6"/></svg>Йога
         </button>
       </div>
 
@@ -1000,7 +1002,7 @@
         </div>
         <div class="sleep-consistency" id="sleepConsistency"></div>
         <div class="low-readiness-banner" id="bedtimePatternNudge" style="display:none; margin-bottom:14px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
           <div class="lrb-body">
             <div class="lrb-text">Отбой позже обычного 3 дня подряд — стоит обратить внимание на режим</div>
           </div>
@@ -1024,7 +1026,7 @@
       <div class="lab-updated">Последняя загрузка — 14 июля · <span style="color:var(--neon-core)">6 показателей</span></div>
 
       <div class="dropzone" id="labsBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l2-3h12l2 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="14" r="3.2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l2-3h12l2 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="14" r="3.2"/></svg>
         <div class="dropzone-title">Загрузить результаты</div>
         <div class="dropzone-sub">фото или PDF · агент разнесёт по показателям</div>
       </div>
@@ -1035,7 +1037,7 @@
       <div class="lab-list" id="labList"></div>
 
       <div class="lab-retest-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
         <div class="txt">Витамин D и ферритин на нижней границе — повторный анализ рекомендован <b>через 6-8 недель</b>. Остальные показатели можно пересдать по обычному графику раз в полгода.</div>
       </div>
     </div>
@@ -1145,12 +1147,12 @@
 
 <script>
 const TAB_ICONS = {
-  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>',
-  weight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="15" width="16" height="5" rx="2"/><circle cx="12" cy="9" r="5"/><line x1="12" y1="9" x2="14.2" y2="6.2"/></svg>',
-  nutrition: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg>',
-  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg>',
-  sleep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg>',
-  labs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/><path d="M8 15h8"/></svg>'
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>',
+  weight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="15" width="16" height="5" rx="2"/><circle cx="12" cy="9" r="5"/><line x1="12" y1="9" x2="14.2" y2="6.2"/></svg>',
+  nutrition: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg>',
+  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg>',
+  sleep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg>',
+  labs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/><path d="M8 15h8"/></svg>'
 };
 const TAB_LABELS = { home:'Сегодня', weight:'Вес', nutrition:'Питание', activity:'Актив.', sleep:'Сон', labs:'Анализы' };
 const TAB_ORDER = ['home','weight','nutrition','activity','sleep','labs'];
@@ -1261,7 +1263,7 @@ function updateReadinessRing(){
   const deg = val/100*360;
   document.getElementById('readinessValue').textContent = val;
   document.getElementById('readinessRing').style.background =
-    `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(16,32,46,0.08) ${deg}deg, rgba(16,32,46,0.08) 360deg)`;
+    `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
   document.getElementById('rbSleep').textContent = sleepAxis;
   document.getElementById('rbSelf').textContent = `${feelPct} (${feelLabelFor(feelPct)})`;
@@ -1337,23 +1339,23 @@ updateReadinessRing();
   let svgContent = '';
   [0.33,0.66,1].forEach(f=>{
     const pts = axes.map((_,i)=> pt(i, R*f).join(',')).join(' ');
-    svgContent += `<polygon points="${pts}" fill="none" stroke="rgba(16,32,46,0.1)" stroke-width="1"/>`;
+    svgContent += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
   });
   axes.forEach((_,i)=>{
     const [x,y] = pt(i, R);
-    svgContent += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(16,32,46,0.1)" stroke-width="1"/>`;
+    svgContent += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
   });
 
   const dataPts = axes.map((a,i)=> pt(i, R*a.value/100).join(',')).join(' ');
-  svgContent += `<polygon points="${dataPts}" fill="rgba(27,118,172,0.22)" stroke="#1B76AC" stroke-width="2" style="filter:drop-shadow(0 0 8px rgba(27,118,172,0.6))"/>`;
+  svgContent += `<polygon points="${dataPts}" fill="rgba(46,155,234,0.22)" stroke="#2E9BEA" stroke-width="1.6" style="filter:drop-shadow(0 0 8px rgba(46,155,234,0.6))"/>`;
   axes.forEach((a,i)=>{
     const [x,y] = pt(i, R*a.value/100);
-    svgContent += `<circle cx="${x}" cy="${y}" r="3.5" fill="#0E5C8A" style="filter:drop-shadow(0 0 6px rgba(14,92,138,0.9))"/>`;
+    svgContent += `<circle cx="${x}" cy="${y}" r="3.5" fill="#8FC8F5" style="filter:drop-shadow(0 0 6px rgba(143,200,245,0.9))"/>`;
   });
 
   axes.forEach((a,i)=>{
     const [x,y] = pt(i, R+22);
-    svgContent += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="700" letter-spacing="0.03em" fill="#5A6B80">${a.label.toUpperCase()}</text>`;
+    svgContent += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="700" letter-spacing="0.03em" fill="#8996A8">${a.label.toUpperCase()}</text>`;
   });
 
   svg.innerHTML = svgContent;
@@ -1606,7 +1608,7 @@ function renderFoodGroups(){
   const list = document.getElementById('foodGroupList');
   list.innerHTML = foodGroups.map((g,i) => `
     <div class="ritual-item ${g.done?'done':''}" data-i="${i}">
-      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
+      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
       <div class="lbl">${g.label}</div>
     </div>`).join('');
   document.getElementById('foodGroupProgress').textContent = `${foodGroups.filter(g=>g.done).length} / ${foodGroups.length}`;
@@ -1644,10 +1646,10 @@ const activityData = {
 
 function activityIcon(type){
   return {
-    run: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20l3-6 2 2M9 14l3-9 3 3-2 5 4 5M12 5l2-2 2 2"/></svg>',
-    strength: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="4.5" cy="12" r="2.3"/><circle cx="19.5" cy="12" r="2.3"/><line x1="6.8" y1="12" x2="17.2" y2="12"/></svg>',
-    walk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="9" cy="9" rx="2" ry="3" transform="rotate(-15 9 9)"/><ellipse cx="16" cy="16" rx="2" ry="3" transform="rotate(15 16 16)"/></svg>',
-    yoga: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="6" r="2"/><path d="M4 18c2-5 6-6 8-6s6 1 8 6"/></svg>'
+    run: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 20l3-6 2 2M9 14l3-9 3 3-2 5 4 5M12 5l2-2 2 2"/></svg>',
+    strength: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="4.5" cy="12" r="2.3"/><circle cx="19.5" cy="12" r="2.3"/><line x1="6.8" y1="12" x2="17.2" y2="12"/></svg>',
+    walk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><ellipse cx="9" cy="9" rx="2" ry="3" transform="rotate(-15 9 9)"/><ellipse cx="16" cy="16" rx="2" ry="3" transform="rotate(15 16 16)"/></svg>',
+    yoga: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="6" r="2"/><path d="M4 18c2-5 6-6 8-6s6 1 8 6"/></svg>'
   }[type];
 }
 
@@ -1658,7 +1660,7 @@ function renderActivityList(range){
       <div class="ic">${activityIcon(item.icon)}</div>
       <div class="info"><div class="t">${item.t}</div><div class="s">${item.s}</div></div>
       <div class="kcal">${item.kcal} ккал</div>
-      ${range==='today' ? `<div class="del" data-i="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></div>` : ''}
+      ${range==='today' ? `<div class="del" data-i="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></div>` : ''}
     </div>`).join('');
   if(range==='today'){
     list.querySelectorAll('.del').forEach(btn=>{
@@ -1763,7 +1765,7 @@ function renderRituals(){
   const list = document.getElementById('ritualList');
   list.innerHTML = rituals.map((r,i) => `
     <div class="ritual-item ${r.done?'done':''}" data-i="${i}">
-      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
+      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
       <div class="lbl">${r.label}</div>
     </div>`).join('');
   const doneCount = rituals.filter(r=>r.done).length;
@@ -1817,7 +1819,7 @@ const labMarkers = [
   { n:'Гемоглобин', v:128, u:'г/л', r:'норма 120–150', warn:false }
 ];
 
-const WARN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>';
+const WARN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>';
 
 function renderLabs(){
   document.getElementById('labList').innerHTML = labMarkers.map(m => `
