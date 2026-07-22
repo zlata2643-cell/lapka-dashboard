@@ -126,33 +126,19 @@
 
   .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .week-card-head .section-label{ margin-bottom:0; }
-  .week-view-toggle{ display:flex; gap:2px; background:rgba(255,255,255,0.05); border-radius:var(--r-pill); padding:2px; flex-shrink:0; }
-  .week-view-btn{ font-size:11px; padding:5px 10px; border-radius:var(--r-pill); color:var(--muted-2); cursor:pointer; white-space:nowrap; }
-  .week-view-btn.active{ background:var(--neon-core); color:var(--panel); font-weight:700; }
 
-  .weekly-goal-title{ font-family:var(--font-text); font-size:13px; font-weight:600; color:var(--warm-white); margin:0 0 8px; text-align:left; }
-  .weekly-goal-bar-track{ height:6px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:8px; }
-  .weekly-goal-bar-fill{ height:100%; border-radius:var(--r-pill); background:linear-gradient(90deg, var(--gold), var(--gold-light)); box-shadow:0 0 14px rgba(203,161,53,0.5); transition:width .3s; }
-  .weekly-goal-sub{ font-size:12px; color:var(--muted); text-align:left; margin-bottom:14px; }
-
-  .readiness-history{ display:flex; align-items:flex-end; gap:7px; height:38px; margin:0 0 8px; }
-  .readiness-bar{ width:9px; border-radius:2px; background:rgba(53,199,255,0.35); }
-  .readiness-bar.today{ background:var(--gold-light); box-shadow:0 0 10px rgba(232,206,132,0.6); }
-  .readiness-history-labels{ display:flex; gap:7px; }
-  .readiness-history-labels span{ width:9px; font-size:8px; color:var(--muted-2); text-align:center; }
+  .readiness-history{ display:flex; align-items:flex-end; gap:9px; margin:0; }
+  .readiness-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .readiness-num{ font-size:11px; color:var(--muted-2); font-weight:700; font-variant-numeric:tabular-nums; }
+  .readiness-col.today .readiness-num{ color:var(--neon-core); }
+  .readiness-bar{ width:9px; height:38px; border-radius:2px; background:rgba(53,199,255,0.35); }
+  .readiness-bar.today{ background:var(--neon-core); box-shadow:0 0 10px rgba(111,232,255,0.7); }
+  .readiness-day{ font-size:8px; color:var(--muted-2); }
 
   .radar-legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin-top:12px; }
   .radar-legend-item{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted-2); }
   .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(111,232,255,0.7); flex-shrink:0; }
   .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
-
-  .log-list{ display:flex; flex-direction:column; }
-  .log-item{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
-  .log-item:last-child{ border-bottom:none; padding-bottom:0; }
-  .log-day{ font-size:13px; color:var(--warm-white); }
-  .log-right{ display:flex; align-items:center; }
-  .log-score{ font-family:var(--font-display); font-weight:600; font-size:15px; color:var(--warm-white); }
-  .log-tag{ font-size:11px; color:var(--muted); margin-left:8px; }
 
   .checkin-card{
     background:var(--gradient-panel);
@@ -662,22 +648,8 @@
         <div class="week-card-head" id="historyToggle" style="cursor:pointer;">
           <div class="section-label" style="margin-bottom:0;">Готовность за неделю <span id="historyChevron" style="margin-left:4px;">▾</span></div>
         </div>
-        <div id="historySection" style="display:none;">
-          <div class="week-view-toggle" id="weekViewToggle" style="margin:12px 0 14px;">
-            <span class="week-view-btn active" data-view="graph">График</span>
-            <span class="week-view-btn" data-view="log">Список</span>
-          </div>
-          <div class="weekly-goal-title" id="weeklyGoalTitle">— из 7 дней с хорошей готовностью</div>
-          <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="weeklyGoalFill" style="width:0%"></div></div>
-          <div class="weekly-goal-sub" id="weeklyGoalSub"></div>
-
-          <div id="weekViewGraph">
-            <div class="readiness-history" id="readinessHistoryGraph"></div>
-            <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
-          </div>
-          <div id="weekViewLog" style="display:none;">
-            <div class="log-list" id="readinessLogList"></div>
-          </div>
+        <div id="historySection" style="display:none; margin-top:14px;">
+          <div class="readiness-history" id="readinessHistoryGraph"></div>
         </div>
       </div>
 
@@ -1027,56 +999,23 @@ function renderReadinessHistory(){
   const min = Math.min(...readinessHistory), max = Math.max(...readinessHistory);
   const range = (max - min) || 1;
   const graph = document.getElementById('readinessHistoryGraph');
-  const labels = document.getElementById('readinessHistoryLabels');
-  graph.innerHTML = ''; labels.innerHTML = '';
+  graph.innerHTML = '';
   readinessHistory.forEach((v,i)=>{
     const h = 10 + (v - min) / range * 26;
     const isLast = i === readinessHistory.length - 1;
-    const bar = document.createElement('div');
-    bar.className = 'readiness-bar' + (isLast ? ' today' : '');
-    bar.style.height = h + 'px';
-    graph.appendChild(bar);
-    const lbl = document.createElement('span');
-    lbl.textContent = READINESS_HISTORY_LABELS[i];
-    labels.appendChild(lbl);
+    const col = document.createElement('div');
+    col.className = 'readiness-col' + (isLast ? ' today' : '');
+    col.innerHTML = `
+      <div class="readiness-num">${v}</div>
+      <div class="readiness-bar${isLast ? ' today' : ''}" style="height:${h}px"></div>
+      <div class="readiness-day">${READINESS_HISTORY_LABELS[i]}</div>`;
+    graph.appendChild(col);
   });
 }
 function syncReadinessHistoryToday(val){
   readinessHistory[readinessHistory.length-1] = val;
   renderReadinessHistory();
 }
-
-const GOOD_DAY_THRESHOLD = 70;
-function renderWeeklyGoal(){
-  const total = readinessHistory.length;
-  const done = readinessHistory.filter(v => v >= GOOD_DAY_THRESHOLD).length;
-  document.getElementById('weeklyGoalTitle').textContent = `${done} из ${total} дней с хорошей готовностью`;
-  document.getElementById('weeklyGoalFill').style.width = Math.round(done/total*100) + '%';
-  const left = total - done;
-  document.getElementById('weeklyGoalSub').textContent = left === 0
-    ? 'Неделя закрыта на отлично'
-    : `Ещё ${left} ${left === 1 ? 'день' : left < 5 ? 'дня' : 'дней'} — и неделя закрыта на отлично`;
-}
-
-function readinessTagFor(v){
-  return v >= 80 ? 'отлично' : v >= GOOD_DAY_THRESHOLD ? 'хорошо' : 'ниже обычного';
-}
-function renderReadinessLog(){
-  const list = document.getElementById('readinessLogList');
-  list.innerHTML = readinessHistory.map((v,i) =>
-    `<div class="log-item"><div class="log-day">${READINESS_HISTORY_LABELS[i]}</div><div class="log-right"><div class="log-score">${v}</div><div class="log-tag">${readinessTagFor(v)}</div></div></div>`
-  ).reverse().join('');
-}
-
-document.querySelectorAll('#weekViewToggle .week-view-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#weekViewToggle .week-view-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const isGraph = btn.dataset.view === 'graph';
-    document.getElementById('weekViewGraph').style.display = isGraph ? 'block' : 'none';
-    document.getElementById('weekViewLog').style.display = isGraph ? 'none' : 'block';
-  });
-});
 
 function findWeakestAxis(){
   return READINESS_AXES.reduce((min,a)=> a.value < min.value ? a : min, READINESS_AXES[0]);
@@ -1095,8 +1034,6 @@ function updateReadinessRing(){
   document.getElementById('readinessRing').style.background =
     `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
-  renderWeeklyGoal();
-  renderReadinessLog();
   const recEl = document.getElementById('recReadinessTxt');
   if(recEl){
     const weakest = findWeakestAxis();
