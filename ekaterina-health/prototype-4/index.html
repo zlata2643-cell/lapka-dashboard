@@ -101,9 +101,9 @@
   .ring-wrap{ display:flex; justify-content:center; margin-bottom:10px; }
   .ring{
     width:180px; height:180px; border-radius:50%;
-    background:conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) 331deg, rgba(255,255,255,0.05) 331deg, rgba(255,255,255,0.05) 360deg);
+    background:conic-gradient(from -90deg, var(--gold-light) 0deg, var(--neon-core) 165deg, var(--neon) 331deg, rgba(255,255,255,0.05) 331deg, rgba(255,255,255,0.05) 360deg);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 0 90px rgba(53,199,255,0.65);
+    box-shadow:0 0 70px rgba(203,161,53,0.35), 0 0 70px rgba(53,199,255,0.45);
     cursor:pointer;
   }
   .ring-inner{
@@ -114,9 +114,9 @@
   .ring-value{
     font-family:var(--font-display); font-weight:600; font-size:46px;
     color:var(--warm-white); line-height:1;
-    text-shadow:0 0 30px rgba(53,199,255,0.6);
+    text-shadow:0 0 30px rgba(232,206,132,0.55);
   }
-  .ring-label{ font-size:11px; color:var(--neon-core); margin-top:4px; }
+  .ring-label{ font-size:11px; color:var(--gold-light); margin-top:4px; }
 
   .readiness-decode{
     text-align:center; font-size:12px; color:var(--muted);
@@ -126,15 +126,25 @@
 
   .checkin-card{
     background:var(--gradient-panel);
-    border:1px solid rgba(53,199,255,0.25);
+    border:1px solid rgba(203,161,53,0.3);
     border-radius:20px;
     padding:16px 18px 14px;
     margin-bottom:20px;
+    box-shadow:0 0 30px rgba(203,161,53,0.12);
   }
   .checkin-question{
     font-family:var(--font-display); font-size:16px; font-weight:600;
     color:var(--warm-white); margin-bottom:14px;
   }
+  .checkin-card .slider-fill{
+    background:linear-gradient(90deg, var(--gold), var(--gold-light));
+    box-shadow:0 0 20px rgba(203,161,53,0.6);
+  }
+  .checkin-card .slider-thumb{
+    background:radial-gradient(circle, var(--warm-white), var(--gold-light));
+    box-shadow:0 0 26px rgba(232,206,132,0.9);
+  }
+  .checkin-card .slider-caption b{ color:var(--gold-light); }
 
 
   .radar-card{
@@ -468,7 +478,7 @@
     transition:background .15s, border-color .15s;
   }
   .ritual-check svg{ width:12px; height:12px; opacity:0; transition:opacity .15s; }
-  .ritual-item.done .ritual-check{ background:var(--neon); border-color:var(--neon); box-shadow:0 0 14px rgba(53,199,255,0.6); }
+  .ritual-item.done .ritual-check{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 14px rgba(203,161,53,0.6); }
   .ritual-item.done .ritual-check svg{ opacity:1; stroke:var(--noir); }
   .ritual-item .lbl{ font-size:13px; color:var(--warm-white); transition:color .15s, opacity .15s; }
   .ritual-item.done .lbl{ color:var(--muted); opacity:0.7; }
@@ -482,7 +492,7 @@
     margin-bottom:20px;
   }
   .water-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
-  .water-amount{ font-family:var(--font-display); font-size:15px; color:var(--neon-core); font-weight:600; }
+  .water-amount{ font-family:var(--font-display); font-size:15px; color:var(--gold-light); font-weight:600; }
   .water-row{ display:flex; gap:7px; justify-content:space-between; }
   .water-glass{
     flex:1; height:34px; border-radius:8px 8px 4px 4px;
@@ -492,8 +502,8 @@
   }
   .water-glass-fill{
     position:absolute; left:0; right:0; bottom:0; height:0%;
-    background:linear-gradient(180deg, var(--neon-core), var(--indigo-deep));
-    box-shadow:0 0 10px rgba(111,232,255,0.6);
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    box-shadow:0 0 10px rgba(203,161,53,0.6);
     transition:height .2s;
   }
   .water-glass.filled .water-glass-fill{ height:100%; }
@@ -513,8 +523,8 @@
     cursor:pointer; padding:6px 0;
   }
   .tab-btn svg{ width:22px; height:22px; }
-  .tab-btn.active{ color:var(--neon-core); }
-  .tab-btn.active svg{ filter:drop-shadow(0 0 6px rgba(111,232,255,0.85)); }
+  .tab-btn.active{ color:var(--gold-light); }
+  .tab-btn.active svg{ filter:drop-shadow(0 0 6px rgba(232,206,132,0.85)); }
 
   .toggle{
     width:46px; height:26px; border-radius:var(--r-pill);
@@ -550,7 +560,12 @@
   }
   .lab-item.warn{ border-color:rgba(203,161,53,0.4); background:rgba(203,161,53,0.06); }
   .lab-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; background:var(--neon-core); box-shadow:0 0 8px rgba(111,232,255,0.8); }
-  .lab-item.warn .lab-dot{ background:var(--gold-light); box-shadow:0 0 8px rgba(203,161,53,0.8); }
+  .lab-item.warn .lab-dot{
+    width:18px; height:18px; border-radius:0; background:none;
+    color:var(--gold-light); box-shadow:none;
+    filter:drop-shadow(0 0 6px rgba(203,161,53,0.8));
+  }
+  .lab-item.warn .lab-dot svg{ width:100%; height:100%; }
   .lab-info{ flex:1; }
   .lab-info .n{ font-size:13px; font-weight:600; color:var(--warm-white); }
   .lab-info .r{ font-size:11px; color:var(--muted); margin-top:2px; }
@@ -909,8 +924,9 @@ function updateReadinessRing(){
   const val = computeReadiness();
   const deg = val/100*360;
   document.getElementById('readinessValue').textContent = val;
+  const midDeg = deg * 0.5;
   document.getElementById('readinessRing').style.background =
-    `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
+    `conic-gradient(from -90deg, var(--gold-light) 0deg, var(--neon-core) ${midDeg}deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   const recEl = document.getElementById('recReadinessTxt');
   if(recEl){
     const verdict = val >= 80 ? 'хороший день для силовой, тело восстановилось' : val >= 60 ? 'нормальный день, без рекордов' : 'лучше сегодня полегче — тело просит отдыха';
@@ -1295,10 +1311,12 @@ const labMarkers = [
   { n:'Гемоглобин', v:128, u:'г/л', r:'норма 120–150', warn:false }
 ];
 
+const WARN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>';
+
 function renderLabs(){
   document.getElementById('labList').innerHTML = labMarkers.map(m => `
     <div class="lab-item ${m.warn?'warn':''}">
-      <div class="lab-dot"></div>
+      <div class="lab-dot">${m.warn ? WARN_ICON : ''}</div>
       <div class="lab-info">
         <div class="n">${m.n}</div>
         <div class="r">${m.r}${m.t ? ' · '+m.t : ''}</div>
