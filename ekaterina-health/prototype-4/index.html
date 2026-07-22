@@ -462,13 +462,29 @@
   .segment-btn.active{ background:var(--neon); color:var(--noir); border-color:var(--neon); box-shadow:0 0 16px rgba(53,199,255,0.5); }
 
   .summary-empty{ font-size:12.5px; line-height:1.6; color:var(--muted); margin-top:12px; }
+  .weekly-goal-bar-track{ height:6px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:8px; }
+  .weekly-goal-bar-fill{ height:100%; border-radius:var(--r-pill); background:linear-gradient(90deg, var(--gold), var(--gold-light)); box-shadow:0 0 14px rgba(203,161,53,0.5); transition:width .3s; }
+  .weekly-goal-sub{ font-size:12px; color:var(--muted); text-align:left; margin-bottom:0; }
   .experiment-hypothesis{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--warm-white); margin-bottom:14px; line-height:1.4; }
 
-  .raw-table-wrap{ overflow-x:auto; margin-top:12px; }
-  .raw-table{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
-  .raw-table th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted-2); padding:0 10px 8px 0; white-space:nowrap; }
-  .raw-table td{ font-size:12.5px; color:var(--warm-white); padding:7px 10px 7px 0; border-top:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
-  .raw-table tr:first-child td{ border-top:none; }
+  .data-day-block{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .data-day-block:first-child{ padding-top:2px; }
+  .data-day-block:last-child{ border-bottom:none; padding-bottom:0; }
+  .data-day-block.today{ background:rgba(53,199,255,0.07); margin:0 -16px; padding:12px 16px; border-radius:14px; border-bottom-color:transparent; }
+  .data-day-head{ font-family:var(--font-display); font-weight:600; font-size:14px; color:var(--warm-white); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .data-day-head .badge{
+    font-size:9px; font-weight:700; color:var(--neon-core); text-transform:uppercase; letter-spacing:0.05em;
+    background:rgba(53,199,255,0.14); padding:2px 7px; border-radius:var(--r-pill);
+  }
+  .data-metrics-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; }
+  .dm{ text-align:center; }
+  .dm .k{ font-size:8px; color:var(--muted-2); text-transform:uppercase; letter-spacing:0.02em; line-height:1.3; }
+  .dm .v{ font-size:13px; font-weight:700; color:var(--warm-white); font-variant-numeric:tabular-nums; margin-top:4px; }
+  .weight-row-simple{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13px; }
+  .weight-row-simple:last-child{ border-bottom:none; padding-bottom:0; }
+  .weight-row-simple span{ color:var(--muted); }
+  .weight-row-simple b{ color:var(--warm-white); font-variant-numeric:tabular-nums; }
+  .weight-row-simple.today b{ color:var(--neon-core); }
 
   .activity-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
   .activity-item{
@@ -1089,14 +1105,10 @@
         </div>
 
         <div class="radar-card">
-          <div class="section-label">Мои данные — таблица без интерпретаций</div>
-          <div class="raw-table-wrap">
-            <table class="raw-table" id="rawDataTable"></table>
-          </div>
-          <div class="summary-empty">Вес показан отдельно ниже — он снимается раз в неделю, а не каждый день, поэтому в общую таблицу по дням его смешивать нечестно.</div>
-          <div class="raw-table-wrap">
-            <table class="raw-table" id="rawWeightTable"></table>
-          </div>
+          <div class="section-label">Мои данные — без интерпретаций</div>
+          <div id="rawDataTable"></div>
+          <div class="summary-empty">Вес показан отдельно ниже — он снимается раз в неделю, а не каждый день, поэтому в общую сводку по дням его смешивать нечестно.</div>
+          <div id="rawWeightTable"></div>
         </div>
       </div>
 
@@ -1940,15 +1952,28 @@ document.querySelectorAll('#summarySegment .segment-btn').forEach(btn=>{
 
 /* ---------- Мои данные: сырая таблица ---------- */
 function renderRawDataTable(){
-  const head = '<tr><th>День</th><th>Готовность</th><th>Сон, ч</th><th>Отбой</th><th>Актив., ккал</th><th>Питание, ккал</th></tr>';
-  const rows = READINESS_HISTORY_LABELS.map((day,i) =>
-    `<tr><td>${day}</td><td>${readinessHistory[i]}</td><td>${sleepHistory[i]}</td><td>${bedTimeHistory[i]}</td><td>${activityHistory[i]}</td><td>${nutritionHistory[i]}</td></tr>`
-  ).join('');
-  document.getElementById('rawDataTable').innerHTML = head + rows;
+  const n = READINESS_HISTORY_LABELS.length;
+  const blocks = READINESS_HISTORY_LABELS.map((day,i) => {
+    const isToday = i === n-1;
+    return `
+      <div class="data-day-block${isToday ? ' today' : ''}">
+        <div class="data-day-head">${day}${isToday ? '<span class="badge">сегодня</span>' : ''}</div>
+        <div class="data-metrics-grid">
+          <div class="dm"><div class="k">Готовность</div><div class="v">${readinessHistory[i]}</div></div>
+          <div class="dm"><div class="k">Сон</div><div class="v">${sleepHistory[i]}ч</div></div>
+          <div class="dm"><div class="k">Отбой</div><div class="v">${bedTimeHistory[i]}</div></div>
+          <div class="dm"><div class="k">Актив.</div><div class="v">${activityHistory[i]}</div></div>
+          <div class="dm"><div class="k">Питание</div><div class="v">${nutritionHistory[i]}</div></div>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('rawDataTable').innerHTML = blocks;
 
-  const wHead = '<tr><th>Неделя</th><th>Вес, кг</th></tr>';
-  const wRows = weightLabelsArr.map((wk,i) => `<tr><td>${wk}</td><td>${weightHistory[i]}</td></tr>`).join('');
-  document.getElementById('rawWeightTable').innerHTML = wHead + wRows;
+  const wRows = weightLabelsArr.map((wk,i) => {
+    const isToday = i === weightLabelsArr.length-1;
+    return `<div class="weight-row-simple${isToday ? ' today' : ''}"><span>${wk}</span><b>${weightHistory[i]} кг</b></div>`;
+  }).join('');
+  document.getElementById('rawWeightTable').innerHTML = wRows;
 }
 renderRawDataTable();
 
