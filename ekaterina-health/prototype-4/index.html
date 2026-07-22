@@ -140,6 +140,15 @@
   .rb-row b{ color:var(--warm-white); font-weight:700; font-variant-numeric:tabular-nums; }
   .rb-row.locked b{ color:var(--muted-2); font-weight:600; font-size:11px; }
 
+  .low-readiness-banner{
+    display:flex; gap:12px; align-items:flex-start;
+    background:rgba(203,161,53,0.08); border:1px solid rgba(203,161,53,0.35);
+    border-radius:18px; padding:14px 16px; margin-bottom:20px;
+  }
+  .low-readiness-banner svg{ width:20px; height:20px; color:var(--gold-light); flex-shrink:0; margin-top:1px; }
+  .lrb-text{ font-size:13px; color:var(--warm-white); line-height:1.5; margin-bottom:8px; }
+  .lrb-btn{ font-size:12.5px; color:var(--gold-light); font-weight:700; cursor:pointer; width:fit-content; }
+
   .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .week-card-head .section-label{ margin-bottom:0; }
 
@@ -155,6 +164,15 @@
   .radar-legend-item{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted-2); }
   .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(111,232,255,0.7); flex-shrink:0; }
   .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
+
+  .focus-label{ font-size:11px; color:var(--muted-2); text-align:center; margin-top:18px; margin-bottom:10px; line-height:1.4; }
+  .focus-row{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .focus-chip{
+    font-size:12px; font-weight:600; padding:7px 14px; border-radius:var(--r-pill);
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);
+    color:var(--muted-2); cursor:pointer;
+  }
+  .focus-chip.active{ background:rgba(203,161,53,0.15); border-color:rgba(203,161,53,0.5); color:var(--gold-light); }
 
   .checkin-card{
     background:var(--gradient-panel);
@@ -442,6 +460,7 @@
   .segment-btn.active{ background:var(--neon); color:var(--noir); border-color:var(--neon); box-shadow:0 0 16px rgba(53,199,255,0.5); }
 
   .summary-empty{ font-size:12.5px; line-height:1.6; color:var(--muted); margin-top:12px; }
+  .experiment-hypothesis{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--warm-white); margin-bottom:14px; line-height:1.4; }
 
   .raw-table-wrap{ overflow-x:auto; margin-top:12px; }
   .raw-table{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
@@ -657,8 +676,13 @@
     <div class="screen-scroll">
       <div class="home-head">
         <div class="greeting-date">Вторник, 21 июля</div>
-        <div class="summary-btn" id="summaryBtn" data-goto="summary" title="Сводка по дням/неделям/месяцам">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+        <div style="display:flex; gap:8px;">
+          <div class="summary-btn" id="experimentBtn" data-goto="experiment" title="Эксперимент">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/></svg>
+          </div>
+          <div class="summary-btn" id="summaryBtn" data-goto="summary" title="Сводка по дням/неделям/месяцам">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+          </div>
         </div>
       </div>
       <div class="checkin-card">
@@ -687,10 +711,20 @@
         <div class="rb-row locked"><span>Пульс покоя</span><b>появится с трекером</b></div>
       </div>
 
+      <div class="low-readiness-banner" id="lowReadinessBanner" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
+        <div class="lrb-body">
+          <div class="lrb-text">Готовность низкая — сегодня стоит облегчить нагрузку</div>
+          <div class="lrb-btn" id="lrbSuggestBtn">Предложить лёгкую тренировку →</div>
+        </div>
+      </div>
+
       <div class="radar-card">
         <div class="section-label">Колесо баланса</div>
         <svg class="radar-svg" id="radarSvg" width="260" height="240" viewBox="0 0 260 240"></svg>
         <div class="radar-legend" id="radarLegend"></div>
+        <div class="focus-label">Фокус недели — на чём сосредоточиться, а не пытаться улучшить всё сразу</div>
+        <div class="focus-row" id="focusRow"></div>
       </div>
 
       <div class="stat-grid">
@@ -967,6 +1001,12 @@
           </div>
         </div>
         <div class="sleep-consistency" id="sleepConsistency"></div>
+        <div class="low-readiness-banner" id="bedtimePatternNudge" style="display:none; margin-bottom:14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>
+          <div class="lrb-body">
+            <div class="lrb-text">Отбой позже обычного 3 дня подряд — стоит обратить внимание на режим</div>
+          </div>
+        </div>
         <div class="sleep-deep-note">Глубокий сон и фазы — появятся, когда подключишь трекер (например Oura). Пока — только общее время сна, из твоих отбоя/подъёма.</div>
 
         <div class="weight-graph" id="sleepGraph"></div>
@@ -1061,6 +1101,46 @@
       </div>
     </div>
     <div class="tabbar" id="tabbar7"></div>
+  </section>
+
+  <!-- ЭКСПЕРИМЕНТ -->
+  <section class="screen" data-screen="experiment">
+    <div class="screen-scroll">
+      <div class="nav-title">Эксперимент</div>
+
+      <div id="experimentActive">
+        <div class="radar-card">
+          <div class="section-label">Гипотеза</div>
+          <div class="experiment-hypothesis" id="expHypothesisTxt">—</div>
+          <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="expProgressFill" style="width:0%"></div></div>
+          <div class="weekly-goal-sub" id="expProgressTxt"></div>
+        </div>
+        <div class="radar-card">
+          <div class="section-label">До / после — по готовности</div>
+          <div class="rb-row"><span>До эксперимента</span><b id="expBeforeVal">—</b></div>
+          <div class="rb-row"><span>С начала эксперимента</span><b id="expAfterVal">—</b></div>
+          <div class="summary-empty" id="expVerdictTxt"></div>
+          <div class="summary-empty">Пока сравниваем только по готовности — выбор метрики под гипотезу добавим позже.</div>
+        </div>
+        <button class="btn-secondary" id="expStopBtn">Завершить и начать новый</button>
+      </div>
+
+      <div id="experimentForm" style="display:none;">
+        <div class="radar-card">
+          <div class="section-label">Новая гипотеза</div>
+          <input class="input-field" type="text" id="expHypothesisInput" placeholder="Например: Отбой до 23:00 → выше активность" style="margin-bottom:14px;">
+          <div class="section-label">Период</div>
+          <div class="segment" id="expPeriodSegment" style="margin-bottom:16px;">
+            <button class="segment-btn active" data-days="7">7 дней</button>
+            <button class="segment-btn" data-days="14">14 дней</button>
+            <button class="segment-btn" data-days="21">21 день</button>
+          </div>
+          <button class="btn-primary" id="expStartBtn">Начать эксперимент</button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="experimentToast">Эксперимент начат</div>
+    <div class="tabbar" id="tabbar8"></div>
   </section>
 
 </div>
@@ -1162,6 +1242,22 @@ const AXIS_MICRO_ACTIONS = {
   'Тело': 'сделай сегодня растяжку или лёгкую мобильность на 10 минут'
 };
 
+let weekFocus = null;
+function renderFocusRow(){
+  const row = document.getElementById('focusRow');
+  row.innerHTML = READINESS_AXES.map(a =>
+    `<span class="focus-chip ${weekFocus===a.label?'active':''}" data-axis="${a.label}">${a.label}</span>`
+  ).join('');
+  row.querySelectorAll('.focus-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      weekFocus = weekFocus === chip.dataset.axis ? null : chip.dataset.axis;
+      renderFocusRow();
+      updateReadinessRing();
+    });
+  });
+}
+renderFocusRow();
+
 function updateReadinessRing(){
   const { val, sleepAxis } = computeReadiness();
   const deg = val/100*360;
@@ -1173,11 +1269,22 @@ function updateReadinessRing(){
   document.getElementById('rbSelf').textContent = `${feelPct} (${feelLabelFor(feelPct)})`;
   const recEl = document.getElementById('recReadinessTxt');
   if(recEl){
-    const weakest = findWeakestAxis();
-    const action = AXIS_MICRO_ACTIONS[weakest.label] || 'обрати внимание на эту ось сегодня';
-    recEl.innerHTML = `Слабее всего — ${weakest.label.toLowerCase()} (${weakest.value}) — <span>${action}</span>`;
+    const target = weekFocus ? READINESS_AXES.find(a => a.label === weekFocus) : findWeakestAxis();
+    const action = AXIS_MICRO_ACTIONS[target.label] || 'обрати внимание на эту ось сегодня';
+    const prefix = weekFocus ? 'Фокус недели' : 'Слабее всего';
+    recEl.innerHTML = `${prefix} — ${target.label.toLowerCase()} (${target.value}) — <span>${action}</span>`;
   }
+  document.getElementById('lowReadinessBanner').style.display = val < 60 ? 'flex' : 'none';
 }
+
+document.getElementById('lrbSuggestBtn').addEventListener('click', ()=>{
+  showScreen('activity');
+  document.querySelectorAll('.type-chip').forEach(c=>c.classList.remove('active'));
+  const yogaChip = document.querySelector('.type-chip[data-type="yoga"]');
+  yogaChip.classList.add('active');
+  activeType = { met: parseFloat(yogaChip.dataset.met), label: yogaChip.textContent.trim() };
+  recomputeKcal();
+});
 
 let breakdownOpen = false;
 document.getElementById('readinessRing').addEventListener('click', ()=>{
@@ -1334,6 +1441,11 @@ function renderSleepConsistency(){
   const stddev = Math.round(Math.sqrt(variance));
   const qualifier = stddev <= 15 ? 'стабильно' : stddev <= 30 ? 'средне' : 'нестабильно';
   document.getElementById('sleepConsistency').innerHTML = `Стабильность отбоя: <b>±${stddev} мин</b> за неделю — ${qualifier}`;
+
+  const baseline = mins.slice(0,4).reduce((s,v)=>s+v,0) / 4;
+  const last3 = mins.slice(-3);
+  const gettingLater = last3.every(v => v > baseline + 10);
+  document.getElementById('bedtimePatternNudge').style.display = gettingLater ? 'flex' : 'none';
 }
 renderSleepConsistency();
 function computeSleepDuration(bed, wake){
@@ -1765,6 +1877,65 @@ function renderRawDataTable(){
   document.getElementById('rawWeightTable').innerHTML = wHead + wRows;
 }
 renderRawDataTable();
+
+/* ---------- N=1 эксперимент ---------- */
+let experiment = {
+  hypothesis: 'Отбой до 23:00 → выше активность',
+  days: 14,
+  currentDay: 9,
+  beforeAvg: 58,
+  afterAvg: 71
+};
+
+function renderExperiment(){
+  const activeEl = document.getElementById('experimentActive');
+  const formEl = document.getElementById('experimentForm');
+  if(!experiment){
+    activeEl.style.display = 'none';
+    formEl.style.display = 'block';
+    return;
+  }
+  activeEl.style.display = 'block';
+  formEl.style.display = 'none';
+  document.getElementById('expHypothesisTxt').textContent = experiment.hypothesis;
+  document.getElementById('expProgressFill').style.width = Math.round(experiment.currentDay/experiment.days*100) + '%';
+  document.getElementById('expProgressTxt').textContent = `День ${experiment.currentDay} из ${experiment.days}`;
+  document.getElementById('expBeforeVal').textContent = experiment.beforeAvg;
+  document.getElementById('expAfterVal').textContent = experiment.afterAvg;
+  const delta = experiment.afterAvg - experiment.beforeAvg;
+  const verdictEl = document.getElementById('expVerdictTxt');
+  if(experiment.currentDay < experiment.days){
+    verdictEl.textContent = `Предварительно: ${delta>0?'+':''}${delta}. Окончательный вывод — после дня ${experiment.days}, не раньше: иначе легко обмануться случайным разбросом.`;
+  } else {
+    verdictEl.textContent = delta > 0
+      ? `Гипотеза подтвердилась: разница ${delta>0?'+':''}${delta} по готовности за период.`
+      : `Гипотеза не подтвердилась на этот раз — разница ${delta}.`;
+  }
+}
+renderExperiment();
+
+document.getElementById('expStopBtn').addEventListener('click', ()=>{
+  experiment = null;
+  renderExperiment();
+});
+
+document.querySelectorAll('#expPeriodSegment .segment-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#expPeriodSegment .segment-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.getElementById('expStartBtn').addEventListener('click', ()=>{
+  const hyp = document.getElementById('expHypothesisInput').value.trim();
+  if(!hyp) return;
+  const days = parseInt(document.querySelector('#expPeriodSegment .segment-btn.active').dataset.days, 10);
+  const currentReadiness = computeReadiness().val;
+  experiment = { hypothesis: hyp, days, currentDay: 1, beforeAvg: currentReadiness, afterAvg: currentReadiness };
+  renderExperiment();
+  document.getElementById('expHypothesisInput').value = '';
+  showToast('experimentToast', 'Эксперимент начат — вернись через несколько дней');
+});
 </script>
 </body>
 </html>
