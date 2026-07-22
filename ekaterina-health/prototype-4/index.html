@@ -132,6 +132,14 @@
   }
   .readiness-decode b{ color:var(--warm-white); font-weight:600; }
 
+  .readiness-breakdown{ background:rgba(255,255,255,0.03); border:1px solid rgba(53,199,255,0.15); border-radius:16px; padding:14px 16px; margin-bottom:20px; }
+  .rb-row{ display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:12.5px; }
+  .rb-row:last-child{ border-bottom:none; padding-bottom:0; }
+  .rb-row span{ color:var(--muted); }
+  .rb-row span i{ font-style:normal; color:var(--muted-2); font-size:10.5px; margin-left:4px; }
+  .rb-row b{ color:var(--warm-white); font-weight:700; font-variant-numeric:tabular-nums; }
+  .rb-row.locked b{ color:var(--muted-2); font-weight:600; font-size:11px; }
+
   .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .week-card-head .section-label{ margin-bottom:0; }
 
@@ -654,7 +662,14 @@
           </div>
         </div>
       </div>
-      <div class="readiness-decode" id="readinessDecode">среднее по 4 показателям + твоя самооценка</div>
+      <div class="readiness-decode" id="readinessDecode">по сну и твоей самооценке — тапни по кольцу для деталей</div>
+
+      <div class="readiness-breakdown" id="readinessBreakdown" style="display:none;">
+        <div class="rb-row"><span>Сон <i>вес 70%</i></span><b id="rbSleep">—</b></div>
+        <div class="rb-row"><span>Твоя самооценка <i>вес 30%</i></span><b id="rbSelf">—</b></div>
+        <div class="rb-row locked"><span>HRV</span><b>появится с трекером</b></div>
+        <div class="rb-row locked"><span>Пульс покоя</span><b>появится с трекером</b></div>
+      </div>
 
       <div class="radar-card">
         <div class="section-label">Колесо баланса</div>
@@ -1038,10 +1053,10 @@ function feelLabelFor(pct){
   return pct<20 ? 'Низко' : pct<40 ? 'Ниже среднего' : pct<60 ? 'Норм' : pct<80 ? 'Хорошо' : 'Отлично';
 }
 function computeReadiness(){
-  const avg = READINESS_AXES.reduce((s,a)=>s+a.value,0) / READINESS_AXES.length;
-  const dataPart = avg*0.7;
+  const sleepAxis = READINESS_AXES.find(a => a.label === 'Сон').value;
+  const dataPart = sleepAxis*0.7;
   const selfPart = feelPct*0.3;
-  return { val: Math.round(dataPart + selfPart), dataPart, selfPart };
+  return { val: Math.round(dataPart + selfPart), dataPart, selfPart, sleepAxis };
 }
 const READINESS_HISTORY_LABELS = ['Ср','Чт','Пт','Сб','Вс','Пн','Вт'];
 let readinessHistory = [58,64,60,71,66,73,69];
@@ -1079,12 +1094,14 @@ const AXIS_MICRO_ACTIONS = {
 };
 
 function updateReadinessRing(){
-  const { val } = computeReadiness();
+  const { val, sleepAxis } = computeReadiness();
   const deg = val/100*360;
   document.getElementById('readinessValue').textContent = val;
   document.getElementById('readinessRing').style.background =
     `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
+  document.getElementById('rbSleep').textContent = sleepAxis;
+  document.getElementById('rbSelf').textContent = `${feelPct} (${feelLabelFor(feelPct)})`;
   const recEl = document.getElementById('recReadinessTxt');
   if(recEl){
     const weakest = findWeakestAxis();
@@ -1092,6 +1109,12 @@ function updateReadinessRing(){
     recEl.innerHTML = `Слабее всего — ${weakest.label.toLowerCase()} (${weakest.value}) — <span>${action}</span>`;
   }
 }
+
+let breakdownOpen = false;
+document.getElementById('readinessRing').addEventListener('click', ()=>{
+  breakdownOpen = !breakdownOpen;
+  document.getElementById('readinessBreakdown').style.display = breakdownOpen ? 'block' : 'none';
+});
 
 /* ---------- Универсальный слайдер ---------- */
 function setupSlider(trackEl, fillEl, thumbEl, initialPct, onChange){
