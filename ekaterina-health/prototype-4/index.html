@@ -936,7 +936,7 @@
   <!-- СВОДКА -->
   <section class="screen" data-screen="summary">
     <div class="screen-scroll">
-      <div class="nav-title">Сводка по готовности</div>
+      <div class="nav-title">Статистика</div>
 
       <div class="segment" id="summarySegment">
         <button class="segment-btn active" data-period="days">Дни</button>
@@ -944,19 +944,37 @@
         <button class="segment-btn" data-period="months">Месяцы</button>
       </div>
 
-      <div class="radar-card" id="summaryDaysView">
-        <div class="section-label">Последние 7 дней</div>
-        <div class="readiness-history" id="readinessHistoryGraph" style="margin-top:14px;"></div>
+      <div id="summaryDaysView">
+        <div class="radar-card">
+          <div class="section-label">Готовность за 7 дней</div>
+          <div class="readiness-history" id="readinessHistoryGraph" style="margin-top:14px;"></div>
+        </div>
+        <div class="radar-card">
+          <div class="section-label">Вес за 7 дней</div>
+          <div class="weight-graph" id="summaryWeightGraph" style="margin-top:14px;"></div>
+          <div class="weight-labels" id="summaryWeightLabels"></div>
+        </div>
+        <div class="radar-card">
+          <div class="section-label">Сон за 7 дней</div>
+          <div class="weight-graph" id="summarySleepGraph" style="margin-top:14px;"></div>
+          <div class="weight-labels" id="summarySleepLabels"></div>
+        </div>
+        <div class="radar-card">
+          <div class="section-label">Активность и питание</div>
+          <div class="summary-empty">Пока считаются только на сегодня (см. вкладки "Актив." и "Питание") — история по дням появится, когда будем собирать данные за прошлые дни, не только текущие.</div>
+        </div>
       </div>
 
-      <div class="radar-card" id="summaryWeeksView" style="display:none;">
-        <div class="section-label">По неделям</div>
-        <div class="summary-empty">Недостаточно данных — сводка по неделям появится, когда наберётся хотя бы 2-3 полные недели записей.</div>
+      <div id="summaryWeeksView" style="display:none;">
+        <div class="radar-card">
+          <div class="summary-empty">Недостаточно данных — сводка по неделям по всем показателям появится, когда наберётся хотя бы 2-3 полные недели записей.</div>
+        </div>
       </div>
 
-      <div class="radar-card" id="summaryMonthsView" style="display:none;">
-        <div class="section-label">По месяцам</div>
-        <div class="summary-empty">Недостаточно данных — сводка по месяцам появится через 1-2 месяца использования.</div>
+      <div id="summaryMonthsView" style="display:none;">
+        <div class="radar-card">
+          <div class="summary-empty">Недостаточно данных — сводка по месяцам появится через 1-2 месяца использования.</div>
+        </div>
       </div>
     </div>
     <div class="tabbar" id="tabbar7"></div>
@@ -1161,23 +1179,29 @@ function syncWeightToday(){
   renderWeightGraph();
 }
 
-function renderWeightGraph(){
-  const min = Math.min(...weightHistory), max = Math.max(...weightHistory);
+function fillBarGraph(graphId, labelsId, history, labelsArr){
+  const graph = document.getElementById(graphId);
+  const labels = document.getElementById(labelsId);
+  if(!graph || !labels) return;
+  const min = Math.min(...history), max = Math.max(...history);
   const range = (max - min) || 1;
-  const graph = document.getElementById('weightGraph');
-  const labels = document.getElementById('weightLabels');
   graph.innerHTML = ''; labels.innerHTML = '';
-  weightHistory.forEach((v,i)=>{
+  history.forEach((v,i)=>{
     const h = 14 + (v - min) / range * 18;
-    const isLast = i === weightHistory.length - 1;
+    const isLast = i === history.length - 1;
     const bar = document.createElement('div');
     bar.className = 'weight-bar' + (isLast ? ' current' : '');
     bar.style.height = h + 'px';
     graph.appendChild(bar);
     const lbl = document.createElement('span');
-    lbl.textContent = weightLabelsArr[i].replace('Нед ','Н');
+    lbl.textContent = labelsArr[i];
     labels.appendChild(lbl);
   });
+}
+function renderWeightGraph(){
+  const shortLabels = weightLabelsArr.map(l => l.replace('Нед ','Н'));
+  fillBarGraph('weightGraph', 'weightLabels', weightHistory, shortLabels);
+  fillBarGraph('summaryWeightGraph', 'summaryWeightLabels', weightHistory, shortLabels);
 }
 renderWeightGraph();
 
@@ -1185,22 +1209,8 @@ renderWeightGraph();
 const sleepHistory = [6.8,7.1,6.5,7.6,7.2,7.9,7.4];
 
 function renderSleepGraph(){
-  const min = Math.min(...sleepHistory), max = Math.max(...sleepHistory);
-  const range = (max - min) || 1;
-  const graph = document.getElementById('sleepGraph');
-  const labels = document.getElementById('sleepLabels');
-  graph.innerHTML = ''; labels.innerHTML = '';
-  sleepHistory.forEach((v,i)=>{
-    const h = 14 + (v - min) / range * 18;
-    const isLast = i === sleepHistory.length - 1;
-    const bar = document.createElement('div');
-    bar.className = 'weight-bar' + (isLast ? ' current' : '');
-    bar.style.height = h + 'px';
-    graph.appendChild(bar);
-    const lbl = document.createElement('span');
-    lbl.textContent = READINESS_HISTORY_LABELS[i];
-    labels.appendChild(lbl);
-  });
+  fillBarGraph('sleepGraph', 'sleepLabels', sleepHistory, READINESS_HISTORY_LABELS);
+  fillBarGraph('summarySleepGraph', 'summarySleepLabels', sleepHistory, READINESS_HISTORY_LABELS);
   const avgPrev = sleepHistory.slice(0,-1).reduce((s,v)=>s+v,0) / (sleepHistory.length-1);
   const last = sleepHistory[sleepHistory.length-1];
   const delta = Math.round((last - avgPrev)*10)/10;
