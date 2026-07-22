@@ -462,6 +462,7 @@
   .insight-card .section-label{ color:var(--gold-light); }
   .insight-text{ font-size:13px; line-height:1.6; color:var(--warm-white); }
   .insight-text b{ color:var(--gold-light); font-weight:700; }
+  .insight-caveat{ font-size:11px; line-height:1.5; color:var(--muted-2); margin-top:10px; }
 
   .rec-card{
     background:var(--gradient-panel);
@@ -620,11 +621,7 @@
   <!-- ГЛАВНЫЙ -->
   <section class="screen active" data-screen="home">
     <div class="screen-scroll">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div>
-          <div class="greeting-date">Вторник, 21 июля</div>
-        </div>
-      </div>
+      <div class="greeting-date">Вторник, 21 июля</div>
       <div class="checkin-card">
         <div class="checkin-question">Как ты себя чувствуешь сегодня?</div>
         <div class="slider-track" id="feelTrack">
@@ -642,7 +639,7 @@
           </div>
         </div>
       </div>
-      <div class="readiness-decode" id="readinessDecode">по данным дня и твоей самооценке выше</div>
+      <div class="readiness-decode" id="readinessDecode">среднее по 4 показателям + твоя самооценка</div>
 
       <div class="radar-card">
         <div class="week-card-head" id="historyToggle" style="cursor:pointer;">
@@ -721,14 +718,15 @@
 
       <div class="insight-card" id="insightCard">
         <div class="section-label">Что работает именно для тебя</div>
-        <div class="insight-text" id="insightText">В дни, когда <b>сон начинается до 23:00</b>, готовность утром в среднем на <b>14% выше</b>, а тренировки ощущаются легче. Заметен и обратный паттерн — поздний плотный ужин снижает глубокий сон почти на треть.</div>
+        <div class="insight-text">В дни, когда <b>сон начинается до 23:00</b>, готовность утром в среднем на <b>14% выше</b>, а тренировки ощущаются легче. Заметен и обратный паттерн — поздний плотный ужин снижает глубокий сон почти на треть.</div>
+        <div class="insight-caveat">Пример на демо-данных — на твоих реальных цифрах закономерность станет точной примерно через месяц записей.</div>
       </div>
 
       <div class="rec-card" id="recCard">
         <div class="section-label">Рекомендации для тебя</div>
         <div class="rec-item">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 12a6 6 0 1 0-6 6c1.6 0 2-1 2-2"/><path d="M12 3v2M4.2 6.2l1.4 1.4M20 12h-2"/></svg></div>
-          <div class="txt">Сегодня лечь до 23:00 — <span>нагрузка недели выше обычной, телу нужно время на восстановление</span></div>
+          <div class="txt" id="recSleepTxt">Сегодня лечь до 23:00 — <span>нагрузка недели выше обычной, телу нужно время на восстановление</span></div>
         </div>
         <div class="rec-item">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="5.5" x2="12" y2="9"/></svg></div>
@@ -926,7 +924,7 @@
       </div>
     </div>
     <div class="toast" id="labsToast">Демо: агент разнесёт значения из бланка по показателям</div>
-    <div class="tabbar" id="tabbar5"></div>
+    <div class="tabbar" id="tabbar6"></div>
   </section>
 
 </div>
@@ -1177,6 +1175,16 @@ function renderSleepGraph(){
 }
 renderSleepGraph();
 
+function updateSleepRec(){
+  const el = document.getElementById('recSleepTxt');
+  if(!el) return;
+  const lastSleep = sleepHistory[sleepHistory.length-1];
+  el.innerHTML = lastSleep < 7
+    ? `Сегодня лечь до 23:00 — <span>вчера поспала всего ${lastSleep.toFixed(1)} ч, телу нужно наверстать</span>`
+    : `Сон в норме (${lastSleep.toFixed(1)} ч) — <span>держи тот же режим отбоя</span>`;
+}
+updateSleepRec();
+
 function parseTimeToMinutes(t){
   const [h,m] = t.split(':').map(Number);
   return h*60 + m;
@@ -1200,6 +1208,7 @@ document.getElementById('sleepSave').addEventListener('click', ()=>{
   const hours = parseFloat(document.getElementById('sleepValue').textContent);
   sleepHistory[sleepHistory.length-1] = hours;
   renderSleepGraph();
+  updateSleepRec();
   showToast('sleepToast', `Записала: ${hours.toFixed(1)} ч сна`);
 });
 
