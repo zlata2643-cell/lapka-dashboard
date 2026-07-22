@@ -129,8 +129,18 @@
   .readiness-delta.down{ color:var(--muted-2); }
   .readiness-delta.flat{ color:var(--muted); }
 
-  .readiness-history-card{ padding-bottom:14px; }
-  .readiness-history{ display:flex; align-items:flex-end; gap:7px; height:38px; margin:14px 0 8px; }
+  .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .week-card-head .section-label{ margin-bottom:0; }
+  .week-view-toggle{ display:flex; gap:2px; background:rgba(255,255,255,0.05); border-radius:var(--r-pill); padding:2px; flex-shrink:0; }
+  .week-view-btn{ font-size:11px; padding:5px 10px; border-radius:var(--r-pill); color:var(--muted-2); cursor:pointer; white-space:nowrap; }
+  .week-view-btn.active{ background:var(--neon-core); color:var(--panel); font-weight:700; }
+
+  .weekly-goal-title{ font-family:var(--font-text); font-size:13px; font-weight:600; color:var(--warm-white); margin:0 0 8px; text-align:left; }
+  .weekly-goal-bar-track{ height:6px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:8px; }
+  .weekly-goal-bar-fill{ height:100%; border-radius:var(--r-pill); background:linear-gradient(90deg, var(--gold), var(--gold-light)); box-shadow:0 0 14px rgba(203,161,53,0.5); transition:width .3s; }
+  .weekly-goal-sub{ font-size:12px; color:var(--muted); text-align:left; margin-bottom:14px; }
+
+  .readiness-history{ display:flex; align-items:flex-end; gap:7px; height:38px; margin:0 0 8px; }
   .readiness-bar{ width:9px; border-radius:2px; background:rgba(53,199,255,0.35); }
   .readiness-bar.today{ background:var(--gold-light); box-shadow:0 0 10px rgba(232,206,132,0.6); }
   .readiness-history-labels{ display:flex; gap:7px; }
@@ -140,11 +150,6 @@
   .radar-legend-item{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted-2); }
   .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(111,232,255,0.7); flex-shrink:0; }
   .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
-
-  .weekly-goal-title{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--warm-white); margin:10px 0 12px; text-align:center; }
-  .weekly-goal-bar-track{ height:8px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:10px; }
-  .weekly-goal-bar-fill{ height:100%; border-radius:var(--r-pill); background:linear-gradient(90deg, var(--gold), var(--gold-light)); box-shadow:0 0 14px rgba(203,161,53,0.5); transition:width .3s; }
-  .weekly-goal-sub{ font-size:12px; color:var(--muted); text-align:center; }
 
   .log-list{ display:flex; flex-direction:column; }
   .log-item{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
@@ -648,22 +653,25 @@
       <div class="readiness-delta" id="readinessDelta"></div>
       <div class="readiness-decode" id="readinessDecode">по данным дня и твоей самооценке выше</div>
 
-      <div class="radar-card readiness-history-card">
-        <div class="section-label">Готовность за 7 дней</div>
-        <div class="readiness-history" id="readinessHistoryGraph"></div>
-        <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
-      </div>
-
-      <div class="radar-card weekly-goal-card">
-        <div class="section-label">Цель недели</div>
+      <div class="radar-card">
+        <div class="week-card-head">
+          <div class="section-label">Готовность за неделю</div>
+          <div class="week-view-toggle" id="weekViewToggle">
+            <span class="week-view-btn active" data-view="graph">График</span>
+            <span class="week-view-btn" data-view="log">Список</span>
+          </div>
+        </div>
         <div class="weekly-goal-title" id="weeklyGoalTitle">— из 7 дней с хорошей готовностью</div>
         <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="weeklyGoalFill" style="width:0%"></div></div>
         <div class="weekly-goal-sub" id="weeklyGoalSub"></div>
-      </div>
 
-      <div class="radar-card log-card">
-        <div class="section-label">Последние дни</div>
-        <div class="log-list" id="readinessLogList"></div>
+        <div id="weekViewGraph">
+          <div class="readiness-history" id="readinessHistoryGraph"></div>
+          <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
+        </div>
+        <div id="weekViewLog" style="display:none;">
+          <div class="log-list" id="readinessLogList"></div>
+        </div>
       </div>
 
       <div class="radar-card">
@@ -1028,7 +1036,7 @@ function renderWeeklyGoal(){
 }
 
 function readinessTagFor(v){
-  return v >= 80 ? 'отлично' : v >= 60 ? 'норм' : 'ниже обычного';
+  return v >= 80 ? 'отлично' : v >= GOOD_DAY_THRESHOLD ? 'хорошо' : 'ниже обычного';
 }
 function renderReadinessLog(){
   const list = document.getElementById('readinessLogList');
@@ -1036,6 +1044,16 @@ function renderReadinessLog(){
     `<div class="log-item"><div class="log-day">${READINESS_HISTORY_LABELS[i]}</div><div class="log-right"><div class="log-score">${v}</div><div class="log-tag">${readinessTagFor(v)}</div></div></div>`
   ).reverse().join('');
 }
+
+document.querySelectorAll('#weekViewToggle .week-view-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#weekViewToggle .week-view-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const isGraph = btn.dataset.view === 'graph';
+    document.getElementById('weekViewGraph').style.display = isGraph ? 'block' : 'none';
+    document.getElementById('weekViewLog').style.display = isGraph ? 'none' : 'block';
+  });
+});
 
 function findWeakestAxis(){
   return READINESS_AXES.reduce((min,a)=> a.value < min.value ? a : min, READINESS_AXES[0]);
@@ -1472,8 +1490,8 @@ document.getElementById('labsBtn').addEventListener('click', ()=>{
   showToast('labsToast');
 });
 
-/* ---------- Свернуть "Ритм дня" по умолчанию ---------- */
-let rhythmOpen = false;
+/* ---------- "Ритм дня" открыт по умолчанию — это активные действия ---------- */
+let rhythmOpen = true;
 function applyRhythmState(){
   document.getElementById('rhythmSection').style.display = rhythmOpen ? 'block' : 'none';
   document.getElementById('rhythmChevron').textContent = rhythmOpen ? '▴' : '▾';
