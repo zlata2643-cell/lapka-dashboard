@@ -665,23 +665,25 @@
       <div class="readiness-decode" id="readinessDecode">по данным дня и твоей самооценке выше</div>
 
       <div class="radar-card">
-        <div class="week-card-head">
-          <div class="section-label">Готовность за неделю</div>
-          <div class="week-view-toggle" id="weekViewToggle">
+        <div class="week-card-head" id="historyToggle" style="cursor:pointer;">
+          <div class="section-label" style="margin-bottom:0;">Готовность за неделю <span id="historyChevron" style="margin-left:4px;">▾</span></div>
+        </div>
+        <div id="historySection" style="display:none;">
+          <div class="week-view-toggle" id="weekViewToggle" style="margin:12px 0 14px;">
             <span class="week-view-btn active" data-view="graph">График</span>
             <span class="week-view-btn" data-view="log">Список</span>
           </div>
-        </div>
-        <div class="weekly-goal-title" id="weeklyGoalTitle">— из 7 дней с хорошей готовностью</div>
-        <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="weeklyGoalFill" style="width:0%"></div></div>
-        <div class="weekly-goal-sub" id="weeklyGoalSub"></div>
+          <div class="weekly-goal-title" id="weeklyGoalTitle">— из 7 дней с хорошей готовностью</div>
+          <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="weeklyGoalFill" style="width:0%"></div></div>
+          <div class="weekly-goal-sub" id="weeklyGoalSub"></div>
 
-        <div id="weekViewGraph">
-          <div class="readiness-history" id="readinessHistoryGraph"></div>
-          <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
-        </div>
-        <div id="weekViewLog" style="display:none;">
-          <div class="log-list" id="readinessLogList"></div>
+          <div id="weekViewGraph">
+            <div class="readiness-history" id="readinessHistoryGraph"></div>
+            <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
+          </div>
+          <div id="weekViewLog" style="display:none;">
+            <div class="log-list" id="readinessLogList"></div>
+          </div>
         </div>
       </div>
 
@@ -1600,6 +1602,18 @@ document.getElementById('rhythmToggle').addEventListener('click', ()=>{
   applyRhythmState();
 });
 applyRhythmState();
+
+/* ---------- "Готовность за неделю" свёрнута по умолчанию — это история, не действие ---------- */
+let historyOpen = false;
+function applyHistoryState(){
+  document.getElementById('historySection').style.display = historyOpen ? 'block' : 'none';
+  document.getElementById('historyChevron').textContent = historyOpen ? '▴' : '▾';
+}
+document.getElementById('historyToggle').addEventListener('click', ()=>{
+  historyOpen = !historyOpen;
+  applyHistoryState();
+});
+applyHistoryState();
 </script>
 </body>
 </html>
