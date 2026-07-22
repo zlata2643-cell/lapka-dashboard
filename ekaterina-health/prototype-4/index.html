@@ -443,6 +443,12 @@
 
   .summary-empty{ font-size:12.5px; line-height:1.6; color:var(--muted); margin-top:12px; }
 
+  .raw-table-wrap{ overflow-x:auto; margin-top:12px; }
+  .raw-table{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+  .raw-table th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted-2); padding:0 10px 8px 0; white-space:nowrap; }
+  .raw-table td{ font-size:12.5px; color:var(--warm-white); padding:7px 10px 7px 0; border-top:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
+  .raw-table tr:first-child td{ border-top:none; }
+
   .activity-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
   .activity-item{
     display:flex; align-items:center; gap:12px;
@@ -482,6 +488,7 @@
   .insight-card .section-label{ color:var(--gold-light); }
   .insight-text{ font-size:13px; line-height:1.6; color:var(--warm-white); }
   .insight-text b{ color:var(--gold-light); font-weight:700; }
+  .insight-text + .insight-text{ margin-top:14px; padding-top:14px; border-top:1px solid rgba(203,161,53,0.15); }
   .insight-caveat{ font-size:11px; line-height:1.5; color:var(--muted-2); margin-top:10px; }
 
   .rec-card{
@@ -753,7 +760,9 @@
       <div class="insight-card" id="insightCard">
         <div class="section-label">Что работает именно для тебя</div>
         <div class="insight-text">В дни, когда <b>сон начинается до 23:00</b>, готовность утром в среднем на <b>14% выше</b>, а тренировки ощущаются легче. Заметен и обратный паттерн — поздний плотный ужин снижает глубокий сон почти на треть.</div>
-        <div class="insight-caveat">Пример на демо-данных — на твоих реальных цифрах закономерность станет точной примерно через месяц записей.</div>
+        <div class="insight-text">В дни, когда выпиваешь <b>норму воды полностью</b>, самооценка самочувствия в среднем на ступень выше ("Хорошо" вместо "Норм").</div>
+        <div class="insight-text">Когда <b>все ритуалы дня закрыты</b>, готовность на следующее утро в среднем на <b>8-10 пунктов выше</b>, чем в дни с пропусками.</div>
+        <div class="insight-caveat">Примеры на демо-данных — на твоих реальных цифрах закономерности станут точными примерно через месяц записей, и появятся новые пары, которые сейчас не видны.</div>
       </div>
 
       <div class="rec-card" id="recCard">
@@ -1026,6 +1035,17 @@
           <div class="section-label">Активность и питание</div>
           <div class="summary-empty">Пока считаются только на сегодня (см. вкладки "Актив." и "Питание") — история по дням появится, когда будем собирать данные за прошлые дни, не только текущие.</div>
         </div>
+
+        <div class="radar-card">
+          <div class="section-label">Мои данные — таблица без интерпретаций</div>
+          <div class="raw-table-wrap">
+            <table class="raw-table" id="rawDataTable"></table>
+          </div>
+          <div class="summary-empty">Вес показан отдельно ниже — он снимается раз в неделю, а не каждый день, поэтому в общую таблицу по дням его смешивать нечестно.</div>
+          <div class="raw-table-wrap">
+            <table class="raw-table" id="rawWeightTable"></table>
+          </div>
+        </div>
       </div>
 
       <div id="summaryWeeksView" style="display:none;">
@@ -1074,6 +1094,7 @@ function showScreen(name){
     s.classList.toggle('active', s.dataset.screen === name);
   });
   renderTabbars(name);
+  if(name === 'summary' && typeof renderRawDataTable === 'function') renderRawDataTable();
 }
 
 document.querySelectorAll('[data-goto]').forEach(el=>{
@@ -1730,6 +1751,20 @@ document.querySelectorAll('#summarySegment .segment-btn').forEach(btn=>{
     document.getElementById('summaryMonthsView').style.display = btn.dataset.period === 'months' ? 'block' : 'none';
   });
 });
+
+/* ---------- Мои данные: сырая таблица ---------- */
+function renderRawDataTable(){
+  const head = '<tr><th>День</th><th>Готовность</th><th>Сон, ч</th><th>Отбой</th></tr>';
+  const rows = READINESS_HISTORY_LABELS.map((day,i) =>
+    `<tr><td>${day}</td><td>${readinessHistory[i]}</td><td>${sleepHistory[i]}</td><td>${bedTimeHistory[i]}</td></tr>`
+  ).join('');
+  document.getElementById('rawDataTable').innerHTML = head + rows;
+
+  const wHead = '<tr><th>Неделя</th><th>Вес, кг</th></tr>';
+  const wRows = weightLabelsArr.map((wk,i) => `<tr><td>${wk}</td><td>${weightHistory[i]}</td></tr>`).join('');
+  document.getElementById('rawWeightTable').innerHTML = wHead + wRows;
+}
+renderRawDataTable();
 </script>
 </body>
 </html>
