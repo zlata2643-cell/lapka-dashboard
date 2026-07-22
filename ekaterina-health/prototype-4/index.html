@@ -294,6 +294,8 @@
   }
   .sleep-time-input::-webkit-calendar-picker-indicator{ filter:invert(0.8); }
   .sleep-deep-note{ font-size:11.5px; line-height:1.5; color:var(--muted); text-align:center; margin-bottom:20px; }
+  .sleep-consistency{ font-size:12px; color:var(--muted); text-align:center; margin:2px 0 12px; }
+  .sleep-consistency b{ color:var(--neon-core); font-weight:700; }
 
   .weight-direct-toggle{
     font-size:12px; color:var(--neon-core); text-decoration:underline;
@@ -722,7 +724,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="section-label" style="margin-bottom:0;">Ритуалы дня</div>
           <div>
-            <div class="ritual-progress" id="ritualProgress">3 / 5</div>
+            <div class="ritual-progress" id="ritualProgress">4 / 6</div>
             <div class="ritual-streak" id="ritualStreak">🔥 4 дня подряд</div>
           </div>
         </div>
@@ -910,6 +912,7 @@
             <input type="time" class="sleep-time-input" id="sleepWakeInput" value="06:36">
           </div>
         </div>
+        <div class="sleep-consistency" id="sleepConsistency"></div>
         <div class="sleep-deep-note">Глубокий сон и фазы — появятся, когда подключишь трекер (например Oura). Пока — только общее время сна, из твоих отбоя/подъёма.</div>
 
         <div class="weight-graph" id="sleepGraph"></div>
@@ -1257,6 +1260,16 @@ function parseTimeToMinutes(t){
   const [h,m] = t.split(':').map(Number);
   return h*60 + m;
 }
+const bedTimeHistory = ['23:20','23:05','23:40','22:50','23:15','23:30','23:10'];
+function renderSleepConsistency(){
+  const mins = bedTimeHistory.map(parseTimeToMinutes);
+  const avg = mins.reduce((s,v)=>s+v,0) / mins.length;
+  const variance = mins.reduce((s,v)=>s+(v-avg)**2,0) / mins.length;
+  const stddev = Math.round(Math.sqrt(variance));
+  const qualifier = stddev <= 15 ? 'стабильно' : stddev <= 30 ? 'средне' : 'нестабильно';
+  document.getElementById('sleepConsistency').innerHTML = `Стабильность отбоя: <b>±${stddev} мин</b> за неделю — ${qualifier}`;
+}
+renderSleepConsistency();
 function computeSleepDuration(bed, wake){
   let mins = parseTimeToMinutes(wake) - parseTimeToMinutes(bed);
   if(mins <= 0) mins += 24*60;
@@ -1275,7 +1288,9 @@ document.getElementById('sleepSave').addEventListener('click', ()=>{
   updateSleepValueFromInputs();
   const hours = parseFloat(document.getElementById('sleepValue').textContent);
   sleepHistory[sleepHistory.length-1] = hours;
+  bedTimeHistory[bedTimeHistory.length-1] = document.getElementById('sleepBedInput').value;
   renderSleepGraph();
+  renderSleepConsistency();
   updateSleepRec();
   showToast('sleepToast', `Записала: ${hours.toFixed(1)} ч сна`);
 });
@@ -1493,6 +1508,7 @@ renderTabbars('home');
 const rituals = [
   { label: 'Стакан воды натощак', done: true },
   { label: '10 минут растяжки', done: true },
+  { label: 'Утренний свет (10+ минут)', done: true },
   { label: 'Прогулка на улице', done: true },
   { label: 'Без экрана за час до сна', done: false },
   { label: 'Дневник благодарности', done: false }
