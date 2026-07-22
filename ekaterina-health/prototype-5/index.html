@@ -99,12 +99,13 @@
   .home-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:26px; margin-top:2px; }
   .greeting-date{ font-size:12px; color:var(--muted-2); }
   .summary-btn{
-    width:32px; height:32px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; gap:6px; flex-shrink:0;
+    padding:7px 12px; border-radius:var(--r-pill);
     background:rgba(46,155,234,0.08); border:1px solid rgba(46,155,234,0.25);
-    color:var(--neon-core); display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
+    color:var(--neon-core); cursor:pointer;
+    font-size:11px; font-weight:700; white-space:nowrap;
   }
-  .summary-btn svg{ width:16px; height:16px; }
+  .summary-btn svg{ width:14px; height:14px; flex-shrink:0; }
 
   .ring-wrap{ display:flex; justify-content:center; margin-bottom:16px; }
   .ring{
@@ -166,6 +167,7 @@
   .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
 
   .focus-label{ font-size:11px; color:var(--muted-2); text-align:center; margin-top:18px; margin-bottom:10px; line-height:1.4; }
+  .focus-days-left{ font-size:11px; color:var(--gold-light); text-align:center; margin-top:8px; }
   .focus-row{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
   .focus-chip{
     font-size:12px; font-weight:600; padding:7px 14px; border-radius:var(--r-pill);
@@ -526,6 +528,7 @@
     display:flex; align-items:center; justify-content:center;
   }
   .rec-item .ic svg{ width:15px; height:15px; }
+  .rec-item .ic.warn{ background:rgba(203,161,53,0.15); color:var(--gold-light); }
   .rec-item .txt{ font-size:13px; line-height:1.5; color:var(--warm-white); padding-top:4px; }
   .rec-item .txt span{ color:var(--muted); }
 
@@ -677,11 +680,13 @@
       <div class="home-head">
         <div class="greeting-date">Вторник, 21 июля</div>
         <div style="display:flex; gap:8px;">
-          <div class="summary-btn" id="experimentBtn" data-goto="experiment" title="Эксперимент">
+          <div class="summary-btn" id="experimentBtn" data-goto="experiment">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A1.6 1.6 0 0 0 6 21h12a1.6 1.6 0 0 0 1.4-2.5L14 9V3"/></svg>
+            <span>Эксперимент</span>
           </div>
-          <div class="summary-btn" id="summaryBtn" data-goto="summary" title="Сводка по дням/неделям/месяцам">
+          <div class="summary-btn" id="summaryBtn" data-goto="summary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+            <span>Сводка</span>
           </div>
         </div>
       </div>
@@ -725,6 +730,7 @@
         <div class="radar-legend" id="radarLegend"></div>
         <div class="focus-label">Фокус недели — на чём сосредоточиться, а не пытаться улучшить всё сразу</div>
         <div class="focus-row" id="focusRow"></div>
+        <div class="focus-days-left" id="focusDaysLeft"></div>
       </div>
 
       <div class="stat-grid">
@@ -810,7 +816,7 @@
           <div class="txt" id="recNutritionTxt">До конца дня ещё 360 ккал и 42г белка — <span>оставь их на ужин, а не перекусы</span></div>
         </div>
         <div class="rec-item">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg></div>
+          <div class="ic" id="recReadinessIc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg></div>
           <div class="txt" id="recReadinessTxt">Готовность высокая (92) — <span>хороший день для силовой, тело восстановилось</span></div>
         </div>
       </div>
@@ -1072,8 +1078,14 @@
           <div class="weight-labels" id="summarySleepLabels"></div>
         </div>
         <div class="radar-card">
-          <div class="section-label">Активность и питание</div>
-          <div class="summary-empty">Пока считаются только на сегодня (см. вкладки "Актив." и "Питание") — история по дням появится, когда будем собирать данные за прошлые дни, не только текущие.</div>
+          <div class="section-label">Активность за 7 дней, ккал</div>
+          <div class="weight-graph" id="summaryActivityGraph" style="margin-top:14px;"></div>
+          <div class="weight-labels" id="summaryActivityLabels"></div>
+        </div>
+        <div class="radar-card">
+          <div class="section-label">Питание за 7 дней, ккал</div>
+          <div class="weight-graph" id="summaryNutritionGraph" style="margin-top:14px;"></div>
+          <div class="weight-labels" id="summaryNutritionLabels"></div>
         </div>
 
         <div class="radar-card">
@@ -1116,11 +1128,10 @@
           <div class="weekly-goal-sub" id="expProgressTxt"></div>
         </div>
         <div class="radar-card">
-          <div class="section-label">До / после — по готовности</div>
+          <div class="section-label" id="expMetricLabel">До / после — по готовности</div>
           <div class="rb-row"><span>До эксперимента</span><b id="expBeforeVal">—</b></div>
           <div class="rb-row"><span>С начала эксперимента</span><b id="expAfterVal">—</b></div>
           <div class="summary-empty" id="expVerdictTxt"></div>
-          <div class="summary-empty">Пока сравниваем только по готовности — выбор метрики под гипотезу добавим позже.</div>
         </div>
         <button class="btn-secondary" id="expStopBtn">Завершить и начать новый</button>
       </div>
@@ -1129,6 +1140,13 @@
         <div class="radar-card">
           <div class="section-label">Новая гипотеза</div>
           <input class="input-field" type="text" id="expHypothesisInput" placeholder="Например: Отбой до 23:00 → выше активность" style="margin-bottom:14px;">
+          <div class="section-label">Метрика для сравнения</div>
+          <div class="segment" id="expMetricSegment" style="margin-bottom:16px; flex-wrap:wrap;">
+            <button class="segment-btn active" data-metric="readiness">Готовность</button>
+            <button class="segment-btn" data-metric="weight">Вес</button>
+            <button class="segment-btn" data-metric="sleep">Сон</button>
+            <button class="segment-btn" data-metric="activity">Активность</button>
+          </div>
           <div class="section-label">Период</div>
           <div class="segment" id="expPeriodSegment" style="margin-bottom:16px;">
             <button class="segment-btn active" data-days="7">7 дней</button>
@@ -1235,6 +1253,8 @@ function syncReadinessHistoryToday(val){
 function findWeakestAxis(){
   return READINESS_AXES.reduce((min,a)=> a.value < min.value ? a : min, READINESS_AXES[0]);
 }
+const REC_DEFAULT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15c2 0 2-4 4-4s2 4 4 4 2-8 4-8 2 8 4 8h2"/></svg>';
+const REC_WARN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><line x1="12" y1="10" x2="12" y2="14.5"/><circle cx="12" cy="17.3" r="0.15" fill="currentColor"/></svg>';
 const AXIS_MICRO_ACTIONS = {
   'Сон': 'сегодня ляг на 30 минут раньше — это самый быстрый рычаг',
   'Активность': 'даже 15 минут прогулки сдвинут эту ось заметнее всего',
@@ -1243,22 +1263,47 @@ const AXIS_MICRO_ACTIONS = {
 };
 
 let weekFocus = null;
+let weekFocusStartedAt = null;
+const WEEK_FOCUS_MS = 7*24*60*60*1000;
+
+function checkWeekFocusExpiry(){
+  if(weekFocus && weekFocusStartedAt && (Date.now() - weekFocusStartedAt) >= WEEK_FOCUS_MS){
+    weekFocus = null;
+    weekFocusStartedAt = null;
+  }
+}
+function weekFocusDaysLeft(){
+  if(!weekFocus || !weekFocusStartedAt) return 0;
+  const elapsed = Date.now() - weekFocusStartedAt;
+  return Math.max(0, Math.ceil((WEEK_FOCUS_MS - elapsed) / (24*60*60*1000)));
+}
+
 function renderFocusRow(){
+  checkWeekFocusExpiry();
   const row = document.getElementById('focusRow');
   row.innerHTML = READINESS_AXES.map(a =>
     `<span class="focus-chip ${weekFocus===a.label?'active':''}" data-axis="${a.label}">${a.label}</span>`
   ).join('');
   row.querySelectorAll('.focus-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{
-      weekFocus = weekFocus === chip.dataset.axis ? null : chip.dataset.axis;
+      if(weekFocus === chip.dataset.axis){
+        weekFocus = null;
+        weekFocusStartedAt = null;
+      } else {
+        weekFocus = chip.dataset.axis;
+        weekFocusStartedAt = Date.now();
+      }
       renderFocusRow();
       updateReadinessRing();
     });
   });
+  const daysLeftEl = document.getElementById('focusDaysLeft');
+  daysLeftEl.textContent = weekFocus ? `Осталось ${weekFocusDaysLeft()} дней — потом сбросится само` : '';
 }
 renderFocusRow();
 
 function updateReadinessRing(){
+  checkWeekFocusExpiry();
   const { val, sleepAxis } = computeReadiness();
   const deg = val/100*360;
   document.getElementById('readinessValue').textContent = val;
@@ -1273,6 +1318,14 @@ function updateReadinessRing(){
     const action = AXIS_MICRO_ACTIONS[target.label] || 'обрати внимание на эту ось сегодня';
     const prefix = weekFocus ? 'Фокус недели' : 'Слабее всего';
     recEl.innerHTML = `${prefix} — ${target.label.toLowerCase()} (${target.value}) — <span>${action}</span>`;
+    const icEl = document.getElementById('recReadinessIc');
+    if(target.value < 65){
+      icEl.classList.add('warn');
+      icEl.innerHTML = REC_WARN_ICON;
+    } else {
+      icEl.classList.remove('warn');
+      icEl.innerHTML = REC_DEFAULT_ICON;
+    }
   }
   document.getElementById('lowReadinessBanner').style.display = val < 60 ? 'flex' : 'none';
 }
@@ -1551,6 +1604,8 @@ document.getElementById('nutritionUndo').addEventListener('click', ()=>{
     link.classList.remove('show');
   }
   renderMacros();
+  nutritionHistory[nutritionHistory.length-1] = totals.kcalConsumed;
+  renderNutritionHistory();
   showToast('nutritionToast', 'Отменила последнюю запись');
 });
 
@@ -1560,6 +1615,8 @@ document.getElementById('plateBtn').addEventListener('click', ()=>{
 document.getElementById('confirmPlate').addEventListener('click', ()=>{
   totals.protein += 32; totals.fat += 18; totals.carb += 64; totals.kcalConsumed += 560;
   renderMacros();
+  nutritionHistory[nutritionHistory.length-1] = totals.kcalConsumed;
+  renderNutritionHistory();
   setUndo({p:32,f:18,c:64,kcal:560});
   document.getElementById('recognizedBlock').classList.remove('show');
   showToast('nutritionToast', 'Записала: тарелка · 560 ккал');
@@ -1573,6 +1630,8 @@ document.getElementById('addMacros').addEventListener('click', ()=>{
   const kcal = kcalFromMacros(p,f,c);
   totals.protein += p; totals.fat += f; totals.carb += c; totals.fiber += fiber; totals.kcalConsumed += kcal;
   renderMacros();
+  nutritionHistory[nutritionHistory.length-1] = totals.kcalConsumed;
+  renderNutritionHistory();
   setUndo({p,f,c,fiber,kcal});
   document.getElementById('proteinInput').value = '';
   document.getElementById('fatInput').value = '';
@@ -1643,6 +1702,19 @@ const activityData = {
     {icon:'strength', t:'Силовая', s:'Сегодня · 45 мин', kcal:360}
   ]
 };
+
+/* ---------- История по дням: активность и питание ---------- */
+let activityHistory = [280, 410, 150, 330, 0, 395, 360];
+let nutritionHistory = [2050, 1980, 2200, 1750, 2100, 1890, 1840];
+
+function renderActivityHistory(){
+  fillBarGraph('summaryActivityGraph', 'summaryActivityLabels', activityHistory, READINESS_HISTORY_LABELS);
+}
+function renderNutritionHistory(){
+  fillBarGraph('summaryNutritionGraph', 'summaryNutritionLabels', nutritionHistory, READINESS_HISTORY_LABELS);
+}
+renderActivityHistory();
+renderNutritionHistory();
 
 function activityIcon(type){
   return {
@@ -1741,6 +1813,8 @@ document.getElementById('activitySave').addEventListener('click', ()=>{
   const kcal = parseInt(kcalText||'0',10);
   activityData.today.unshift({ icon, t: activeType.label, s: `${duration} мин · сейчас`, kcal });
   activityData.week.unshift({ icon, t: activeType.label, s: `Сегодня · ${duration} мин`, kcal });
+  activityHistory[activityHistory.length-1] += kcal;
+  renderActivityHistory();
   if(document.querySelector('.segment-btn.active').dataset.range === 'today') renderActivityList('today');
   renderStrengthFrequency();
   showToast('activityToast', `Записала: ${activeType.label} · ${duration} мин`);
@@ -1866,9 +1940,9 @@ document.querySelectorAll('#summarySegment .segment-btn').forEach(btn=>{
 
 /* ---------- Мои данные: сырая таблица ---------- */
 function renderRawDataTable(){
-  const head = '<tr><th>День</th><th>Готовность</th><th>Сон, ч</th><th>Отбой</th></tr>';
+  const head = '<tr><th>День</th><th>Готовность</th><th>Сон, ч</th><th>Отбой</th><th>Актив., ккал</th><th>Питание, ккал</th></tr>';
   const rows = READINESS_HISTORY_LABELS.map((day,i) =>
-    `<tr><td>${day}</td><td>${readinessHistory[i]}</td><td>${sleepHistory[i]}</td><td>${bedTimeHistory[i]}</td></tr>`
+    `<tr><td>${day}</td><td>${readinessHistory[i]}</td><td>${sleepHistory[i]}</td><td>${bedTimeHistory[i]}</td><td>${activityHistory[i]}</td><td>${nutritionHistory[i]}</td></tr>`
   ).join('');
   document.getElementById('rawDataTable').innerHTML = head + rows;
 
@@ -1879,12 +1953,20 @@ function renderRawDataTable(){
 renderRawDataTable();
 
 /* ---------- N=1 эксперимент ---------- */
+const EXPERIMENT_METRICS = {
+  readiness: { label: 'готовности', unit: '', getCurrent: () => computeReadiness().val },
+  weight: { label: 'веса', unit: ' кг', getCurrent: () => weightHistory[weightHistory.length-1] },
+  sleep: { label: 'сна', unit: ' ч', getCurrent: () => sleepHistory[sleepHistory.length-1] },
+  activity: { label: 'активности', unit: ' ккал', getCurrent: () => activityHistory[activityHistory.length-1] }
+};
+
 let experiment = {
   hypothesis: 'Отбой до 23:00 → выше активность',
+  metric: 'activity',
   days: 14,
   currentDay: 9,
-  beforeAvg: 58,
-  afterAvg: 71
+  beforeAvg: 280,
+  afterAvg: 355
 };
 
 function renderExperiment(){
@@ -1897,19 +1979,21 @@ function renderExperiment(){
   }
   activeEl.style.display = 'block';
   formEl.style.display = 'none';
+  const metricInfo = EXPERIMENT_METRICS[experiment.metric];
+  document.getElementById('expMetricLabel').textContent = `До / после — по ${metricInfo.label}`;
   document.getElementById('expHypothesisTxt').textContent = experiment.hypothesis;
   document.getElementById('expProgressFill').style.width = Math.round(experiment.currentDay/experiment.days*100) + '%';
   document.getElementById('expProgressTxt').textContent = `День ${experiment.currentDay} из ${experiment.days}`;
-  document.getElementById('expBeforeVal').textContent = experiment.beforeAvg;
-  document.getElementById('expAfterVal').textContent = experiment.afterAvg;
-  const delta = experiment.afterAvg - experiment.beforeAvg;
+  document.getElementById('expBeforeVal').textContent = experiment.beforeAvg + metricInfo.unit;
+  document.getElementById('expAfterVal').textContent = experiment.afterAvg + metricInfo.unit;
+  const delta = Math.round((experiment.afterAvg - experiment.beforeAvg)*10)/10;
   const verdictEl = document.getElementById('expVerdictTxt');
   if(experiment.currentDay < experiment.days){
-    verdictEl.textContent = `Предварительно: ${delta>0?'+':''}${delta}. Окончательный вывод — после дня ${experiment.days}, не раньше: иначе легко обмануться случайным разбросом.`;
+    verdictEl.textContent = `Предварительно: ${delta>0?'+':''}${delta}${metricInfo.unit}. Окончательный вывод — после дня ${experiment.days}, не раньше: иначе легко обмануться случайным разбросом.`;
   } else {
     verdictEl.textContent = delta > 0
-      ? `Гипотеза подтвердилась: разница ${delta>0?'+':''}${delta} по готовности за период.`
-      : `Гипотеза не подтвердилась на этот раз — разница ${delta}.`;
+      ? `Гипотеза подтвердилась: разница ${delta>0?'+':''}${delta}${metricInfo.unit} по ${metricInfo.label} за период.`
+      : `Гипотеза не подтвердилась на этот раз — разница ${delta}${metricInfo.unit}.`;
   }
 }
 renderExperiment();
@@ -1926,12 +2010,20 @@ document.querySelectorAll('#expPeriodSegment .segment-btn').forEach(btn=>{
   });
 });
 
+document.querySelectorAll('#expMetricSegment .segment-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#expMetricSegment .segment-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
 document.getElementById('expStartBtn').addEventListener('click', ()=>{
   const hyp = document.getElementById('expHypothesisInput').value.trim();
   if(!hyp) return;
   const days = parseInt(document.querySelector('#expPeriodSegment .segment-btn.active').dataset.days, 10);
-  const currentReadiness = computeReadiness().val;
-  experiment = { hypothesis: hyp, days, currentDay: 1, beforeAvg: currentReadiness, afterAvg: currentReadiness };
+  const metric = document.querySelector('#expMetricSegment .segment-btn.active').dataset.metric;
+  const current = EXPERIMENT_METRICS[metric].getCurrent();
+  experiment = { hypothesis: hyp, metric, days, currentDay: 1, beforeAvg: current, afterAvg: current };
   renderExperiment();
   document.getElementById('expHypothesisInput').value = '';
   showToast('experimentToast', 'Эксперимент начат — вернись через несколько дней');
