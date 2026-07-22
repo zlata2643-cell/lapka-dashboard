@@ -136,11 +136,6 @@
     color:var(--warm-white); margin-bottom:14px;
   }
 
-  .empty-toggle-row{ display:flex; justify-content:flex-end; margin-bottom:4px; }
-  .empty-toggle{
-    display:flex; align-items:center; gap:8px;
-    font-size:11px; color:var(--muted); cursor:pointer; user-select:none;
-  }
 
   .radar-card{
     background:var(--gradient-panel);
@@ -588,13 +583,6 @@
           <div class="greeting-date">Вторник, 21 июля</div>
         </div>
       </div>
-      <div class="empty-toggle-row">
-        <div class="empty-toggle" id="emptyToggle" role="switch" aria-checked="false" tabindex="0" aria-label="Показать пример дня или пустой новый день">
-          <span id="emptyToggleLabel">Показать: пример дня</span>
-          <div class="toggle" id="emptyToggleSwitch"><div class="toggle-knob"></div></div>
-        </div>
-      </div>
-
       <div class="checkin-card">
         <div class="checkin-question">Как ты себя чувствуешь сегодня?</div>
         <div class="slider-track" id="feelTrack">
@@ -1327,59 +1315,6 @@ document.getElementById('labsBtn').addEventListener('click', ()=>{
   showToast('labsToast');
 });
 
-/* ---------- Переключатель "Пример дня / Новый день" ---------- */
-const RITUAL_DEMO_DONE = rituals.map(r=>r.done);
-const WATER_DEMO_FILLED = waterFilled;
-const INSIGHT_DEMO_HTML = document.getElementById('insightText').innerHTML;
-const REC_DEMO_HTML = document.getElementById('recCard').innerHTML;
-let isEmptyDay = false;
-
-function applyEmptyState(isEmpty){
-  document.getElementById('statActivityVal').textContent = isEmpty ? '—' : '420 ккал';
-  document.getElementById('statActivitySub').textContent = isEmpty ? 'ещё не внесено' : '6420 шагов';
-
-  document.getElementById('statWeightVal').textContent = isEmpty ? '—' : '62.4 кг';
-  document.getElementById('statWeightSub').textContent = isEmpty ? 'ещё не внесено' : '−0.4 кг за 7 дней';
-
-  document.getElementById('statSleepVal').textContent = isEmpty ? '—' : '7.4 ч';
-  document.getElementById('statSleepSub').textContent = isEmpty ? 'нет данных за ночь' : 'глубокий сон 1.8 ч';
-
-  if(isEmpty){
-    totals.protein=0; totals.fat=0; totals.carb=0; totals.kcalConsumed=0;
-  } else {
-    totals.protein=78; totals.fat=42; totals.carb=156; totals.kcalConsumed=1840;
-  }
-  renderMacros();
-
-  rituals.forEach((r,i)=>{ r.done = isEmpty ? false : RITUAL_DEMO_DONE[i]; });
-  renderRituals();
-
-  waterFilled = isEmpty ? 0 : WATER_DEMO_FILLED;
-  renderWater();
-
-  if(isEmpty){
-    document.getElementById('insightCard').style.display = 'none';
-    document.getElementById('recCard').innerHTML = `
-      <div class="section-label">Рекомендации для тебя</div>
-      <div class="rec-item"><div class="txt">Рекомендации появятся, когда наберётся история за несколько дней 🐾</div></div>`;
-  } else {
-    document.getElementById('insightCard').style.display = '';
-    document.getElementById('insightText').innerHTML = INSIGHT_DEMO_HTML;
-    document.getElementById('recCard').innerHTML = REC_DEMO_HTML;
-    updateReadinessRing();
-  }
-}
-
-function toggleEmptyDay(){
-  isEmptyDay = !isEmptyDay;
-  const el = document.getElementById('emptyToggle');
-  el.setAttribute('aria-checked', String(isEmptyDay));
-  document.getElementById('emptyToggleSwitch').classList.toggle('on', isEmptyDay);
-  document.getElementById('emptyToggleLabel').textContent = isEmptyDay ? 'Показать: новый день' : 'Показать: пример дня';
-  applyEmptyState(isEmptyDay);
-}
-document.getElementById('emptyToggle').addEventListener('click', toggleEmptyDay);
-
 /* ---------- Свернуть "Ритм дня" по умолчанию ---------- */
 let rhythmOpen = false;
 function applyRhythmState(){
@@ -1391,9 +1326,6 @@ document.getElementById('rhythmToggle').addEventListener('click', ()=>{
   applyRhythmState();
 });
 applyRhythmState();
-document.getElementById('emptyToggle').addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleEmptyDay(); }
-});
 </script>
 </body>
 </html>
