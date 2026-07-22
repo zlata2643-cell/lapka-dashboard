@@ -98,12 +98,12 @@
   /* ---------- Главный ---------- */
   .greeting-date{ font-size:12px; color:var(--muted-2); margin-bottom:26px; margin-top:2px; }
 
-  .ring-wrap{ display:flex; justify-content:center; margin-bottom:10px; }
+  .ring-wrap{ display:flex; justify-content:center; margin-bottom:16px; }
   .ring{
     width:180px; height:180px; border-radius:50%;
-    background:conic-gradient(from -90deg, var(--gold-light) 0deg, var(--gold-light) 54deg, var(--neon-core) 54deg, var(--neon) 248deg, rgba(255,255,255,0.05) 248deg, rgba(255,255,255,0.05) 360deg);
+    background:conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) 248deg, rgba(255,255,255,0.05) 248deg, rgba(255,255,255,0.05) 360deg);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 0 70px rgba(203,161,53,0.35), 0 0 70px rgba(53,199,255,0.45);
+    box-shadow:0 0 70px rgba(53,199,255,0.5);
     cursor:pointer;
   }
   .ring-inner{
@@ -114,9 +114,9 @@
   .ring-value{
     font-family:var(--font-display); font-weight:600; font-size:46px;
     color:var(--warm-white); line-height:1;
-    text-shadow:0 0 30px rgba(232,206,132,0.55);
+    text-shadow:0 0 30px rgba(111,232,255,0.5);
   }
-  .ring-label{ font-size:11px; color:var(--gold-light); margin-top:4px; }
+  .ring-label{ font-size:11px; color:var(--neon-core); margin-top:4px; }
 
   .readiness-decode{
     text-align:center; font-size:12px; color:var(--muted);
@@ -124,10 +124,16 @@
   }
   .readiness-decode b{ color:var(--warm-white); font-weight:600; }
 
-  .readiness-delta{ text-align:center; font-size:12px; font-weight:600; margin:-6px 0 12px; }
-  .readiness-delta.up{ color:var(--gold-light); }
-  .readiness-delta.down{ color:var(--muted-2); }
-  .readiness-delta.flat{ color:var(--muted); }
+  .readiness-delta{ display:flex; justify-content:center; margin:0 0 14px; }
+  .readiness-delta-pill{
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 13px; border-radius:var(--r-pill);
+    font-size:12px; font-weight:700;
+  }
+  .readiness-delta-pill svg{ width:10px; height:10px; flex-shrink:0; }
+  .readiness-delta-pill.up{ background:rgba(53,199,255,0.12); border:1px solid rgba(53,199,255,0.35); color:var(--neon-core); }
+  .readiness-delta-pill.down{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:var(--muted-2); }
+  .readiness-delta-pill.flat{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:var(--muted); }
 
   .week-card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .week-card-head .section-label{ margin-bottom:0; }
@@ -1053,20 +1059,23 @@ function syncReadinessHistoryToday(val){
 }
 
 const WEEK_AGO_REF = readinessHistory[0];
+const DELTA_ARROW_UP = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 10H4z"/></svg>';
+const DELTA_ARROW_DOWN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20L4 10h16z"/></svg>';
+const DELTA_ARROW_FLAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>';
+
 function renderReadinessDelta(val){
   const el = document.getElementById('readinessDelta');
   if(!el) return;
   const delta = val - WEEK_AGO_REF;
+  let icon, label, cls;
   if(delta > 0){
-    el.textContent = `▲ +${delta} к прошлой неделе`;
-    el.className = 'readiness-delta up';
+    icon = DELTA_ARROW_UP; label = `+${delta} к прошлой неделе`; cls = 'up';
   } else if(delta < 0){
-    el.textContent = `▼ ${delta} к прошлой неделе`;
-    el.className = 'readiness-delta down';
+    icon = DELTA_ARROW_DOWN; label = `${delta} к прошлой неделе`; cls = 'down';
   } else {
-    el.textContent = `= без изменений за неделю`;
-    el.className = 'readiness-delta flat';
+    icon = DELTA_ARROW_FLAT; label = 'без изменений за неделю'; cls = 'flat';
   }
+  el.innerHTML = `<span class="readiness-delta-pill ${cls}">${icon}${label}</span>`;
 }
 
 const GOOD_DAY_THRESHOLD = 70;
@@ -1112,12 +1121,11 @@ const AXIS_MICRO_ACTIONS = {
 };
 
 function updateReadinessRing(){
-  const { val, selfPart } = computeReadiness();
+  const { val } = computeReadiness();
   const deg = val/100*360;
-  const goldDeg = val > 0 ? (selfPart/val)*deg : 0;
   document.getElementById('readinessValue').textContent = val;
   document.getElementById('readinessRing').style.background =
-    `conic-gradient(from -90deg, var(--gold-light) 0deg, var(--gold-light) ${goldDeg}deg, var(--neon-core) ${goldDeg}deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
+    `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
   renderReadinessDelta(val);
   renderWeeklyGoal();
