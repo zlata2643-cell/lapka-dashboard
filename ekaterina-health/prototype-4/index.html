@@ -124,12 +124,35 @@
   }
   .readiness-decode b{ color:var(--warm-white); font-weight:600; }
 
+  .readiness-delta{ text-align:center; font-size:12px; font-weight:600; margin:-6px 0 12px; }
+  .readiness-delta.up{ color:var(--gold-light); }
+  .readiness-delta.down{ color:var(--muted-2); }
+  .readiness-delta.flat{ color:var(--muted); }
+
   .readiness-history-card{ padding-bottom:14px; }
   .readiness-history{ display:flex; align-items:flex-end; gap:7px; height:38px; margin:14px 0 8px; }
   .readiness-bar{ width:9px; border-radius:2px; background:rgba(53,199,255,0.35); }
   .readiness-bar.today{ background:var(--gold-light); box-shadow:0 0 10px rgba(232,206,132,0.6); }
   .readiness-history-labels{ display:flex; gap:7px; }
   .readiness-history-labels span{ width:9px; font-size:8px; color:var(--muted-2); text-align:center; }
+
+  .radar-legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin-top:12px; }
+  .radar-legend-item{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted-2); }
+  .radar-legend-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon-core); box-shadow:0 0 6px rgba(111,232,255,0.7); flex-shrink:0; }
+  .radar-legend-item b{ color:var(--warm-white); font-weight:700; font-size:12px; }
+
+  .weekly-goal-title{ font-family:var(--font-display); font-size:15px; font-weight:600; color:var(--warm-white); margin:10px 0 12px; text-align:center; }
+  .weekly-goal-bar-track{ height:8px; border-radius:var(--r-pill); background:rgba(255,255,255,0.08); overflow:hidden; margin-bottom:10px; }
+  .weekly-goal-bar-fill{ height:100%; border-radius:var(--r-pill); background:linear-gradient(90deg, var(--gold), var(--gold-light)); box-shadow:0 0 14px rgba(203,161,53,0.5); transition:width .3s; }
+  .weekly-goal-sub{ font-size:12px; color:var(--muted); text-align:center; }
+
+  .log-list{ display:flex; flex-direction:column; }
+  .log-item{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .log-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .log-day{ font-size:13px; color:var(--warm-white); }
+  .log-right{ display:flex; align-items:center; }
+  .log-score{ font-family:var(--font-display); font-weight:600; font-size:15px; color:var(--warm-white); }
+  .log-tag{ font-size:11px; color:var(--muted); margin-left:8px; }
 
   .checkin-card{
     background:var(--gradient-panel);
@@ -622,6 +645,7 @@
           </div>
         </div>
       </div>
+      <div class="readiness-delta" id="readinessDelta"></div>
       <div class="readiness-decode" id="readinessDecode">по данным дня и твоей самооценке выше</div>
 
       <div class="radar-card readiness-history-card">
@@ -630,9 +654,22 @@
         <div class="readiness-history-labels" id="readinessHistoryLabels"></div>
       </div>
 
+      <div class="radar-card weekly-goal-card">
+        <div class="section-label">Цель недели</div>
+        <div class="weekly-goal-title" id="weeklyGoalTitle">— из 7 дней с хорошей готовностью</div>
+        <div class="weekly-goal-bar-track"><div class="weekly-goal-bar-fill" id="weeklyGoalFill" style="width:0%"></div></div>
+        <div class="weekly-goal-sub" id="weeklyGoalSub"></div>
+      </div>
+
+      <div class="radar-card log-card">
+        <div class="section-label">Последние дни</div>
+        <div class="log-list" id="readinessLogList"></div>
+      </div>
+
       <div class="radar-card">
         <div class="section-label">Колесо баланса</div>
         <svg class="radar-svg" id="radarSvg" width="260" height="240" viewBox="0 0 260 240"></svg>
+        <div class="radar-legend" id="radarLegend"></div>
       </div>
 
       <div class="stat-grid">
@@ -960,6 +997,56 @@ function syncReadinessHistoryToday(val){
   readinessHistory[readinessHistory.length-1] = val;
   renderReadinessHistory();
 }
+
+const WEEK_AGO_REF = readinessHistory[0];
+function renderReadinessDelta(val){
+  const el = document.getElementById('readinessDelta');
+  if(!el) return;
+  const delta = val - WEEK_AGO_REF;
+  if(delta > 0){
+    el.textContent = `▲ +${delta} к прошлой неделе`;
+    el.className = 'readiness-delta up';
+  } else if(delta < 0){
+    el.textContent = `▼ ${delta} к прошлой неделе`;
+    el.className = 'readiness-delta down';
+  } else {
+    el.textContent = `= без изменений за неделю`;
+    el.className = 'readiness-delta flat';
+  }
+}
+
+const GOOD_DAY_THRESHOLD = 70;
+function renderWeeklyGoal(){
+  const total = readinessHistory.length;
+  const done = readinessHistory.filter(v => v >= GOOD_DAY_THRESHOLD).length;
+  document.getElementById('weeklyGoalTitle').textContent = `${done} из ${total} дней с хорошей готовностью`;
+  document.getElementById('weeklyGoalFill').style.width = Math.round(done/total*100) + '%';
+  const left = total - done;
+  document.getElementById('weeklyGoalSub').textContent = left === 0
+    ? 'Неделя закрыта на отлично'
+    : `Ещё ${left} ${left === 1 ? 'день' : left < 5 ? 'дня' : 'дней'} — и неделя закрыта на отлично`;
+}
+
+function readinessTagFor(v){
+  return v >= 80 ? 'отлично' : v >= 60 ? 'норм' : 'ниже обычного';
+}
+function renderReadinessLog(){
+  const list = document.getElementById('readinessLogList');
+  list.innerHTML = readinessHistory.map((v,i) =>
+    `<div class="log-item"><div class="log-day">${READINESS_HISTORY_LABELS[i]}</div><div class="log-right"><div class="log-score">${v}</div><div class="log-tag">${readinessTagFor(v)}</div></div></div>`
+  ).reverse().join('');
+}
+
+function findWeakestAxis(){
+  return READINESS_AXES.reduce((min,a)=> a.value < min.value ? a : min, READINESS_AXES[0]);
+}
+const AXIS_MICRO_ACTIONS = {
+  'Сон': 'сегодня ляг на 30 минут раньше — это самый быстрый рычаг',
+  'Активность': 'даже 15 минут прогулки сдвинут эту ось заметнее всего',
+  'Питание': 'добавь в один приём больше белка и клетчатки',
+  'Тело': 'сделай сегодня растяжку или лёгкую мобильность на 10 минут'
+};
+
 function updateReadinessRing(){
   const { val, selfPart } = computeReadiness();
   const deg = val/100*360;
@@ -968,10 +1055,14 @@ function updateReadinessRing(){
   document.getElementById('readinessRing').style.background =
     `conic-gradient(from -90deg, var(--gold-light) 0deg, var(--gold-light) ${goldDeg}deg, var(--neon-core) ${goldDeg}deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
   syncReadinessHistoryToday(val);
+  renderReadinessDelta(val);
+  renderWeeklyGoal();
+  renderReadinessLog();
   const recEl = document.getElementById('recReadinessTxt');
   if(recEl){
-    const verdict = val >= 80 ? 'хороший день для силовой, тело восстановилось' : val >= 60 ? 'нормальный день, без рекордов' : 'лучше сегодня полегче — тело просит отдыха';
-    recEl.innerHTML = `Готовность ${val>=80?'высокая':val>=60?'средняя':'низкая'} (${val}) — <span>${verdict}</span>`;
+    const weakest = findWeakestAxis();
+    const action = AXIS_MICRO_ACTIONS[weakest.label] || 'обрати внимание на эту ось сегодня';
+    recEl.innerHTML = `Слабее всего — ${weakest.label.toLowerCase()} (${weakest.value}) — <span>${action}</span>`;
   }
 }
 
@@ -1042,6 +1133,13 @@ updateReadinessRing();
   });
 
   svg.innerHTML = svgContent;
+
+  const legend = document.getElementById('radarLegend');
+  if(legend){
+    legend.innerHTML = axes.map(a =>
+      `<div class="radar-legend-item"><span class="radar-legend-dot"></span>${a.label} · <b>${a.value}</b></div>`
+    ).join('');
+  }
 })();
 
 /* ---------- Вес ---------- */
