@@ -542,6 +542,13 @@
   .water-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
   .water-amount{ font-family:var(--font-display); font-size:15px; color:var(--neon-core); font-weight:600; }
   .water-row{ display:flex; gap:7px; justify-content:space-between; }
+  .electrolytes-toggle{
+    display:flex; align-items:center; gap:7px; margin-top:12px; padding:8px 12px;
+    border-radius:var(--r-pill); border:1px solid rgba(255,255,255,0.1);
+    color:var(--muted-2); font-size:12px; cursor:pointer; width:fit-content;
+  }
+  .electrolytes-toggle svg{ width:15px; height:15px; }
+  .electrolytes-toggle.on{ border-color:rgba(203,161,53,0.4); background:rgba(203,161,53,0.1); color:var(--gold-light); }
   .water-glass{
     flex:1; height:34px; border-radius:8px 8px 4px 4px;
     border:1.5px solid rgba(53,199,255,0.3);
@@ -737,6 +744,10 @@
           <div class="water-amount" id="waterAmount">1.2 / 2.0 л</div>
         </div>
         <div class="water-row" id="waterRow"></div>
+        <div class="electrolytes-toggle" id="electrolytesToggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 12a7 7 0 1 1-14 0z"/></svg>
+          <span id="electrolytesLabel">Добавить электролиты</span>
+        </div>
       </div>
 
       <div class="insight-card" id="insightCard">
@@ -800,6 +811,21 @@
     <div class="screen-scroll">
       <div class="nav-title">Питание</div>
 
+      <div class="radar-card">
+        <div class="section-label">Окно приёма пищи</div>
+        <div class="sleep-time-row" style="margin:12px 0 8px;">
+          <div class="sleep-time-field">
+            <span>Первый приём</span>
+            <input type="time" class="sleep-time-input" id="eatingFirstInput" value="09:30">
+          </div>
+          <div class="sleep-time-field">
+            <span>Последний приём</span>
+            <input type="time" class="sleep-time-input" id="eatingLastInput" value="20:15">
+          </div>
+        </div>
+        <div class="sleep-consistency" id="eatingWindowTxt" style="margin:0;"></div>
+      </div>
+
       <div class="dropzone" id="plateBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l2-3h12l2 3"/><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="14" r="3.2"/></svg>
         <div class="dropzone-title">Прислать тарелку</div>
@@ -837,9 +863,22 @@
           <div class="macro-bar-track"><div class="macro-bar-fill" id="carbBar" style="width:71%"></div></div>
           <div class="macro-input-row"><input class="macro-input" type="number" placeholder="+ грамм" id="carbInput"></div>
         </div>
+        <div class="macro-row">
+          <div class="macro-row-top"><span class="name">Клетчатка <i style="font-style:normal;color:var(--muted-2);font-size:10.5px;">из углеводов выше</i></span><span class="val" id="fiberVal">12 / 28 г</span></div>
+          <div class="macro-bar-track"><div class="macro-bar-fill" id="fiberBar" style="width:43%"></div></div>
+          <div class="macro-input-row"><input class="macro-input" type="number" placeholder="+ грамм" id="fiberInput"></div>
+        </div>
         <button class="btn-secondary" id="addMacros">Добавить</button>
       </div>
       <div class="undo-link" id="nutritionUndo">↩ отменить последнее</div>
+
+      <div class="radar-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="section-label" style="margin-bottom:0;">Разнообразие продуктов</div>
+          <div class="ritual-progress" id="foodGroupProgress">3 / 6</div>
+        </div>
+        <div class="ritual-list" id="foodGroupList" style="margin-top:12px;"></div>
+      </div>
     </div>
     <div class="toast" id="nutritionToast">Записала приём пищи</div>
     <div class="tabbar" id="tabbar3"></div>
@@ -1327,7 +1366,7 @@ document.getElementById('weightDirectConfirm').addEventListener('click', ()=>{
 });
 
 /* ---------- Питание ---------- */
-let totals = { protein:78, protMax:120, fat:42, fatMax:70, carb:156, carbMax:220, kcalGoal:2200, kcalConsumed:1840 };
+let totals = { protein:78, protMax:120, fat:42, fatMax:70, carb:156, carbMax:220, fiber:12, fiberMax:28, kcalGoal:2200, kcalConsumed:1840 };
 let macroHistory = [];
 
 function kcalFromMacros(p,f,c){ return Math.round(p*4 + f*9 + c*4); }
@@ -1339,6 +1378,8 @@ function renderMacros(){
   document.getElementById('fatBar').style.width = Math.min(100, totals.fat/totals.fatMax*100) + '%';
   document.getElementById('carbVal').textContent = `${totals.carb} / ${totals.carbMax} г`;
   document.getElementById('carbBar').style.width = Math.min(100, totals.carb/totals.carbMax*100) + '%';
+  document.getElementById('fiberVal').textContent = `${totals.fiber} / ${totals.fiberMax} г`;
+  document.getElementById('fiberBar').style.width = Math.min(100, totals.fiber/totals.fiberMax*100) + '%';
 
   const kcalLeft = Math.max(0, totals.kcalGoal - totals.kcalConsumed);
   const protLeft = Math.max(0, totals.protMax - totals.protein);
@@ -1362,7 +1403,7 @@ function setUndo(delta){
 document.getElementById('nutritionUndo').addEventListener('click', ()=>{
   const delta = macroHistory.pop();
   if(!delta) return;
-  totals.protein -= delta.p; totals.fat -= delta.f; totals.carb -= delta.c;
+  totals.protein -= delta.p; totals.fat -= delta.f; totals.carb -= delta.c; totals.fiber -= (delta.fiber||0);
   totals.kcalConsumed -= delta.kcal;
   const link = document.getElementById('nutritionUndo');
   if(macroHistory.length){
@@ -1388,15 +1429,65 @@ document.getElementById('addMacros').addEventListener('click', ()=>{
   const p = parseFloat(document.getElementById('proteinInput').value) || 0;
   const f = parseFloat(document.getElementById('fatInput').value) || 0;
   const c = parseFloat(document.getElementById('carbInput').value) || 0;
-  if(!p && !f && !c) return;
+  const fiber = parseFloat(document.getElementById('fiberInput').value) || 0;
+  if(!p && !f && !c && !fiber) return;
   const kcal = kcalFromMacros(p,f,c);
-  totals.protein += p; totals.fat += f; totals.carb += c; totals.kcalConsumed += kcal;
+  totals.protein += p; totals.fat += f; totals.carb += c; totals.fiber += fiber; totals.kcalConsumed += kcal;
   renderMacros();
-  setUndo({p,f,c,kcal});
+  setUndo({p,f,c,fiber,kcal});
   document.getElementById('proteinInput').value = '';
   document.getElementById('fatInput').value = '';
   document.getElementById('carbInput').value = '';
+  document.getElementById('fiberInput').value = '';
   showToast('nutritionToast', 'Записала приём пищи вручную');
+});
+
+/* ---------- Окно приёма пищи ---------- */
+function renderEatingWindow(){
+  const first = document.getElementById('eatingFirstInput').value;
+  const last = document.getElementById('eatingLastInput').value;
+  if(!first || !last) return;
+  const mins = parseTimeToMinutes(last) - parseTimeToMinutes(first);
+  const hours = Math.round(mins/6)/10;
+  const qualifier = hours <= 8 ? 'строгое окно' : hours <= 10 ? 'узкое окно' : hours <= 12 ? 'умеренное окно' : 'широкое окно';
+  document.getElementById('eatingWindowTxt').innerHTML = `<b>${hours.toFixed(1)} ч</b> между первым и последним приёмом — ${qualifier}`;
+}
+document.getElementById('eatingFirstInput').addEventListener('input', renderEatingWindow);
+document.getElementById('eatingLastInput').addEventListener('input', renderEatingWindow);
+renderEatingWindow();
+
+/* ---------- Разнообразие продуктов ---------- */
+const foodGroups = [
+  { label: 'Овощи и зелень', done: true },
+  { label: 'Фрукты и ягоды', done: true },
+  { label: 'Бобовые', done: false },
+  { label: 'Орехи и семена', done: true },
+  { label: 'Цельные злаки', done: false },
+  { label: 'Кисломолочное', done: false }
+];
+function renderFoodGroups(){
+  const list = document.getElementById('foodGroupList');
+  list.innerHTML = foodGroups.map((g,i) => `
+    <div class="ritual-item ${g.done?'done':''}" data-i="${i}">
+      <div class="ritual-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
+      <div class="lbl">${g.label}</div>
+    </div>`).join('');
+  document.getElementById('foodGroupProgress').textContent = `${foodGroups.filter(g=>g.done).length} / ${foodGroups.length}`;
+  list.querySelectorAll('.ritual-item').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      foodGroups[+el.dataset.i].done = !foodGroups[+el.dataset.i].done;
+      renderFoodGroups();
+    });
+  });
+}
+renderFoodGroups();
+
+/* ---------- Электролиты ---------- */
+let electrolytesTaken = false;
+document.getElementById('electrolytesToggle').addEventListener('click', ()=>{
+  electrolytesTaken = !electrolytesTaken;
+  document.getElementById('electrolytesToggle').classList.toggle('on', electrolytesTaken);
+  document.getElementById('electrolytesLabel').textContent = electrolytesTaken ? 'Электролиты добавлены' : 'Добавить электролиты';
 });
 
 /* ---------- Активность ---------- */
