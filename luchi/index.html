@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Лучи · Расходы</title>
+<title>Лучи · Расходы и аналитика</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -76,6 +76,54 @@
   .leg-vals { text-align: right; flex-shrink: 0; }
   .leg-sum { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .leg-pct { font-size: 10.5px; color: var(--text-2); font-variant-numeric: tabular-nums; margin-top: 1px; }
+
+  .section { margin-top: 32px; }
+  .section .eyebrow { margin-bottom: 2px; }
+  h2 { font-size: 18px; font-weight: 700; margin-top: 3px; }
+  .section .sub { margin-bottom: 14px; }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; }
+  .stat-tile .v { font-size: 18px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
+  .stat-tile .k { font-size: 11px; color: var(--text-2); margin-top: 3px; line-height: 1.3; }
+
+  .bars-wrap { display: flex; align-items: flex-end; gap: 4px; height: 130px; padding: 4px 2px 0; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
+  .bar { width: 100%; max-width: 18px; border-radius: 3px 3px 1px 1px; background: var(--gold); opacity: 0.55; min-height: 2px; cursor: pointer; transition: opacity 0.12s; }
+  .bar.risk { background: #d9704a; opacity: 0.9; }
+  .bar:hover, .bar.active { opacity: 1; }
+  .bar-axis { display: flex; gap: 4px; margin-top: 6px; padding: 0 2px; }
+  .bar-axis span { flex: 1; text-align: center; font-size: 8px; color: var(--text-2); max-width: 18px; margin: 0 auto; }
+  .chart-caption { font-size: 11.5px; color: var(--text-2); margin-top: 12px; line-height: 1.5; }
+  .chart-caption b { color: var(--text); font-weight: 600; }
+  .flag-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #d9704a; margin-right: 5px; }
+
+  .bar-tooltip {
+    position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.1s;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 6px 10px; font-size: 11px; white-space: nowrap; bottom: 100%; left: 50%;
+    transform: translateX(-50%) translateY(-8px); z-index: 5;
+  }
+  .bar-col:hover .bar-tooltip, .bar-tooltip.show { opacity: 1; }
+  .bar-tooltip b { color: var(--gold); font-variant-numeric: tabular-nums; }
+
+  .expert-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 15px; margin-bottom: 10px; }
+  .expert-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .expert-role { font-size: 13.5px; font-weight: 700; }
+  .expert-focus { font-size: 10.5px; color: var(--text-2); margin-top: 1px; font-weight: 400; }
+  .expert-chip { font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .expert-chip.good { background: rgba(58,150,90,0.16); color: #6fbf82; }
+  .expert-chip.watch { background: rgba(217,112,74,0.16); color: #e0916c; }
+  .expert-block { font-size: 12.5px; line-height: 1.55; margin-top: 8px; }
+  .expert-block .lbl { color: var(--gold); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+  .expert-block p { color: var(--text); opacity: 0.92; }
+  .expert-rec { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--divider); font-size: 12.5px; line-height: 1.5; }
+  .expert-rec .lbl { color: var(--text-2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+
+  .takeaway-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 15px; }
+  .takeaway-item { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; line-height: 1.5; border-bottom: 1px solid var(--divider); }
+  .takeaway-item:last-child { border-bottom: none; }
+  .takeaway-num { color: var(--gold); font-weight: 700; font-size: 13px; flex-shrink: 0; width: 18px; }
 </style>
 </head>
 <body>
@@ -100,6 +148,91 @@
   </div>
 
   <div class="legend" id="legend"></div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Ретроспектива</div>
+  <h2>Что сработало, что нет</h2>
+  <div class="sub">85 дней, 26.04–20.07.2026, 365 позиций расхода</div>
+
+  <div class="stat-row">
+    <div class="stat-tile"><div class="v">2 151 207 ₽</div><div class="k">итого потрачено</div></div>
+    <div class="stat-tile"><div class="v">25 300 ₽</div><div class="k">в среднем в день</div></div>
+    <div class="stat-tile"><div class="v">33%</div><div class="k">бюджета — всего за 2 недели из 14 (29.06–12.07)</div></div>
+    <div class="stat-tile"><div class="v">250 000 ₽</div><div class="k">крупнейший платёж одной строкой — «Управление проектом», 10.07</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div style="font-size:13px;font-weight:600;margin-bottom:2px">Траты по неделям</div>
+    <div style="font-size:11px;color:var(--text-2);margin-bottom:2px">Красным — недели, где деньги легли пиком</div>
+    <div class="bars-wrap" id="weeklyBars"></div>
+    <div class="bar-axis" id="weeklyAxis"></div>
+    <div class="chart-caption"><span class="flag-dot"></span>Недели 29.06 и 06.07 — 712 413 ₽ (33% всего бюджета) пришлись на мебель, технику и расчёт по работам одновременно. Дальше в панели экспертов — почему это риск, а не просто совпадение.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Панель экспертов</div>
+  <h2>5 независимых оценок</h2>
+  <div class="sub">Каждый смотрел на таблицу расходов и дорожную карту под своим углом</div>
+
+  <div class="expert-card">
+    <div class="expert-head">
+      <div><div class="expert-role">Финансовый аналитик</div><div class="expert-focus">кэш-флоу и крупные платежи</div></div>
+      <div class="expert-chip watch">Риск</div>
+    </div>
+    <div class="expert-block"><span class="lbl">Наблюдение</span><p>33% бюджета (712 413 ₽) прошло за 2 недели из 14 — мебель, техника и оплата работ легли одним пиком в конце. Плюс — гонорар «Управление проектом» 250 000 ₽ (11,6% всего бюджета) проведён одной строкой без расшифровки, на что именно.</p></div>
+    <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Разбивать управленческий гонорар на этапные платежи по факту стадий, а не одним чеком в конце — так виден кассовый разрыв заранее, а не постфактум.</div>
+  </div>
+
+  <div class="expert-card">
+    <div class="expert-head">
+      <div><div class="expert-role">Прораб / техконтроль</div><div class="expert-focus">логика последовательности работ</div></div>
+      <div class="expert-chip good">Норма</div>
+    </div>
+    <div class="expert-block"><span class="lbl">Наблюдение</span><p>Порядок работ правильный: демонтаж → штукатурка → сантехника/электрика → шпаклёвка → плитка → наливной пол → обои → потолок → мебель. Отклонений от стандартной последовательности флиппинг-ремонта нет.</p></div>
+    <div class="expert-block" style="margin-top:6px"><span class="lbl">Но</span><p>7 мая заказали 8 сантехнических фитингов Рехау (18 919 ₽), в тот же день передумали и взяли готовый комплект Grohe (28 890 ₽) — фитинги вернули. Деньги вернулись, но решение по сантехнике явно не было закреплено до первой закупки.</p></div>
+    <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Утверждать финальную спецификацию по сантехнике и электрике до первой закупки по разделу, а не после — сверка с дизайн-проектом перед оплатой, не после неё.</div>
+  </div>
+
+  <div class="expert-card">
+    <div class="expert-head">
+      <div><div class="expert-role">Снабженец / закупщик</div><div class="expert-focus">каналы закупки и цена</div></div>
+      <div class="expert-chip good">Хорошо</div>
+    </div>
+    <div class="expert-block"><span class="lbl">Наблюдение</span><p>Гибкая модель закупок: 92 позиции (184 972 ₽) — плановые заказы по артикулу онлайн, 54 позиции (86 382 ₽, 4% бюджета) — Федя докупал мелочь на месте. В комментарии к электрике прямо указано: тот же набор материалов в Леруа Мерлен обошёлся бы на 20% дороже — прямая закупка реально сэкономила.</p></div>
+    <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Экономия обнаружена постфактум, в комментарии. На следующем объекте — быстрая сверка цены в 2–3 источниках до заказа по крупным категориям (сантехника, электрика), не после.</div>
+  </div>
+
+  <div class="expert-card">
+    <div class="expert-head">
+      <div><div class="expert-role">Дизайнер интерьера</div><div class="expert-focus">баланс материалов и мебели</div></div>
+      <div class="expert-chip watch">Есть что улучшить</div>
+    </div>
+    <div class="expert-block"><span class="lbl">Наблюдение</span><p>Чистовые материалы + мебель — 25,6% бюджета (551 743 ₽), разумная доля на то, что видно и продаёт объект. Но мебель — самая раздробленная категория: 71 позиция при среднем чеке 5 032 ₽, растянута с 23-й по 30-ю неделю почти без пауз.</p></div>
+    <div class="expert-block" style="margin-top:6px"><span class="lbl">Цена дробности</span><p>27 отдельных доставок на 56 100 ₽ — в среднем 2 078 ₽ за доставку. Часть этой суммы — прямое следствие мелких, растянутых во времени заказов мебели.</p></div>
+    <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Формировать список мебели и декора заранее, закрывать его 1–2 крупными заказами вместо нескольких десятков мелких — меньше доставок, меньше логистического шума.</div>
+  </div>
+
+  <div class="expert-card">
+    <div class="expert-head">
+      <div><div class="expert-role">Операционный аудитор</div><div class="expert-focus">дисциплина данных и документации</div></div>
+      <div class="expert-chip watch">Требует внимания</div>
+    </div>
+    <div class="expert-block"><span class="lbl">Наблюдение</span><p>Таблица расходов ведётся дисциплинированно — 365 позиций с датой, суммой, сегментом и комментарием почти без пропусков. Но поле «Объект» в самом файле указывает «Тагильская», хотя это Лучи — при копировании шаблона на второй объект есть риск, что данные перепутаются местами.</p></div>
+    <div class="expert-block" style="margin-top:6px"><span class="lbl">Разрыв в журнале</span><p>Дорожная карта работ (журнал «что сделано сегодня») обрывается 7 июля. Расходы продолжаются до 20 июля, и именно в эти 13 дней — крупнейший платёж (250 000 ₽ за управление проектом) и финальная сборка мебели. Восстановить постфактум, на что именно ушли деньги в этот период, сложно.</p></div>
+    <div class="expert-rec"><span class="lbl">Что сделать иначе</span>На Тагильской сразу поправить поле «Объект» в шаблоне; вести журнал дорожной карты до момента реального закрытия проекта, а не до конца видимых строительных работ.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Если бы делали заново</div>
+  <h2>3 главных вывода</h2>
+  <div class="takeaway-card">
+    <div class="takeaway-item"><div class="takeaway-num">1</div><div>Платить за управление и крупные работы поэтапно, привязывая каждый платёж к конкретной стадии — а не одной суммой в конце. Это уберёт кассовый пик и сделает расход прозрачным.</div></div>
+    <div class="takeaway-item"><div class="takeaway-num">2</div><div>Закрывать спецификацию (особенно сантехника, электрика, мебель) одним решением до первой закупки по разделу — меньше возвратов и мелких дозаказов, меньше логистики.</div></div>
+    <div class="takeaway-item"><div class="takeaway-num">3</div><div>Вести дорожную карту работ до фактического закрытия проекта, а не до конца видимых строительных этапов — и сразу проверить поле «Объект» в шаблоне для Тагильской.</div></div>
+  </div>
 </div>
 
 <script>
@@ -193,6 +326,37 @@ document.querySelectorAll('.leg-row').forEach(r => {
   });
   r.addEventListener('mouseenter', () => { if (pinnedIdx === null) highlight(+r.dataset.idx); });
   r.addEventListener('mouseleave', () => { if (pinnedIdx === null) highlight(null); });
+});
+
+// Недельные траты
+const weekly = [
+  { label: "20.04", value: 79779 },
+  { label: "27.04", value: 109700 },
+  { label: "04.05", value: 235318 },
+  { label: "11.05", value: 140496 },
+  { label: "18.05", value: 166863 },
+  { label: "25.05", value: 84206 },
+  { label: "01.06", value: 268837 },
+  { label: "08.06", value: 148193 },
+  { label: "15.06", value: 68693 },
+  { label: "22.06", value: 122140 },
+  { label: "29.06", value: 353804, risk: true },
+  { label: "06.07", value: 358609, risk: true },
+  { label: "13.07", value: 14149 },
+  { label: "20.07", value: 419 },
+];
+const maxWeek = Math.max(...weekly.map(w => w.value));
+const barsWrap = document.getElementById('weeklyBars');
+const barsAxis = document.getElementById('weeklyAxis');
+weekly.forEach((w, i) => {
+  const h = Math.max((w.value / maxWeek) * 100, 1.5);
+  const col = document.createElement('div');
+  col.className = 'bar-col';
+  col.innerHTML = `<div class="bar-tooltip">неделя с ${w.label}<br><b>${fmt(w.value)}</b></div><div class="bar ${w.risk ? 'risk' : ''}" style="height:${h}%"></div>`;
+  barsWrap.appendChild(col);
+  const lab = document.createElement('span');
+  lab.textContent = i % 2 === 0 ? w.label : '';
+  barsAxis.appendChild(lab);
 });
 </script>
 </body>
