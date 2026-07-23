@@ -17,14 +17,16 @@
     --divider: rgba(243,236,224,0.08);
     --border: rgba(217,182,115,0.18);
 
-    --s1: #e0664f; /* Зарплата и Работы */
-    --s2: #ad8a34; /* Мебель */
-    --s3: #3d7bc9; /* Чистовые материалы */
-    --s4: #1f9c85; /* Сантехника */
-    --s5: #7d63c9; /* Техника */
-    --s6: #b8517d; /* Черновые материалы */
-    --s7: #5a9c3f; /* Электрика */
-    --s8: #c96a28; /* Другое */
+    --s1: #b54b69; /* Зарплата и работы */
+    --s2: #da6f56; /* Мебель */
+    --s3: #ab5400; /* Чистовые материалы */
+    --s4: #a39400; /* Сантехника */
+    --s5: #318538; /* Техника */
+    --s6: #009f9a; /* Черновые материалы */
+    --s7: #0087a9; /* Электрика */
+    --s8: #5c88f2; /* Доставка */
+    --s9: #7861c1; /* Расходники */
+    --s10: #bb73c0; /* Инструменты */
   }
 
   body {
@@ -74,8 +76,6 @@
   .leg-vals { text-align: right; flex-shrink: 0; }
   .leg-sum { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .leg-pct { font-size: 10.5px; color: var(--text-2); font-variant-numeric: tabular-nums; margin-top: 1px; }
-
-  .footnote { font-size: 11px; color: var(--text-2); margin-top: 16px; text-align: center; }
 </style>
 </head>
 <body>
@@ -102,8 +102,6 @@
   <div class="legend" id="legend"></div>
 </div>
 
-<div class="footnote">Возврат средств (≈19 409 ₽) в сумму не включён</div>
-
 <script>
 const data = [
   { name: "Зарплата и работы", value: 937150.00, color: "var(--s1)" },
@@ -113,7 +111,9 @@ const data = [
   { name: "Техника", value: 161142.00, color: "var(--s5)" },
   { name: "Черновые материалы", value: 103789.00, color: "var(--s6)" },
   { name: "Электрика", value: 86439.00, color: "var(--s7)" },
-  { name: "Другое", value: 56100.00 + 49059.20 + 16008.91, color: "var(--s8)" },
+  { name: "Доставка", value: 56100.00, color: "var(--s8)" },
+  { name: "Расходники", value: 49059.20, color: "var(--s9)" },
+  { name: "Инструменты", value: 16008.91, color: "var(--s10)" },
 ];
 
 const total = data.reduce((s, d) => s + d.value, 0);
