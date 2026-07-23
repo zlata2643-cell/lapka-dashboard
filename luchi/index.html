@@ -77,11 +77,10 @@
   .leg-row { display: flex; align-items: center; gap: 10px; padding: 8px 3px; border-radius: 12px; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
   .leg-row:active { background: rgba(124,92,245,0.06); }
   .leg-row.dim { opacity: 0.32; }
-  .leg-dot { width: 11px; height: 11px; border-radius: 4px; flex-shrink: 0; }
-  .leg-name { font-size: 13px; font-weight: 500; flex: 1; }
-  .leg-vals { text-align: right; flex-shrink: 0; }
-  .leg-sum { font-size: 12.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
-  .leg-pill { font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 2px; padding: 1px 7px; border-radius: 20px; display: inline-block; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .leg-name { font-size: 13px; font-weight: 500; flex: 1; color: var(--ink-2); }
+  .leg-sum { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .leg-pct { font-size: 12.5px; font-weight: 800; font-variant-numeric: tabular-nums; flex-shrink: 0; width: 48px; text-align: right; }
 
   /* ring stat grid 2x2 */
   .ring-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -358,16 +357,16 @@ function smoothPath(pts, tension) {
 
 // ---------- Категории (донат) ----------
 const data = [
-  { name: "Зарплата и работы", value: 937150.00, color: "#a93a65" },
-  { name: "Мебель", value: 357239.00, color: "#e6705f" },
-  { name: "Чистовые материалы", value: 194504.40, color: "#8f4a00" },
-  { name: "Сантехника", value: 189775.00, color: "#948e00" },
-  { name: "Техника", value: 161142.00, color: "#168b3a" },
-  { name: "Черновые материалы", value: 103789.00, color: "#00a8a6" },
-  { name: "Электрика", value: 86439.00, color: "#006f95" },
-  { name: "Доставка", value: 56100.00, color: "#8d86fb" },
-  { name: "Расходники", value: 49059.20, color: "#6f55d3" },
-  { name: "Инструменты", value: 16008.91, color: "#a163c7" },
+  { name: "Зарплата и работы", value: 937150.00, color: "#ec4899" },
+  { name: "Мебель", value: 357239.00, color: "#8b5cf6" },
+  { name: "Чистовые материалы", value: 194504.40, color: "#2563eb" },
+  { name: "Сантехника", value: 189775.00, color: "#06b6d4" },
+  { name: "Техника", value: 161142.00, color: "#14b8a6" },
+  { name: "Черновые материалы", value: 103789.00, color: "#22c55e" },
+  { name: "Электрика", value: 86439.00, color: "#65a30d" },
+  { name: "Доставка", value: 56100.00, color: "#f97316" },
+  { name: "Расходники", value: 49059.20, color: "#ef4444" },
+  { name: "Инструменты", value: 16008.91, color: "#db2777" },
 ];
 const total = data.reduce((s, d) => s + d.value, 0);
 document.getElementById('wheelTotal').textContent = fmt(total);
@@ -400,10 +399,8 @@ data.slice().sort((a, b) => b.value - a.value).forEach(d => {
   legend.innerHTML += `<div class="leg-row" data-idx="${i}">
     <div class="leg-dot" style="background:${d.color}"></div>
     <div class="leg-name">${d.name}</div>
-    <div class="leg-vals">
-      <div class="leg-sum">${fmt(d.value)}</div>
-      <div class="leg-pill" style="background:${d.color}22; color:${d.color}">${pct}%</div>
-    </div>
+    <div class="leg-sum">${fmt(d.value)}</div>
+    <div class="leg-pct" style="color:${d.color}">${pct}%</div>
   </div>`;
 });
 
@@ -597,9 +594,9 @@ dow.forEach(d => {
 
 // ---------- Спарклайны топ-3 категорий ----------
 const sparkCats = [
-  { name: "Зарплата и работы", color: "#a93a65", sum: 937150, series: [0,105000,50000,0,130000,30000,37000,85000,34000,113650,32000,320500,0,0] },
-  { name: "Мебель", color: "#e6705f", sum: 357239, series: [0,0,0,0,0,0,147489,0,0,0,183631,14457,11243,419] },
-  { name: "Сантехника", color: "#948e00", sum: 189775, series: [9425,0,165247,650,7330,0,0,0,0,1270,4908,0,945,0] },
+  { name: "Зарплата и работы", color: "#ec4899", sum: 937150, series: [0,105000,50000,0,130000,30000,37000,85000,34000,113650,32000,320500,0,0] },
+  { name: "Мебель", color: "#8b5cf6", sum: 357239, series: [0,0,0,0,0,0,147489,0,0,0,183631,14457,11243,419] },
+  { name: "Сантехника", color: "#06b6d4", sum: 189775, series: [9425,0,165247,650,7330,0,0,0,0,1270,4908,0,945,0] },
 ];
 const sparkGrid = document.getElementById('sparkGrid');
 sparkCats.forEach(cat => {
