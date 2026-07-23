@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Лучи · Расходы</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #161311;
+    --surface: #211c19;
+    --surface-2: #2a2320;
+    --gold: #d9b673;
+    --text: #f3ece0;
+    --text-2: #a89a87;
+    --divider: rgba(243,236,224,0.08);
+    --border: rgba(217,182,115,0.18);
+
+    --s1: #e0664f; /* Зарплата и Работы */
+    --s2: #ad8a34; /* Мебель */
+    --s3: #3d7bc9; /* Чистовые материалы */
+    --s4: #1f9c85; /* Сантехника */
+    --s5: #7d63c9; /* Техника */
+    --s6: #b8517d; /* Черновые материалы */
+    --s7: #5a9c3f; /* Электрика */
+    --s8: #c96a28; /* Другое */
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 20% 0%, rgba(193,57,43,0.08), transparent 45%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  .header { margin-bottom: 22px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); opacity: 0.85; }
+  h1 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .sub { font-size: 12.5px; color: var(--text-2); margin-top: 4px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; }
+
+  .wheel-wrap { position: relative; width: 208px; height: 208px; margin: 4px auto 6px; }
+  .wheel-wrap svg { width: 100%; height: 100%; }
+  .wheel-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
+  .wheel-total { font-size: 20px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
+  .wheel-total-sub { font-size: 10.5px; color: var(--text-2); margin-top: 2px; }
+
+  .seg { cursor: pointer; transition: opacity 0.15s; }
+  .seg.dim { opacity: 0.35; }
+
+  .tooltip {
+    position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.1s;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 6px 10px; font-size: 11.5px; white-space: nowrap; top: 0; left: 0;
+    transform: translate(-50%, -130%); z-index: 5;
+  }
+  .tooltip b { color: var(--gold); font-variant-numeric: tabular-nums; }
+  .tooltip.show { opacity: 1; }
+
+  .legend { margin-top: 14px; border-top: 1px solid var(--divider); padding-top: 10px; }
+  .leg-row { display: flex; align-items: center; gap: 10px; padding: 7px 2px; border-radius: 10px; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
+  .leg-row:active { background: var(--surface-2); }
+  .leg-row.dim { opacity: 0.4; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .leg-name { font-size: 13px; flex: 1; }
+  .leg-bar-track { position: relative; height: 4px; border-radius: 2px; background: var(--surface-2); margin-top: 3px; overflow: hidden; }
+  .leg-bar-fill { position: absolute; inset: 0; border-radius: 2px; }
+  .leg-vals { text-align: right; flex-shrink: 0; }
+  .leg-sum { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .leg-pct { font-size: 10.5px; color: var(--text-2); font-variant-numeric: tabular-nums; margin-top: 1px; }
+
+  .footnote { font-size: 11px; color: var(--text-2); margin-top: 16px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Объект «Лучи»</div>
+  <h1>Расходы по категориям</h1>
+  <div class="sub">На основе таблицы расходов, 365 позиций</div>
+</div>
+
+<div class="card">
+  <div class="wheel-wrap" id="wheelWrap">
+    <svg viewBox="0 0 208 208">
+      <circle cx="104" cy="104" r="86" fill="none" stroke="var(--surface-2)" stroke-width="24"/>
+      <g id="segGroup" transform="rotate(-90 104 104)"></g>
+    </svg>
+    <div class="wheel-center">
+      <div class="wheel-total" id="wheelTotal"></div>
+      <div class="wheel-total-sub">потрачено всего</div>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+</div>
+
+<div class="footnote">Возврат средств (≈19 409 ₽) в сумму не включён</div>
+
+<script>
+const data = [
+  { name: "Зарплата и работы", value: 937150.00, color: "var(--s1)" },
+  { name: "Мебель", value: 357239.00, color: "var(--s2)" },
+  { name: "Чистовые материалы", value: 194504.40, color: "var(--s3)" },
+  { name: "Сантехника", value: 189775.00, color: "var(--s4)" },
+  { name: "Техника", value: 161142.00, color: "var(--s5)" },
+  { name: "Черновые материалы", value: 103789.00, color: "var(--s6)" },
+  { name: "Электрика", value: 86439.00, color: "var(--s7)" },
+  { name: "Другое", value: 56100.00 + 49059.20 + 16008.91, color: "var(--s8)" },
+];
+
+const total = data.reduce((s, d) => s + d.value, 0);
+const fmt = n => Math.round(n).toLocaleString('ru-RU') + ' ₽';
+
+document.getElementById('wheelTotal').textContent = fmt(total);
+
+const R = 86, C = 2 * Math.PI * R, GAP = 4;
+const segGroup = document.getElementById('segGroup');
+const svgNS = "http://www.w3.org/2000/svg";
+let cursor = 0;
+
+data.forEach((d, i) => {
+  const raw = (d.value / total) * C;
+  const len = Math.max(raw - GAP, 1);
+  const circle = document.createElementNS(svgNS, "circle");
+  circle.setAttribute("cx", 104);
+  circle.setAttribute("cy", 104);
+  circle.setAttribute("r", R);
+  circle.setAttribute("fill", "none");
+  circle.setAttribute("stroke", d.color);
+  circle.setAttribute("stroke-width", 24);
+  circle.setAttribute("stroke-dasharray", `${len} ${C - len}`);
+  circle.setAttribute("stroke-dashoffset", -cursor);
+  circle.classList.add("seg");
+  circle.dataset.idx = i;
+  segGroup.appendChild(circle);
+  cursor += raw;
+});
+
+const legend = document.getElementById('legend');
+data.slice().sort((a, b) => b.value - a.value).forEach(d => {
+  const pct = (d.value / total * 100).toFixed(1);
+  const i = data.indexOf(d);
+  legend.innerHTML += `<div class="leg-row" data-idx="${i}">
+    <div class="leg-dot" style="background:${d.color}"></div>
+    <div style="flex:1">
+      <div class="leg-name">${d.name}</div>
+      <div class="leg-bar-track"><div class="leg-bar-fill" style="width:${pct}%; background:${d.color}"></div></div>
+    </div>
+    <div class="leg-vals">
+      <div class="leg-sum">${fmt(d.value)}</div>
+      <div class="leg-pct">${pct}%</div>
+    </div>
+  </div>`;
+});
+
+const tooltip = document.getElementById('tooltip');
+const wheelWrap = document.getElementById('wheelWrap');
+
+function highlight(idx) {
+  document.querySelectorAll('.seg').forEach(s => s.classList.toggle('dim', idx !== null && +s.dataset.idx !== idx));
+  document.querySelectorAll('.leg-row').forEach(r => r.classList.toggle('dim', idx !== null && +r.dataset.idx !== idx));
+}
+function showTooltip(idx, evt) {
+  const d = data[idx];
+  const pct = (d.value / total * 100).toFixed(1);
+  tooltip.innerHTML = `${d.name}<br><b>${fmt(d.value)}</b> · ${pct}%`;
+  tooltip.classList.add('show');
+  const rect = wheelWrap.getBoundingClientRect();
+  tooltip.style.left = (evt.clientX - rect.left) + 'px';
+  tooltip.style.top = (evt.clientY - rect.top) + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('show'); highlight(null); }
+
+document.querySelectorAll('.seg').forEach(s => {
+  s.addEventListener('mousemove', e => { showTooltip(+s.dataset.idx, e); highlight(+s.dataset.idx); });
+  s.addEventListener('mouseleave', hideTooltip);
+  s.addEventListener('click', e => { showTooltip(+s.dataset.idx, e); highlight(+s.dataset.idx); });
+});
+let pinnedIdx = null;
+document.querySelectorAll('.leg-row').forEach(r => {
+  r.addEventListener('click', () => {
+    const idx = +r.dataset.idx;
+    pinnedIdx = pinnedIdx === idx ? null : idx;
+    highlight(pinnedIdx);
+  });
+  r.addEventListener('mouseenter', () => { if (pinnedIdx === null) highlight(+r.dataset.idx); });
+  r.addEventListener('mouseleave', () => { if (pinnedIdx === null) highlight(null); });
+});
+</script>
+</body>
+</html>
