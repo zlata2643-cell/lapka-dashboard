@@ -8,136 +8,171 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --bg: #161311;
-    --surface: #211c19;
-    --surface-2: #2a2320;
-    --gold: #d9b673;
-    --text: #f3ece0;
-    --text-2: #a89a87;
-    --divider: rgba(243,236,224,0.08);
-    --border: rgba(217,182,115,0.18);
+    --bg: #f5f4fb;
+    --card: #ffffff;
+    --card-border: rgba(111,85,211,0.12);
+    --shadow: 0 10px 28px rgba(88,68,158,0.09);
+    --ink: #241f3d;
+    --ink-2: #6b6684;
+    --ink-3: #b3aec9;
+    --divider: rgba(36,31,61,0.08);
+    --track: #eeecf9;
 
-    --s1: #b54b69; /* Зарплата и работы */
-    --s2: #da6f56; /* Мебель */
-    --s3: #ab5400; /* Чистовые материалы */
-    --s4: #a39400; /* Сантехника */
-    --s5: #318538; /* Техника */
-    --s6: #009f9a; /* Черновые материалы */
-    --s7: #0087a9; /* Электрика */
-    --s8: #5c88f2; /* Доставка */
-    --s9: #7861c1; /* Расходники */
-    --s10: #bb73c0; /* Инструменты */
+    --grad-a1: #6f55d3;
+    --grad-a2: #a163c7;
+    --grad-b1: #006f95;
+    --grad-b2: #6f55d3;
+    --risk: #e6705f;
+    --good: #168b3a;
+
+    --s1: #a93a65; --s2: #e6705f; --s3: #8f4a00; --s4: #948e00; --s5: #168b3a;
+    --s6: #00a8a6; --s7: #006f95; --s8: #8d86fb; --s9: #6f55d3; --s10: #a163c7;
   }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     background: var(--bg);
-    background-image: radial-gradient(circle at 20% 0%, rgba(193,57,43,0.08), transparent 45%);
-    color: var(--text);
+    background-image:
+      radial-gradient(circle at 15% -5%, rgba(111,85,211,0.13), transparent 40%),
+      radial-gradient(circle at 100% 10%, rgba(161,99,199,0.10), transparent 35%);
+    color: var(--ink);
     min-height: 100vh;
-    padding: 20px 16px 40px;
+    padding: 22px 16px 44px;
     max-width: 430px;
     margin: 0 auto;
   }
 
   .header { margin-bottom: 22px; }
-  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold); opacity: 0.85; }
-  h1 { font-size: 22px; font-weight: 700; margin-top: 4px; }
-  .sub { font-size: 12.5px; color: var(--text-2); margin-top: 4px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; background: linear-gradient(90deg, var(--grad-a1), var(--grad-a2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 { font-size: 23px; font-weight: 800; margin-top: 4px; letter-spacing: -0.3px; }
+  .sub { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; }
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 18px; padding: 18px 16px; box-shadow: var(--shadow); }
 
+  .section { margin-top: 26px; }
+  .section .eyebrow { display: block; margin-bottom: 2px; }
+  h2 { font-size: 17px; font-weight: 800; margin-top: 3px; letter-spacing: -0.2px; }
+  .section .sub { margin-bottom: 12px; }
+  .card-title { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+  .card-caption { font-size: 11px; color: var(--ink-2); margin-bottom: 10px; }
+
+  /* donut */
   .wheel-wrap { position: relative; width: 208px; height: 208px; margin: 4px auto 6px; }
   .wheel-wrap svg { width: 100%; height: 100%; }
   .wheel-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
-  .wheel-total { font-size: 20px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
-  .wheel-total-sub { font-size: 10.5px; color: var(--text-2); margin-top: 2px; }
-
+  .wheel-total { font-size: 19px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.3px; }
+  .wheel-total-sub { font-size: 10.5px; color: var(--ink-2); margin-top: 2px; }
   .seg { cursor: pointer; transition: opacity 0.15s; }
-  .seg.dim { opacity: 0.35; }
+  .seg.dim { opacity: 0.28; }
 
   .tooltip {
     position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.1s;
-    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    background: var(--ink); color: #fff; border-radius: 10px;
     padding: 6px 10px; font-size: 11.5px; white-space: nowrap; top: 0; left: 0;
-    transform: translate(-50%, -130%); z-index: 5;
+    transform: translate(-50%, -130%); z-index: 5; box-shadow: 0 6px 16px rgba(36,31,61,0.25);
   }
-  .tooltip b { color: var(--gold); font-variant-numeric: tabular-nums; }
+  .tooltip b { font-variant-numeric: tabular-nums; }
   .tooltip.show { opacity: 1; }
 
   .legend { margin-top: 14px; border-top: 1px solid var(--divider); padding-top: 10px; }
   .leg-row { display: flex; align-items: center; gap: 10px; padding: 7px 2px; border-radius: 10px; cursor: pointer; transition: background 0.15s, opacity 0.15s; }
-  .leg-row:active { background: var(--surface-2); }
-  .leg-row.dim { opacity: 0.4; }
+  .leg-row:active { background: var(--track); }
+  .leg-row.dim { opacity: 0.35; }
   .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
   .leg-name { font-size: 13px; flex: 1; }
-  .leg-bar-track { position: relative; height: 4px; border-radius: 2px; background: var(--surface-2); margin-top: 3px; overflow: hidden; }
+  .leg-bar-track { position: relative; height: 4px; border-radius: 2px; background: var(--track); margin-top: 3px; overflow: hidden; }
   .leg-bar-fill { position: absolute; inset: 0; border-radius: 2px; }
   .leg-vals { text-align: right; flex-shrink: 0; }
-  .leg-sum { font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .leg-pct { font-size: 10.5px; color: var(--text-2); font-variant-numeric: tabular-nums; margin-top: 1px; }
+  .leg-sum { font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .leg-pct { font-size: 10.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; margin-top: 1px; }
 
-  .section { margin-top: 32px; }
-  .section .eyebrow { margin-bottom: 2px; }
-  h2 { font-size: 18px; font-weight: 700; margin-top: 3px; }
-  .section .sub { margin-bottom: 14px; }
+  /* ring stat grid 2x2 */
+  .ring-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ring-tile { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 14px 8px; }
+  .ring-wrap-sm { position: relative; width: 76px; height: 76px; }
+  .ring-wrap-sm svg { width: 100%; height: 100%; }
+  .ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .ring-label { font-size: 11px; color: var(--ink-2); margin-top: 8px; line-height: 1.4; max-width: 120px; }
 
-  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; }
-  .stat-tile .v { font-size: 18px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
-  .stat-tile .k { font-size: 11px; color: var(--text-2); margin-top: 3px; line-height: 1.3; }
+  /* area / mountain chart */
+  .area-wrap { position: relative; width: 100%; }
+  .area-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .area-note { display: flex; gap: 8px; align-items: flex-start; background: linear-gradient(135deg, rgba(111,85,211,0.08), rgba(161,99,199,0.08)); border: 1px solid rgba(111,85,211,0.15); border-radius: 12px; padding: 10px 12px; margin-top: 14px; font-size: 12px; line-height: 1.5; color: var(--ink); }
+  .area-note .ic { flex-shrink: 0; font-size: 14px; line-height: 1; margin-top: 1px; }
 
+  /* weekly bars */
   .bars-wrap { display: flex; align-items: flex-end; gap: 4px; height: 130px; padding: 4px 2px 0; }
   .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
-  .bar { width: 100%; max-width: 18px; border-radius: 3px 3px 1px 1px; background: var(--gold); opacity: 0.55; min-height: 2px; cursor: pointer; transition: opacity 0.12s; }
-  .bar.risk { background: #d9704a; opacity: 0.9; }
-  .bar:hover, .bar.active { opacity: 1; }
+  .bar { width: 100%; max-width: 18px; border-radius: 4px 4px 1px 1px; background: linear-gradient(180deg, var(--grad-a2), var(--grad-a1)); min-height: 2px; cursor: pointer; transition: opacity 0.12s, transform 0.12s; }
+  .bar.risk { background: linear-gradient(180deg, #f2947f, var(--risk)); }
+  .bar:hover, .bar.active { opacity: 0.85; transform: scaleY(1.01); }
   .bar-axis { display: flex; gap: 4px; margin-top: 6px; padding: 0 2px; }
-  .bar-axis span { flex: 1; text-align: center; font-size: 8px; color: var(--text-2); max-width: 18px; margin: 0 auto; }
-  .chart-caption { font-size: 11.5px; color: var(--text-2); margin-top: 12px; line-height: 1.5; }
-  .chart-caption b { color: var(--text); font-weight: 600; }
-  .flag-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #d9704a; margin-right: 5px; }
-
+  .bar-axis span { flex: 1; text-align: center; font-size: 8px; color: var(--ink-3); max-width: 18px; margin: 0 auto; }
   .bar-tooltip {
     position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.1s;
-    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    background: var(--ink); color: #fff; border-radius: 10px;
     padding: 6px 10px; font-size: 11px; white-space: nowrap; bottom: 100%; left: 50%;
-    transform: translateX(-50%) translateY(-8px); z-index: 5;
+    transform: translateX(-50%) translateY(-8px); z-index: 5; box-shadow: 0 6px 16px rgba(36,31,61,0.25);
   }
-  .bar-col:hover .bar-tooltip, .bar-tooltip.show { opacity: 1; }
-  .bar-tooltip b { color: var(--gold); font-variant-numeric: tabular-nums; }
+  .bar-col:hover .bar-tooltip { opacity: 1; }
+  .bar-tooltip b { font-variant-numeric: tabular-nums; }
 
-  .expert-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 15px; margin-bottom: 10px; }
-  .expert-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-  .expert-role { font-size: 13.5px; font-weight: 700; }
-  .expert-focus { font-size: 10.5px; color: var(--text-2); margin-top: 1px; font-weight: 400; }
-  .expert-chip { font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
-  .expert-chip.good { background: rgba(58,150,90,0.16); color: #6fbf82; }
-  .expert-chip.watch { background: rgba(217,112,74,0.16); color: #e0916c; }
+  /* weekday bars */
+  .dow-wrap { display: flex; align-items: flex-end; gap: 8px; height: 110px; padding: 4px 4px 0; }
+  .dow-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; }
+  .dow-bar { width: 100%; max-width: 30px; border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, var(--grad-b1), var(--grad-b2)); min-height: 2px; }
+  .dow-bar.peak { background: linear-gradient(180deg, #f2947f, var(--risk)); }
+  .dow-axis { display: flex; gap: 8px; margin-top: 7px; }
+  .dow-axis span { flex: 1; text-align: center; font-size: 10.5px; color: var(--ink-2); font-weight: 600; }
+  .dow-axis span.peak { color: var(--risk); font-weight: 800; }
+
+  /* sparklines */
+  .spark-grid { display: flex; flex-direction: column; gap: 10px; }
+  .spark-card { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border-bottom: 1px solid var(--divider); }
+  .spark-card:last-child { border-bottom: none; }
+  .spark-info { flex: 1; min-width: 0; }
+  .spark-name { font-size: 12.5px; font-weight: 700; }
+  .spark-sum { font-size: 11px; color: var(--ink-2); margin-top: 1px; font-variant-numeric: tabular-nums; }
+  .spark-svg { width: 108px; height: 40px; flex-shrink: 0; }
+
+  /* expert cards */
+  .expert-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px 16px; margin-bottom: 10px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .expert-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent, linear-gradient(180deg, var(--grad-a1), var(--grad-a2))); }
+  .expert-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .expert-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft, rgba(111,85,211,0.12)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .expert-icon svg { width: 18px; height: 18px; }
+  .expert-titles { flex: 1; min-width: 0; }
+  .expert-role { font-size: 13.5px; font-weight: 800; }
+  .expert-focus { font-size: 10.5px; color: var(--ink-2); margin-top: 1px; font-weight: 400; }
+  .expert-chip { font-size: 9.5px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .expert-chip.good { background: rgba(22,139,58,0.12); color: #0d7a2e; }
+  .expert-chip.watch { background: rgba(230,112,95,0.14); color: #c94a34; }
   .expert-block { font-size: 12.5px; line-height: 1.55; margin-top: 8px; }
-  .expert-block .lbl { color: var(--gold); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
-  .expert-block p { color: var(--text); opacity: 0.92; }
+  .expert-block .lbl { color: var(--grad-a1); font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+  .expert-block p { color: var(--ink); opacity: 0.88; }
   .expert-rec { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--divider); font-size: 12.5px; line-height: 1.5; }
-  .expert-rec .lbl { color: var(--text-2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+  .expert-rec .lbl { color: var(--ink-2); font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
 
-  .takeaway-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 15px; }
-  .takeaway-item { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; line-height: 1.5; border-bottom: 1px solid var(--divider); }
+  .takeaway-card { background: linear-gradient(150deg, #241f3d, #3b3163); border-radius: 18px; padding: 18px 16px; color: #fff; box-shadow: var(--shadow); }
+  .takeaway-item { display: flex; gap: 12px; padding: 9px 0; font-size: 13px; line-height: 1.5; border-bottom: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.92); }
   .takeaway-item:last-child { border-bottom: none; }
-  .takeaway-num { color: var(--gold); font-weight: 700; font-size: 13px; flex-shrink: 0; width: 18px; }
+  .takeaway-num { background: linear-gradient(135deg, var(--grad-a1), var(--grad-a2)); color: #fff; font-weight: 800; font-size: 12px; flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="eyebrow">Объект «Лучи»</div>
-  <h1>Расходы по категориям</h1>
-  <div class="sub">На основе таблицы расходов, 365 позиций</div>
+  <h1>Расходы и аналитика</h1>
+  <div class="sub">85 дней, 26.04–20.07.2026 · 365 позиций расхода</div>
 </div>
 
 <div class="card">
+  <div class="card-title">Расходы по категориям</div>
+  <div class="card-caption">Все 10 категорий, тап по сектору или строке — детали</div>
   <div class="wheel-wrap" id="wheelWrap">
     <svg viewBox="0 0 208 208">
-      <circle cx="104" cy="104" r="86" fill="none" stroke="var(--surface-2)" stroke-width="24"/>
+      <circle cx="104" cy="104" r="86" fill="none" stroke="var(--track)" stroke-width="24"/>
       <g id="segGroup" transform="rotate(-90 104 104)"></g>
     </svg>
     <div class="wheel-center">
@@ -146,28 +181,57 @@
     </div>
     <div class="tooltip" id="tooltip"></div>
   </div>
-
   <div class="legend" id="legend"></div>
 </div>
 
 <div class="section">
-  <div class="eyebrow">Ретроспектива</div>
-  <h2>Что сработало, что нет</h2>
-  <div class="sub">85 дней, 26.04–20.07.2026, 365 позиций расхода</div>
-
-  <div class="stat-row">
-    <div class="stat-tile"><div class="v">2 151 207 ₽</div><div class="k">итого потрачено</div></div>
-    <div class="stat-tile"><div class="v">25 300 ₽</div><div class="k">в среднем в день</div></div>
-    <div class="stat-tile"><div class="v">33%</div><div class="k">бюджета — всего за 2 недели из 14 (29.06–12.07)</div></div>
-    <div class="stat-tile"><div class="v">250 000 ₽</div><div class="k">крупнейший платёж одной строкой — «Управление проектом», 10.07</div></div>
+  <div class="eyebrow">Ключевые пропорции</div>
+  <h2>4 цифры, которые всё объясняют</h2>
+  <div class="card">
+    <div class="ring-grid" id="ringGrid"></div>
   </div>
+</div>
 
-  <div class="card" style="margin-top:14px">
-    <div style="font-size:13px;font-weight:600;margin-bottom:2px">Траты по неделям</div>
-    <div style="font-size:11px;color:var(--text-2);margin-bottom:2px">Красным — недели, где деньги легли пиком</div>
+<div class="section">
+  <div class="eyebrow">Динамика</div>
+  <h2>Как копился бюджет</h2>
+  <div class="sub">Накопительный итог по неделям — видно, где траты ускорялись</div>
+  <div class="card">
+    <div class="area-wrap" id="areaWrap">
+      <svg id="areaSvg" viewBox="0 0 344 190" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="area-note"><span class="ic">💭</span><div>Мой ход мысли: к началу июня (неделя 01.06) освоена ровно половина бюджета — это нормальный, предсказуемый темп. А вот дальше кривая почти вертикальная: с 82,7% до 99,3% всего за одну неделю (06.07). Это не постепенное ускорение — это то, что <b>не было потрачено вовремя, легло одним комком в конце</b>.</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Динамика</div>
+  <h2>Траты по неделям</h2>
+  <div class="card">
+    <div class="card-title">14 недель проекта</div>
+    <div class="card-caption">Коралловым — недели, где деньги легли пиком</div>
     <div class="bars-wrap" id="weeklyBars"></div>
     <div class="bar-axis" id="weeklyAxis"></div>
-    <div class="chart-caption"><span class="flag-dot"></span>Недели 29.06 и 06.07 — 712 413 ₽ (33% всего бюджета) пришлись на мебель, технику и расчёт по работам одновременно. Дальше в панели экспертов — почему это риск, а не просто совпадение.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Неочевидное</div>
+  <h2>По каким дням уходят деньги</h2>
+  <div class="card">
+    <div class="card-title">Расход по дням недели</div>
+    <div class="card-caption" id="dowCaption"></div>
+    <div class="dow-wrap" id="dowBars"></div>
+    <div class="dow-axis" id="dowAxis"></div>
+    <div class="area-note"><span class="ic">💭</span><div>Мой ход мысли: почти <b>36% всего бюджета ушло именно по пятницам</b> — сильнее, чем можно списать на случайность. Похоже на паттерн: расчёты с рабочими и решения по крупным покупкам группируются к концу недели. Если это осознанный ритм — ок, но кассовый разрыв стоит планировать именно под пятницы.</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="eyebrow">Тренд</div>
+  <h2>3 главные категории по неделям</h2>
+  <div class="card">
+    <div class="spark-grid" id="sparkGrid"></div>
   </div>
 </div>
 
@@ -176,18 +240,24 @@
   <h2>5 независимых оценок</h2>
   <div class="sub">Каждый смотрел на таблицу расходов и дорожную карту под своим углом</div>
 
-  <div class="expert-card">
+  <div class="expert-card" style="--accent: linear-gradient(180deg, #a93a65, #e6705f); --accent-soft: rgba(169,58,101,0.12)">
     <div class="expert-head">
-      <div><div class="expert-role">Финансовый аналитик</div><div class="expert-focus">кэш-флоу и крупные платежи</div></div>
+      <div class="expert-icon" style="color:#a93a65">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+      </div>
+      <div class="expert-titles"><div class="expert-role">Финансовый аналитик</div><div class="expert-focus">кэш-флоу и крупные платежи</div></div>
       <div class="expert-chip watch">Риск</div>
     </div>
     <div class="expert-block"><span class="lbl">Наблюдение</span><p>33% бюджета (712 413 ₽) прошло за 2 недели из 14 — мебель, техника и оплата работ легли одним пиком в конце. Плюс — гонорар «Управление проектом» 250 000 ₽ (11,6% всего бюджета) проведён одной строкой без расшифровки, на что именно.</p></div>
     <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Разбивать управленческий гонорар на этапные платежи по факту стадий, а не одним чеком в конце — так виден кассовый разрыв заранее, а не постфактум.</div>
   </div>
 
-  <div class="expert-card">
+  <div class="expert-card" style="--accent: linear-gradient(180deg, #948e00, #168b3a); --accent-soft: rgba(22,139,58,0.12)">
     <div class="expert-head">
-      <div><div class="expert-role">Прораб / техконтроль</div><div class="expert-focus">логика последовательности работ</div></div>
+      <div class="expert-icon" style="color:#168b3a">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div class="expert-titles"><div class="expert-role">Прораб / техконтроль</div><div class="expert-focus">логика последовательности работ</div></div>
       <div class="expert-chip good">Норма</div>
     </div>
     <div class="expert-block"><span class="lbl">Наблюдение</span><p>Порядок работ правильный: демонтаж → штукатурка → сантехника/электрика → шпаклёвка → плитка → наливной пол → обои → потолок → мебель. Отклонений от стандартной последовательности флиппинг-ремонта нет.</p></div>
@@ -195,18 +265,24 @@
     <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Утверждать финальную спецификацию по сантехнике и электрике до первой закупки по разделу, а не после — сверка с дизайн-проектом перед оплатой, не после неё.</div>
   </div>
 
-  <div class="expert-card">
+  <div class="expert-card" style="--accent: linear-gradient(180deg, #006f95, #00a8a6); --accent-soft: rgba(0,111,149,0.12)">
     <div class="expert-head">
-      <div><div class="expert-role">Снабженец / закупщик</div><div class="expert-focus">каналы закупки и цена</div></div>
+      <div class="expert-icon" style="color:#006f95">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      </div>
+      <div class="expert-titles"><div class="expert-role">Снабженец / закупщик</div><div class="expert-focus">каналы закупки и цена</div></div>
       <div class="expert-chip good">Хорошо</div>
     </div>
     <div class="expert-block"><span class="lbl">Наблюдение</span><p>Гибкая модель закупок: 92 позиции (184 972 ₽) — плановые заказы по артикулу онлайн, 54 позиции (86 382 ₽, 4% бюджета) — Федя докупал мелочь на месте. В комментарии к электрике прямо указано: тот же набор материалов в Леруа Мерлен обошёлся бы на 20% дороже — прямая закупка реально сэкономила.</p></div>
     <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Экономия обнаружена постфактум, в комментарии. На следующем объекте — быстрая сверка цены в 2–3 источниках до заказа по крупным категориям (сантехника, электрика), не после.</div>
   </div>
 
-  <div class="expert-card">
+  <div class="expert-card" style="--accent: linear-gradient(180deg, #6f55d3, #a163c7); --accent-soft: rgba(111,85,211,0.12)">
     <div class="expert-head">
-      <div><div class="expert-role">Дизайнер интерьера</div><div class="expert-focus">баланс материалов и мебели</div></div>
+      <div class="expert-icon" style="color:#6f55d3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      </div>
+      <div class="expert-titles"><div class="expert-role">Дизайнер интерьера</div><div class="expert-focus">баланс материалов и мебели</div></div>
       <div class="expert-chip watch">Есть что улучшить</div>
     </div>
     <div class="expert-block"><span class="lbl">Наблюдение</span><p>Чистовые материалы + мебель — 25,6% бюджета (551 743 ₽), разумная доля на то, что видно и продаёт объект. Но мебель — самая раздробленная категория: 71 позиция при среднем чеке 5 032 ₽, растянута с 23-й по 30-ю неделю почти без пауз.</p></div>
@@ -214,9 +290,12 @@
     <div class="expert-rec"><span class="lbl">Что сделать иначе</span>Формировать список мебели и декора заранее, закрывать его 1–2 крупными заказами вместо нескольких десятков мелких — меньше доставок, меньше логистического шума.</div>
   </div>
 
-  <div class="expert-card">
+  <div class="expert-card" style="--accent: linear-gradient(180deg, #8f4a00, #e6705f); --accent-soft: rgba(230,112,95,0.14)">
     <div class="expert-head">
-      <div><div class="expert-role">Операционный аудитор</div><div class="expert-focus">дисциплина данных и документации</div></div>
+      <div class="expert-icon" style="color:#c94a34">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v3l2 2"/></svg>
+      </div>
+      <div class="expert-titles"><div class="expert-role">Операционный аудитор</div><div class="expert-focus">дисциплина данных и документации</div></div>
       <div class="expert-chip watch">Требует внимания</div>
     </div>
     <div class="expert-block"><span class="lbl">Наблюдение</span><p>Таблица расходов ведётся дисциплинированно — 365 позиций с датой, суммой, сегментом и комментарием почти без пропусков. Но поле «Объект» в самом файле указывает «Тагильская», хотя это Лучи — при копировании шаблона на второй объект есть риск, что данные перепутаются местами.</p></div>
@@ -236,6 +315,10 @@
 </div>
 
 <script>
+const fmt = n => Math.round(n).toLocaleString('ru-RU') + ' ₽';
+const svgNS = "http://www.w3.org/2000/svg";
+
+// ---------- Категории (донат) ----------
 const data = [
   { name: "Зарплата и работы", value: 937150.00, color: "var(--s1)" },
   { name: "Мебель", value: 357239.00, color: "var(--s2)" },
@@ -248,17 +331,12 @@ const data = [
   { name: "Расходники", value: 49059.20, color: "var(--s9)" },
   { name: "Инструменты", value: 16008.91, color: "var(--s10)" },
 ];
-
 const total = data.reduce((s, d) => s + d.value, 0);
-const fmt = n => Math.round(n).toLocaleString('ru-RU') + ' ₽';
-
 document.getElementById('wheelTotal').textContent = fmt(total);
 
 const R = 86, C = 2 * Math.PI * R, GAP = 4;
 const segGroup = document.getElementById('segGroup');
-const svgNS = "http://www.w3.org/2000/svg";
 let cursor = 0;
-
 data.forEach((d, i) => {
   const raw = (d.value / total) * C;
   const len = Math.max(raw - GAP, 1);
@@ -296,7 +374,6 @@ data.slice().sort((a, b) => b.value - a.value).forEach(d => {
 
 const tooltip = document.getElementById('tooltip');
 const wheelWrap = document.getElementById('wheelWrap');
-
 function highlight(idx) {
   document.querySelectorAll('.seg').forEach(s => s.classList.toggle('dim', idx !== null && +s.dataset.idx !== idx));
   document.querySelectorAll('.leg-row').forEach(r => r.classList.toggle('dim', idx !== null && +r.dataset.idx !== idx));
@@ -311,7 +388,6 @@ function showTooltip(idx, evt) {
   tooltip.style.top = (evt.clientY - rect.top) + 'px';
 }
 function hideTooltip() { tooltip.classList.remove('show'); highlight(null); }
-
 document.querySelectorAll('.seg').forEach(s => {
   s.addEventListener('mousemove', e => { showTooltip(+s.dataset.idx, e); highlight(+s.dataset.idx); });
   s.addEventListener('mouseleave', hideTooltip);
@@ -328,22 +404,103 @@ document.querySelectorAll('.leg-row').forEach(r => {
   r.addEventListener('mouseleave', () => { if (pinnedIdx === null) highlight(null); });
 });
 
-// Недельные траты
+// ---------- 4 ключевых кольца ----------
+const rings = [
+  { pct: 43.6, label: "Работы и зарплата — доля крупнейшей статьи", grad: ['#6f55d3','#a163c7'] },
+  { pct: 24.1, label: "Мебель + техника — «видимая» часть бюджета", grad: ['#006f95','#00a8a6'] },
+  { pct: 33.1, label: "2 пиковые недели из 14 — риск концентрации", grad: ['#e6705f','#a93a65'] },
+  { pct: 4.0, label: "Прямые закупки Феди на месте", grad: ['#168b3a','#00a8a6'] },
+];
+const ringGrid = document.getElementById('ringGrid');
+rings.forEach((rg, i) => {
+  const r = 32, c = 2 * Math.PI * r;
+  const len = (rg.pct / 100) * c;
+  const gid = `ringGrad${i}`;
+  ringGrid.innerHTML += `<div class="ring-tile">
+    <div class="ring-wrap-sm">
+      <svg viewBox="0 0 80 80">
+        <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${rg.grad[0]}"/><stop offset="100%" stop-color="${rg.grad[1]}"/></linearGradient></defs>
+        <circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--track)" stroke-width="8"/>
+        <circle cx="40" cy="40" r="${r}" fill="none" stroke="url(#${gid})" stroke-width="8" stroke-linecap="round" stroke-dasharray="${len} ${c-len}" transform="rotate(-90 40 40)"/>
+      </svg>
+      <div class="ring-pct">${rg.pct.toFixed(1)}%</div>
+    </div>
+    <div class="ring-label">${rg.label}</div>
+  </div>`;
+});
+
+// ---------- Накопительный итог ----------
+const cumData = [
+  { label: "20.04", pct: 3.7 }, { label: "27.04", pct: 8.8 }, { label: "04.05", pct: 19.7 },
+  { label: "11.05", pct: 26.3 }, { label: "18.05", pct: 34.0 }, { label: "25.05", pct: 37.9 },
+  { label: "01.06", pct: 50.4 }, { label: "08.06", pct: 57.3 }, { label: "15.06", pct: 60.5 },
+  { label: "22.06", pct: 66.2 }, { label: "29.06", pct: 82.7 }, { label: "06.07", pct: 99.3 },
+  { label: "13.07", pct: 100.0 }, { label: "20.07", pct: 100.0 },
+];
+const areaSvg = document.getElementById('areaSvg');
+const AW = 344, AH = 190, PAD_T = 34, PAD_B = 22;
+const plotH = AH - PAD_T - PAD_B;
+const stepX = AW / (cumData.length - 1);
+const pts = cumData.map((d, i) => [i * stepX, PAD_T + plotH - (d.pct / 100) * plotH]);
+
+const defs = document.createElementNS(svgNS, "defs");
+defs.innerHTML = `<linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#a163c7" stop-opacity="0.38"/>
+  <stop offset="100%" stop-color="#6f55d3" stop-opacity="0.02"/>
+</linearGradient>
+<linearGradient id="areaLine" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#006f95"/>
+  <stop offset="100%" stop-color="#a163c7"/>
+</linearGradient>`;
+areaSvg.appendChild(defs);
+
+const lineD = "M" + pts.map(p => p.join(",")).join(" L");
+const areaD = lineD + ` L${pts[pts.length-1][0]},${AH-PAD_B} L0,${AH-PAD_B} Z`;
+
+const areaPath = document.createElementNS(svgNS, "path");
+areaPath.setAttribute("d", areaD);
+areaPath.setAttribute("fill", "url(#areaFill)");
+areaSvg.appendChild(areaPath);
+
+const linePath = document.createElementNS(svgNS, "path");
+linePath.setAttribute("d", lineD);
+linePath.setAttribute("fill", "none");
+linePath.setAttribute("stroke", "url(#areaLine)");
+linePath.setAttribute("stroke-width", "2.5");
+linePath.setAttribute("stroke-linecap", "round");
+linePath.setAttribute("stroke-linejoin", "round");
+areaSvg.appendChild(linePath);
+
+// annotated milestones
+const milestoneIdx = [2, 6, 10, 11]; // 04.05, 01.06, 29.06, 06.07
+milestoneIdx.forEach(i => {
+  const [x, y] = pts[i];
+  const dot = document.createElementNS(svgNS, "circle");
+  dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 4);
+  dot.setAttribute("fill", "#fff"); dot.setAttribute("stroke", "#6f55d3"); dot.setAttribute("stroke-width", 2.2);
+  areaSvg.appendChild(dot);
+
+  const txt = document.createElementNS(svgNS, "text");
+  txt.setAttribute("x", x); txt.setAttribute("y", y - 12);
+  txt.setAttribute("text-anchor", i === pts.length - 1 || x > AW - 30 ? "end" : x < 30 ? "start" : "middle");
+  txt.setAttribute("font-size", "11.5"); txt.setAttribute("font-weight", "800"); txt.setAttribute("fill", "#241f3d");
+  txt.textContent = cumData[i].pct.toFixed(1) + "%";
+  areaSvg.appendChild(txt);
+
+  const lab = document.createElementNS(svgNS, "text");
+  lab.setAttribute("x", x); lab.setAttribute("y", AH - 6);
+  lab.setAttribute("text-anchor", "middle"); lab.setAttribute("font-size", "9"); lab.setAttribute("fill", "#b3aec9");
+  lab.textContent = cumData[i].label;
+  areaSvg.appendChild(lab);
+});
+
+// ---------- Недельные траты ----------
 const weekly = [
-  { label: "20.04", value: 79779 },
-  { label: "27.04", value: 109700 },
-  { label: "04.05", value: 235318 },
-  { label: "11.05", value: 140496 },
-  { label: "18.05", value: 166863 },
-  { label: "25.05", value: 84206 },
-  { label: "01.06", value: 268837 },
-  { label: "08.06", value: 148193 },
-  { label: "15.06", value: 68693 },
-  { label: "22.06", value: 122140 },
-  { label: "29.06", value: 353804, risk: true },
-  { label: "06.07", value: 358609, risk: true },
-  { label: "13.07", value: 14149 },
-  { label: "20.07", value: 419 },
+  { label: "20.04", value: 79779 }, { label: "27.04", value: 109700 }, { label: "04.05", value: 235318 },
+  { label: "11.05", value: 140496 }, { label: "18.05", value: 166863 }, { label: "25.05", value: 84206 },
+  { label: "01.06", value: 268837 }, { label: "08.06", value: 148193 }, { label: "15.06", value: 68693 },
+  { label: "22.06", value: 122140 }, { label: "29.06", value: 353804, risk: true }, { label: "06.07", value: 358609, risk: true },
+  { label: "13.07", value: 14149 }, { label: "20.07", value: 419 },
 ];
 const maxWeek = Math.max(...weekly.map(w => w.value));
 const barsWrap = document.getElementById('weeklyBars');
@@ -357,6 +514,54 @@ weekly.forEach((w, i) => {
   const lab = document.createElement('span');
   lab.textContent = i % 2 === 0 ? w.label : '';
   barsAxis.appendChild(lab);
+});
+
+// ---------- По дням недели ----------
+const dow = [
+  { label: "Пн", value: 153685 }, { label: "Вт", value: 239790 }, { label: "Ср", value: 60855 },
+  { label: "Чт", value: 516243 }, { label: "Пт", value: 769334, peak: true }, { label: "Сб", value: 48957 },
+  { label: "Вс", value: 362342 },
+];
+const maxDow = Math.max(...dow.map(d => d.value));
+const dowBars = document.getElementById('dowBars');
+const dowAxis = document.getElementById('dowAxis');
+document.getElementById('dowCaption').textContent = `Пятница — ${(dow[4].value/total*100).toFixed(1)}% всего бюджета за один день недели`;
+dow.forEach(d => {
+  const h = Math.max((d.value / maxDow) * 100, 2);
+  const col = document.createElement('div');
+  col.className = 'dow-col';
+  col.innerHTML = `<div class="bar-tooltip">${d.label}<br><b>${fmt(d.value)}</b></div><div class="dow-bar ${d.peak ? 'peak' : ''}" style="height:${h}%"></div>`;
+  dowBars.appendChild(col);
+  const lab = document.createElement('span');
+  lab.textContent = d.label;
+  lab.className = d.peak ? 'peak' : '';
+  dowAxis.appendChild(lab);
+});
+
+// ---------- Спарклайны топ-3 категорий ----------
+const sparkCats = [
+  { name: "Зарплата и работы", color: "#a93a65", sum: 937150, series: [0,105000,50000,0,130000,30000,37000,85000,34000,113650,32000,320500,0,0] },
+  { name: "Мебель", color: "#e6705f", sum: 357239, series: [0,0,0,0,0,0,147489,0,0,0,183631,14457,11243,419] },
+  { name: "Сантехника", color: "#948e00", sum: 189775, series: [9425,0,165247,650,7330,0,0,0,0,1270,4908,0,945,0] },
+];
+const sparkGrid = document.getElementById('sparkGrid');
+sparkCats.forEach(cat => {
+  const maxV = Math.max(...cat.series);
+  const w = 108, h = 40, n = cat.series.length;
+  const step = w / (n - 1);
+  const pts = cat.series.map((v, i) => [i * step, h - (v / maxV) * (h - 6) - 2]);
+  const line = "M" + pts.map(p => p.join(",")).join(" L");
+  const area = line + ` L${w},${h} L0,${h} Z`;
+  const gid = 'sg' + Math.random().toString(36).slice(2, 8);
+  const card = document.createElement('div');
+  card.className = 'spark-card';
+  card.innerHTML = `<div class="spark-info"><div class="spark-name">${cat.name}</div><div class="spark-sum">${fmt(cat.sum)} за проект</div></div>
+    <svg class="spark-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${cat.color}" stop-opacity="0.30"/><stop offset="100%" stop-color="${cat.color}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#${gid})"/>
+      <path d="${line}" fill="none" stroke="${cat.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  sparkGrid.appendChild(card);
 });
 </script>
 </body>
