@@ -684,6 +684,42 @@
   .lab-retest-card svg{ width:26px; height:26px; color:var(--gold-light); flex-shrink:0; }
   .lab-retest-card .txt{ font-size:12px; color:var(--muted); line-height:1.5; }
   .lab-retest-card .txt b{ color:var(--warm-white); }
+
+  /* ---------- Биохакинг ---------- */
+  .bio-entry-card{
+    display:flex; align-items:center; gap:12px;
+    background:var(--gradient-panel);
+    border:1px solid rgba(203,161,53,0.3);
+    border-radius:20px; padding:14px 16px; margin-bottom:20px;
+    cursor:pointer;
+  }
+  .bio-entry-card .ic{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    background:rgba(203,161,53,0.14); color:var(--gold-light);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .bio-entry-card .ic svg{ width:20px; height:20px; }
+  .bio-entry-card .body{ flex:1; }
+  .bio-entry-card .t{ font-size:13.5px; font-weight:700; color:var(--warm-white); }
+  .bio-entry-card .s{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .bio-entry-card .chev{ width:16px; height:16px; color:var(--muted-2); flex-shrink:0; }
+
+  .peptide-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:8px; }
+  .peptide-item{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:14px 16px;
+  }
+  .peptide-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px; }
+  .peptide-name{ font-family:var(--font-display); font-size:14.5px; font-weight:600; color:var(--warm-white); }
+  .peptide-tag{
+    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--neon-core); background:rgba(53,199,255,0.14);
+    padding:3px 8px; border-radius:var(--r-pill); white-space:nowrap; flex-shrink:0;
+  }
+  .peptide-text{ font-size:12.5px; line-height:1.55; color:var(--muted); }
+  .peptide-text b{ color:var(--warm-white); font-weight:600; }
+  .peptide-status{ font-size:11px; line-height:1.5; color:var(--muted-2); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06); }
 </style>
 </head>
 <body>
@@ -785,6 +821,15 @@
           <div class="stat-card-value" id="statSleepVal">7.4 ч</div>
           <div class="stat-card-sub" id="statSleepSub">лёг 23:10 · встал 06:36</div>
         </div>
+      </div>
+
+      <div class="bio-entry-card" data-goto="biohacking">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.8 17a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 8.5V3"/><path d="M7 15h10"/></svg></div>
+        <div class="body">
+          <div class="t">Биохакинг: пептиды и косметология</div>
+          <div class="s">Что сейчас обсуждают — обзор без воды</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </div>
 
       <div class="divider-label" id="rhythmToggle" style="cursor:pointer;">Ритм дня <span id="rhythmChevron" style="margin-left:4px;">▾</span></div>
@@ -1171,6 +1216,82 @@
     </div>
     <div class="toast" id="experimentToast">Эксперимент начат</div>
     <div class="tabbar" id="tabbar8"></div>
+  </section>
+
+  <!-- БИОХАКИНГ -->
+  <section class="screen" data-screen="biohacking">
+    <div class="screen-scroll">
+      <div class="nav-title">Биохакинг</div>
+
+      <div class="insight-card">
+        <div class="section-label">Обзорный раздел</div>
+        <div class="insight-text">Пептиды и косметология — то, что сейчас активно обсуждают в биохакинг-сообществе. Ниже — короткий срез: что это, зачем используют, что говорят прямо сейчас. Это не медицинская рекомендация и не инструкция к применению.</div>
+        <div class="insight-caveat">Перед любым вмешательством — особенно инъекционным — консультация врача и анализы обязательны. Раздел информационный.</div>
+      </div>
+
+      <div class="section-label">Пептиды</div>
+      <div class="peptide-list">
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">BPC-157</div>
+            <div class="peptide-tag">Восстановление</div>
+          </div>
+          <div class="peptide-text">Синтетический пептид-фрагмент, изначально изучался для заживления ЖКТ. В биохакинге используют для ускорения восстановления сухожилий, связок и мышц после травм.</div>
+          <div class="peptide-status">Что говорят сейчас: основная доказательная база — исследования на животных, качественных данных на людях мало. В РФ и большинстве стран не зарегистрирован как лекарство, оборот вне аптек.</div>
+        </div>
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">Семаглутид / Тирзепатид</div>
+            <div class="peptide-tag">Вес и метаболизм</div>
+          </div>
+          <div class="peptide-text">Агонисты GLP-1, изначально — препараты для диабета 2 типа. Сейчас на пике популярности как средство для снижения веса за счёт подавления аппетита.</div>
+          <div class="peptide-status">Что говорят сейчас: единственная группа в этом списке с крупными клиническими испытаниями и официальной регистрацией. Обсуждаемые риски — потеря мышечной массы наряду с жировой и набор веса после отмены, если нет силовых тренировок и контроля белка.</div>
+        </div>
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">Ипаморелин + CJC-1295</div>
+            <div class="peptide-tag">Гормон роста</div>
+          </div>
+          <div class="peptide-text">Стимуляторы естественной секреции гормона роста — мягче, чем инъекции самого ГР. Заявляются как поддержка сна, восстановления и композиции тела.</div>
+          <div class="peptide-status">Что говорят сейчас: доказательная база слабее, чем у GLP-1-группы. Легальный оборот — только по рецепту, в клиниках anti-age медицины.</div>
+        </div>
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">Эпиталон</div>
+            <div class="peptide-tag">Сон и старение</div>
+          </div>
+          <div class="peptide-text">Разработка петербургского Института биорегуляции и геронтологии — один из самых обсуждаемых пептидов именно в русскоязычном биохакинге. Заявленный механизм — регуляция эпифиза и синтеза мелатонина.</div>
+          <div class="peptide-status">Что говорят сейчас: исследования преимущественно российские, с небольшой выборкой. Международного консенсуса по эффективности нет.</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:22px;">Косметология</div>
+      <div class="peptide-list">
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">Пептиды в уходе за кожей</div>
+            <div class="peptide-tag">Топически</div>
+          </div>
+          <div class="peptide-text">Матриксил, аргирелин, медные пептиды (GHK-Cu) — в отличие от инъекционных, наносятся в составе сывороток. Сигнализируют клеткам синтезировать больше коллагена.</div>
+          <div class="peptide-status">Что говорят сейчас: доказательная база на уровне космецевтики сильнее, чем у большинства инъекционных пептидов. Эффект накопительный — заметен через 8-12 недель регулярного использования.</div>
+        </div>
+        <div class="peptide-item">
+          <div class="peptide-head">
+            <div class="peptide-name">Биоревитализация и мезотерапия</div>
+            <div class="peptide-tag">Инъекционно</div>
+          </div>
+          <div class="peptide-text">Введение гиалуроновой кислоты и пептидных комплексов у косметолога. В отличие от ботокса и филлеров — не меняет объём или мимику, работает на увлажнение и качество кожи.</div>
+          <div class="peptide-status">Популярна как продолжение системного биохакинга: если в порядке тело — логично, что и кожа должна соответствовать.</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="section-label">Что важнее прямо сейчас</div>
+        <div class="insight-text">Пептиды и косметология — верхний этаж биохакинга, где эффект точечный и часто краткосрочный. Фундамент — <b>сон, готовность и питание</b>, которые это приложение уже отслеживает каждый день, — по общему консенсусу сообщества определяет большую часть результата. Экзотику имеет смысл добавлять поверх стабильного фундамента, а не вместо него.</div>
+        <div class="insight-caveat">Обзор основан на открытых обсуждениях в биохакинг-сообществе на момент подготовки раздела — не на клинических рекомендациях. Точки зрения меняются, часть препаратов не имеет долгосрочных данных по безопасности.</div>
+      </div>
+    </div>
+    <div class="tabbar" id="tabbar9"></div>
   </section>
 
 </div>
