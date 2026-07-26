@@ -1,22 +1,4 @@
 {
-  "updated": "2026-07-21",
-  "days": {
-    "2026-07-21": {
-      "weight": 62.4,
-      "sleepH": 7.4,
-      "bedtime": "23:10",
-      "wake": "06:36",
-      "steps": 6420,
-      "activityKcal": 420,
-      "eatenKcal": 1840,
-      "targetKcal": 2200,
-      "protein": null,
-      "waterL": 1.3,
-      "waterTarget": 2.0,
-      "rituals": 4,
-      "ritualsTotal": 6,
-      "feel": "Норм",
-      "readiness": 72
-    }
-  }
+  "updated": null,
+  "days": {}
 }
