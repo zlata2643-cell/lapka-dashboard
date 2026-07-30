@@ -2246,6 +2246,171 @@ document.getElementById('expStartBtn').addEventListener('click', ()=>{
   document.getElementById('expHypothesisInput').value = '';
   showToast('experimentToast', 'Эксперимент начат — вернись через несколько дней');
 });
+
+/* ---------- Подключение реальных данных (health-data.json) ---------- */
+let healthData = null;
+
+function formatRuDate(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+}
+function weekdayShort(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  return ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][d.getDay()];
+}
+
+function applyHealthData(){
+  if(!healthData || !healthData.days) return;
+  const dates = Object.keys(healthData.days).sort();
+  if(!dates.length) return;
+  const lastDate = dates[dates.length - 1];
+  const today = healthData.days[lastDate] || {};
+
+  const greetEl = document.querySelector('.greeting-date');
+  if(greetEl) greetEl.textContent = formatRuDate(lastDate);
+
+  /* Вес */
+  const statWeightVal = document.getElementById('statWeightVal');
+  const statWeightSub = document.getElementById('statWeightSub');
+  if(typeof today.weight === 'number'){
+    weightKg = today.weight;
+    const wv = document.getElementById('weightValue');
+    if(wv) wv.textContent = weightKg.toFixed(1);
+    if(statWeightVal) statWeightVal.textContent = `${weightKg.toFixed(1)} кг`;
+  } else if(statWeightVal){
+    statWeightVal.textContent = '—';
+  }
+  const weightDates = dates.filter(dt => typeof healthData.days[dt].weight === 'number');
+  if(weightDates.length){
+    const lastW = weightDates.slice(-7);
+    weightHistory.length = 0;
+    lastW.forEach(dt => weightHistory.push(healthData.days[dt].weight));
+    weightLabelsArr.length = 0;
+    lastW.forEach((dt,i) => weightLabelsArr.push(i === lastW.length - 1 ? 'Сейчас' : weekdayShort(dt)));
+    renderWeightGraph();
+    if(statWeightSub){
+      if(weightHistory.length > 1){
+        const delta = Math.round((weightHistory[weightHistory.length-1] - weightHistory[0]) * 10) / 10;
+        const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+        statWeightSub.textContent = `${sign}${Math.abs(delta).toFixed(1)} кг за ${lastW.length} дн.`.replace('.', ',');
+      } else {
+        statWeightSub.textContent = '—';
+      }
+    }
+  } else if(statWeightSub){
+    statWeightSub.textContent = '—';
+  }
+
+  /* Сон */
+  const statSleepVal = document.getElementById('statSleepVal');
+  const statSleepSub = document.getElementById('statSleepSub');
+  if(typeof today.sleepH === 'number'){
+    if(statSleepVal) statSleepVal.textContent = `${today.sleepH.toFixed(1)} ч`;
+    const sv = document.getElementById('sleepValue');
+    if(sv) sv.textContent = today.sleepH.toFixed(1);
+  } else if(statSleepVal){
+    statSleepVal.textContent = '—';
+  }
+  if(today.bedtime || today.wake){
+    if(statSleepSub) statSleepSub.textContent = `лёг ${today.bedtime || '—'} · встал ${today.wake || '—'}`;
+    if(today.bedtime){
+      const bi = document.getElementById('sleepBedInput');
+      if(bi) bi.value = today.bedtime;
+    }
+    if(today.wake){
+      const wi = document.getElementById('sleepWakeInput');
+      if(wi) wi.value = today.wake;
+    }
+  } else if(statSleepSub){
+    statSleepSub.textContent = '—';
+  }
+  const sleepDates = dates.filter(dt => typeof healthData.days[dt].sleepH === 'number');
+  if(sleepDates.length){
+    const lastS = sleepDates.slice(-7);
+    sleepHistory.length = 0;
+    lastS.forEach(dt => sleepHistory.push(healthData.days[dt].sleepH));
+    renderSleepGraph();
+    if(typeof updateSleepRec === 'function') updateSleepRec();
+  }
+
+  /* Активность */
+  const statActivityVal = document.getElementById('statActivityVal');
+  const statActivitySub = document.getElementById('statActivitySub');
+  if(statActivityVal) statActivityVal.textContent = typeof today.activityKcal === 'number' ? `${today.activityKcal} ккал` : '—';
+  if(statActivitySub) statActivitySub.textContent = typeof today.steps === 'number' ? `${today.steps} шагов` : '—';
+
+  /* Питание */
+  const statNutritionVal = document.getElementById('statNutritionVal');
+  const statNutritionSub = document.getElementById('statNutritionSub');
+  if(typeof today.eatenKcal === 'number' && typeof today.targetKcal === 'number'){
+    if(statNutritionVal) statNutritionVal.innerHTML = `${today.eatenKcal} <span style="font-size:13px;color:var(--muted)">/ ${today.targetKcal}</span>`;
+    const left = Math.max(0, today.targetKcal - today.eatenKcal);
+    if(statNutritionSub) statNutritionSub.textContent = `осталось ${left} ккал`;
+  } else {
+    if(statNutritionVal) statNutritionVal.textContent = '—';
+    if(statNutritionSub) statNutritionSub.textContent = '—';
+  }
+
+  /* Вода */
+  const waterAmountEl = document.getElementById('waterAmount');
+  if(typeof today.waterL === 'number'){
+    const target = typeof today.waterTarget === 'number' ? today.waterTarget : (WATER_GOAL * 0.25);
+    const glassSize = (target / WATER_GOAL) || 0.25;
+    waterFilled = Math.max(0, Math.min(WATER_GOAL, Math.round(today.waterL / glassSize)));
+    renderWater();
+    if(waterAmountEl) waterAmountEl.textContent = `${today.waterL.toFixed(1)} / ${target.toFixed(1)} л`;
+  } else if(waterAmountEl){
+    waterAmountEl.textContent = '—';
+  }
+
+  /* Ритуалы */
+  const ritualProgressEl = document.getElementById('ritualProgress');
+  if(typeof today.rituals === 'number' && typeof today.ritualsTotal === 'number'){
+    if(ritualProgressEl) ritualProgressEl.textContent = `${today.rituals} / ${today.ritualsTotal}`;
+  } else if(ritualProgressEl){
+    ritualProgressEl.textContent = '—';
+  }
+
+  /* Самочувствие */
+  if(typeof today.feel === 'string' && today.feel){
+    const FEEL_PCT_MAP = { 'Низко':10, 'Ниже среднего':30, 'Норм':50, 'Хорошо':70, 'Отлично':90 };
+    const pct = Object.prototype.hasOwnProperty.call(FEEL_PCT_MAP, today.feel) ? FEEL_PCT_MAP[today.feel] : 50;
+    feelPct = pct;
+    const fill = document.getElementById('feelFill');
+    const thumb = document.getElementById('feelThumb');
+    const label = document.getElementById('feelLabel');
+    if(fill) fill.style.width = pct + '%';
+    if(thumb) thumb.style.left = pct + '%';
+    if(label) label.textContent = today.feel;
+  }
+
+  /* Готовность */
+  if(typeof today.readiness === 'number'){
+    const val = Math.max(0, Math.min(100, Math.round(today.readiness)));
+    const deg = val/100*360;
+    const rv = document.getElementById('readinessValue');
+    if(rv) rv.textContent = val;
+    const ring = document.getElementById('readinessRing');
+    if(ring) ring.style.background = `conic-gradient(from -90deg, var(--neon-core) 0deg, var(--neon) ${deg}deg, rgba(255,255,255,0.05) ${deg}deg, rgba(255,255,255,0.05) 360deg)`;
+    const banner = document.getElementById('lowReadinessBanner');
+    if(banner) banner.style.display = val < 60 ? 'flex' : 'none';
+    if(typeof syncReadinessHistoryToday === 'function') syncReadinessHistoryToday(val);
+  }
+}
+
+function loadHealthData(){
+  fetch('../health-data.json', { cache: 'no-store' })
+    .then(res => res.ok ? res.json() : null)
+    .then(json => {
+      if(!json || !json.days || !Object.keys(json.days).length) return;
+      healthData = json;
+      applyHealthData();
+    })
+    .catch(() => { /* файл недоступен — остаёмся на демо-значениях */ });
+}
+loadHealthData();
 </script>
 </body>
 </html>
