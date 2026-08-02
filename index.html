@@ -215,7 +215,7 @@ renderDaily();
 async function loadReminders() {
   const el = document.getElementById('reminders');
   try {
-    const res = await fetch('/lapka-dashboard/reminders.json');
+    const res = await fetch('/lapka-dashboard/reminders.json?t=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     if (!data.length) {
       el.innerHTML = '<div class="empty">Нет активных напоминаний 🎉</div>';
