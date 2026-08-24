@@ -128,10 +128,18 @@
 </div>
 
 <div id="panel-oxustech" class="panel" style="display:none">
-<div class="label">OxusTech</div>
-<div class="card" style="text-align:center; padding:34px 16px; color:var(--text-2); font-size:13px; line-height:1.5;">
-  Пока нет сделок по новым счетам.<br>Как только появятся — статистика будет здесь.
+<div class="label">Последнее обновление</div>
+<div class="yesterday-card" id="oxusLatestCard"></div>
+
+<div class="label">Всего с начала (чистыми -3%)</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="k-label">Итого по всем счетам</div><div class="k-value" id="oxusLifeTotal">—</div></div>
 </div>
+
+<div class="label">По счетам</div>
+<div id="oxusAcctList"></div>
+
+<div class="updated" id="oxusUpdated"></div>
 </div>
 
 <div id="panel-tagsonic" class="panel" style="display:none">
@@ -544,6 +552,64 @@ function showTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+
+const DATA_OXUS = {"CT-1348": {"2026-08-24": 528.65}, "CT-1455": {"2026-08-24": 317.19}, "CT-1349": {"2026-08-24": 191.25}};
+const OXUS_ACCOUNTS = Object.keys(DATA_OXUS);
+const OXUS_COLORS = { "CT-1348": "#c1392b", "CT-1455": "#d9b673", "CT-1349": "#935a3c" };
+
+let oxusLastDate = "2000-01-01";
+OXUS_ACCOUNTS.forEach(a => { const ks = Object.keys(DATA_OXUS[a]); if (ks.length) { const m = ks[ks.length-1]; if (m > oxusLastDate) oxusLastDate = m; } });
+
+function renderOxus() {
+  document.getElementById('oxusUpdated').textContent = `Данные на ${oxusLastDate.split('-').reverse().join('.')}`;
+  let latestTotal = 0, lifeTotal = 0;
+  const rows = OXUS_ACCOUNTS.map(a => {
+    const v = DATA_OXUS[a][oxusLastDate] || 0;
+    latestTotal += v;
+    const life = Object.values(DATA_OXUS[a]).reduce((s, x) => s + x, 0);
+    lifeTotal += life;
+    return { a, v, life };
+  });
+  const dateLabel = oxusLastDate.split('-').reverse().join('.');
+  const listHtml = rows.map(r => `
+    <div class="yesterday-row">
+      <div class="yesterday-dot" style="background:${OXUS_COLORS[r.a]}"></div>
+      <div class="yesterday-name">${r.a}</div>
+      <div class="yesterday-val">${r.v >= 0 ? '+' : ''}${fmt(r.v)}</div>
+    </div>`).join('');
+  document.getElementById('oxusLatestCard').innerHTML = `
+    <div class="yesterday-date">${dateLabel}</div>
+    <div class="yesterday-total">${latestTotal >= 0 ? '+' : ''}${fmt(latestTotal)} USDT</div>
+    <div class="yesterday-list">${listHtml}</div>
+  `;
+  document.getElementById('oxusLifeTotal').textContent = fmt(lifeTotal) + ' USDT';
+
+  const acctList = document.getElementById('oxusAcctList');
+  acctList.innerHTML = '';
+  rows.forEach(r => {
+    const dates = Object.keys(DATA_OXUS[r.a]).sort();
+    const vals = dates.map(d => DATA_OXUS[r.a][d]);
+    const maxAbs = Math.max(1, ...vals.map(Math.abs));
+    const barsHtml = vals.map(v => {
+      const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
+      const color = v >= 0 ? `linear-gradient(180deg, ${OXUS_COLORS[r.a]}, #e05a48)` : '#5a4f47';
+      return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
+    }).join('');
+    const labelsHtml = dates.map(d => {
+      const [, m, dd] = d.split('-');
+      return `<div class="bar-label">${dd}.${m}</div>`;
+    }).join('');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="acct-head"><div class="acct-name">${r.a}</div><div class="acct-total">${r.life >= 0 ? '+' : ''}${fmt(r.life)}</div></div>
+      <div class="bars">${barsHtml}</div>
+      <div class="bar-labels">${labelsHtml}</div>
+    `;
+    acctList.appendChild(card);
+  });
+}
+renderOxus();
 </script>
 </body>
 </html>
