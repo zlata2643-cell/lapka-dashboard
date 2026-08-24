@@ -128,15 +128,35 @@
 </div>
 
 <div id="panel-oxustech" class="panel" style="display:none">
-<div class="label">Последнее обновление</div>
-<div class="yesterday-card" id="oxusLatestCard"></div>
+<div class="label">Вчера</div>
+<div class="yesterday-card" id="oxusYesterdayCard"></div>
 
-<div class="label">Всего с начала (чистыми -3%)</div>
+<div class="label">Период</div>
+<div class="periods" id="oxusPeriods"></div>
+
 <div class="kpi-row">
-  <div class="kpi"><div class="k-label">Итого по всем счетам</div><div class="k-value" id="oxusLifeTotal">—</div></div>
+  <div class="kpi"><div class="k-label" id="oxusPeriodLabel">За период</div><div class="k-value" id="oxusPeriodTotal">—</div></div>
+  <div class="kpi"><div class="k-label">Всего с начала</div><div class="k-value" id="oxusLifeTotal">—</div></div>
 </div>
 
-<div class="label">По счетам</div>
+<div class="winrate-card" id="oxusWinrateCard"></div>
+
+<div class="label">Помесячно</div>
+<div class="month-row" id="oxusMonthRow"></div>
+
+<div class="label">Рост капитала</div>
+<div class="card growth-card">
+  <div class="growth-head"><span class="growth-title" id="oxusGrowthTitle">Накопительно за период</span><span class="growth-end" id="oxusGrowthEnd">—</span></div>
+  <div class="growth-svg-wrap"><svg viewBox="0 0 320 100" id="oxusGrowthSvg" style="width:100%;height:auto;display:block"></svg></div>
+</div>
+
+<div class="label">Доли счетов за период</div>
+<div class="card donut-card">
+  <svg width="96" height="96" viewBox="0 0 96 96" id="oxusDonut"></svg>
+  <div class="donut-legend" id="oxusDonutLegend"></div>
+</div>
+
+<div class="label">По счетам · по дням</div>
 <div id="oxusAcctList"></div>
 
 <div class="updated" id="oxusUpdated"></div>
@@ -560,15 +580,290 @@ const OXUS_COLORS = { "CT-1348": "#c1392b", "CT-1455": "#d9b673", "CT-1349": "#9
 let oxusLastDate = "2000-01-01";
 OXUS_ACCOUNTS.forEach(a => { const ks = Object.keys(DATA_OXUS[a]); if (ks.length) { const m = ks[ks.length-1]; if (m > oxusLastDate) oxusLastDate = m; } });
 
-function renderOxus() {
-  document.getElementById('oxusUpdated').textContent = `Данные на ${oxusLastDate.split('-').reverse().join('.')}`;
-  let latestTotal = 0, lifeTotal = 0;
+document.getElementById('oxusUpdated').textContent = `Данные на ${oxusLastDate.split('-').reverse().join('.')}`;
+
+let oxusActivePeriod = '30d';
+
+const oxusPeriodsEl = document.getElementById('oxusPeriods');
+PERIODS.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'period-btn' + (p.key === oxusActivePeriod ? ' active' : '');
+  btn.textContent = p.label;
+  btn.onclick = () => { oxusActivePeriod = p.key; renderOxusAll(); };
+  btn.dataset.key = p.key;
+  oxusPeriodsEl.appendChild(btn);
+});
+
+function oxusCutoffDate(days) {
+  const d = new Date(oxusLastDate + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - days + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function renderOxusAll() {
+  document.querySelectorAll('#oxusPeriods .period-btn').forEach(b => b.classList.toggle('active', b.dataset.key === oxusActivePeriod));
+  const period = PERIODS.find(p => p.key === oxusActivePeriod);
+  const cutoff = period.key === 'all' ? '2000-01-01' : oxusCutoffDate(period.days);
+  const useDaily = period.days <= 30;
+  const bucketMode = useDaily ? 'day' : 'week';
+
+  let periodTotal = 0, lifeTotal = 0;
+  const perAccountTotal = {};
+  OXUS_ACCOUNTS.forEach(a => {
+    let pt = 0, lt = 0;
+    Object.entries(DATA_OXUS[a]).forEach(([date, v]) => {
+      lt += v;
+      if (date >= cutoff && date <= oxusLastDate) pt += v;
+    });
+    perAccountTotal[a] = pt;
+    periodTotal += pt;
+    lifeTotal += lt;
+  });
+  document.getElementById('oxusPeriodLabel').textContent = `Чистыми · ${period.label.toLowerCase()}`;
+  document.getElementById('oxusPeriodTotal').textContent = fmt(periodTotal) + ' USDT';
+  document.getElementById('oxusLifeTotal').textContent = fmt(lifeTotal) + ' USDT';
+
+  renderOxusDonut(perAccountTotal, periodTotal);
+  renderOxusGrowth(cutoff, period.label);
+  renderOxusWinRate(cutoff, period.label);
+
+  const acctList = document.getElementById('oxusAcctList');
+  acctList.innerHTML = '';
+  OXUS_ACCOUNTS.forEach(a => {
+    const buckets = {};
+    Object.entries(DATA_OXUS[a]).forEach(([date, v]) => {
+      if (date < cutoff || date > oxusLastDate) return;
+      const k = bucketKey(date, bucketMode);
+      buckets[k] = (buckets[k] || 0) + v;
+    });
+    const keys = Object.keys(buckets).sort();
+    const vals = keys.map(k => buckets[k]);
+    const maxAbs = Math.max(1, ...vals.map(Math.abs));
+    const barsHtml = vals.map(v => {
+      const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
+      const color = v >= 0 ? `linear-gradient(180deg, ${OXUS_COLORS[a]}, #e05a48)` : '#5a4f47';
+      return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
+    }).join('');
+    const labelsHtml = keys.map(k => {
+      const [, m, d] = k.split('-');
+      return `<div class="bar-label">${d}.${m}</div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="acct-head"><div class="acct-name">${a}</div><div class="acct-total">${perAccountTotal[a] >= 0 ? '+' : ''}${fmt(perAccountTotal[a])}</div></div>
+      <div class="bars">${barsHtml}</div>
+      <div class="bar-labels">${labelsHtml}</div>
+      ${oxusDayListHtml(a)}
+    `;
+    acctList.appendChild(card);
+  });
+}
+
+function renderOxusDonut(perAccountTotal, total) {
+  const svg = document.getElementById('oxusDonut');
+  const legend = document.getElementById('oxusDonutLegend');
+  svg.innerHTML = '';
+  legend.innerHTML = '';
+  const cx = 48, cy = 48, r = 36, sw = 14;
+  const sum = OXUS_ACCOUNTS.reduce((s, a) => s + Math.max(0, perAccountTotal[a]), 0) || 1;
+  let angle = -90;
+  OXUS_ACCOUNTS.forEach(a => {
+    const val = Math.max(0, perAccountTotal[a]);
+    const frac = val / sum;
+    const sweep = frac * 360;
+    const largeArc = sweep > 180 ? 1 : 0;
+    const x1 = cx + r * Math.cos(angle * Math.PI / 180);
+    const y1 = cy + r * Math.sin(angle * Math.PI / 180);
+    const endAngle = angle + sweep;
+    const x2 = cx + r * Math.cos(endAngle * Math.PI / 180);
+    const y2 = cy + r * Math.sin(endAngle * Math.PI / 180);
+    if (frac > 0.001) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', OXUS_COLORS[a]);
+      path.setAttribute('stroke-width', sw);
+      svg.appendChild(path);
+    }
+    angle = endAngle;
+
+    const row = document.createElement('div');
+    row.className = 'legend-row';
+    row.innerHTML = `<div class="legend-dot" style="background:${OXUS_COLORS[a]}"></div><div class="legend-name">${a}</div><div class="legend-val">${fmt(perAccountTotal[a])}</div>`;
+    legend.appendChild(row);
+  });
+  const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  centerText.setAttribute('x', cx); centerText.setAttribute('y', cy);
+  centerText.setAttribute('text-anchor', 'middle'); centerText.setAttribute('dominant-baseline', 'central');
+  centerText.setAttribute('fill', '#f3ece0'); centerText.setAttribute('font-size', '11'); centerText.setAttribute('font-weight', '700');
+  centerText.textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : Math.round(total);
+  svg.appendChild(centerText);
+}
+
+function renderOxusGrowth(cutoff, periodLabel) {
+  document.getElementById('oxusGrowthTitle').textContent = `Накопительно · ${periodLabel.toLowerCase()}`;
+
+  const dailyTotals = {};
+  OXUS_ACCOUNTS.forEach(a => {
+    Object.entries(DATA_OXUS[a]).forEach(([date, v]) => {
+      if (date < cutoff || date > oxusLastDate) return;
+      dailyTotals[date] = (dailyTotals[date] || 0) + v;
+    });
+  });
+  const dates = Object.keys(dailyTotals).sort();
+  let running = 0;
+  const points = dates.map(d => { running += dailyTotals[d]; return running; });
+
+  document.getElementById('oxusGrowthEnd').textContent = (running >= 0 ? '+' : '') + fmt(running) + ' USDT';
+
+  const svg = document.getElementById('oxusGrowthSvg');
+  svg.innerHTML = '';
+  if (points.length < 2) {
+    svg.setAttribute('viewBox', '0 0 320 100');
+    return;
+  }
+  const W = 320, H = 100, PAD = 6;
+  const min = Math.min(0, ...points), max = Math.max(0, ...points);
+  const range = (max - min) || 1;
+  const x = i => PAD + (i / (points.length - 1)) * (W - PAD * 2);
+  const y = v => H - PAD - ((v - min) / range) * (H - PAD * 2);
+
+  const linePath = points.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  const areaPath = `${linePath} L ${x(points.length-1).toFixed(1)} ${H} L ${x(0).toFixed(1)} ${H} Z`;
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const defs = document.createElementNS(ns, 'defs');
+  defs.innerHTML = `<linearGradient id="oxusGrowthFill" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#c1392b" stop-opacity="0.35"/>
+    <stop offset="100%" stop-color="#c1392b" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="oxusGrowthLine" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#935a3c"/>
+    <stop offset="100%" stop-color="#e05a48"/>
+  </linearGradient>`;
+  svg.appendChild(defs);
+
+  const area = document.createElementNS(ns, 'path');
+  area.setAttribute('d', areaPath);
+  area.setAttribute('fill', 'url(#oxusGrowthFill)');
+  svg.appendChild(area);
+
+  const line = document.createElementNS(ns, 'path');
+  line.setAttribute('d', linePath);
+  line.setAttribute('fill', 'none');
+  line.setAttribute('stroke', 'url(#oxusGrowthLine)');
+  line.setAttribute('stroke-width', '2');
+  line.setAttribute('stroke-linecap', 'round');
+  line.setAttribute('stroke-linejoin', 'round');
+  svg.appendChild(line);
+
+  const dot = document.createElementNS(ns, 'circle');
+  dot.setAttribute('cx', x(points.length-1)); dot.setAttribute('cy', y(points[points.length-1]));
+  dot.setAttribute('r', '3.5'); dot.setAttribute('fill', '#d9b673');
+  svg.appendChild(dot);
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+}
+
+function renderOxusWinRate(cutoff, periodLabel) {
+  const dailyTotals = {};
+  OXUS_ACCOUNTS.forEach(a => {
+    Object.entries(DATA_OXUS[a]).forEach(([date, v]) => {
+      if (date < cutoff || date > oxusLastDate) return;
+      dailyTotals[date] = (dailyTotals[date] || 0) + v;
+    });
+  });
+  const days = Object.values(dailyTotals);
+  const wins = days.filter(v => v > 0).length;
+  const rate = days.length ? Math.round((wins / days.length) * 100) : 0;
+  document.getElementById('oxusWinrateCard').innerHTML =
+    `<span>Win rate · ${periodLabel.toLowerCase()}</span><span class="wr-value">${rate}% · ${wins}/${days.length} дней</span>`;
+}
+
+function renderOxusMonthly() {
+  const MONTH_SHORT = ['', 'янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const monthTotals = {};
+  OXUS_ACCOUNTS.forEach(a => {
+    Object.entries(DATA_OXUS[a]).forEach(([date, v]) => {
+      const ym = date.slice(0, 7);
+      monthTotals[ym] = (monthTotals[ym] || 0) + v;
+    });
+  });
+  const months = Object.keys(monthTotals).sort();
+  const currentYm = oxusLastDate.slice(0, 7);
+  const row = document.getElementById('oxusMonthRow');
+  row.innerHTML = '';
+  months.forEach((ym, i) => {
+    const [y, m] = ym.split('-');
+    const total = monthTotals[ym];
+    const prev = i > 0 ? monthTotals[months[i-1]] : null;
+    let deltaHtml = '';
+    if (prev !== null && prev !== 0) {
+      const pct = Math.round(((total - prev) / Math.abs(prev)) * 100);
+      const cls = pct >= 0 ? 'up' : 'down';
+      const arrow = pct >= 0 ? '↑' : '↓';
+      deltaHtml = `<div class="m-delta ${cls}">${arrow} ${Math.abs(pct)}%</div>`;
+    }
+    const tile = document.createElement('div');
+    tile.className = 'month-tile' + (ym === currentYm ? ' current' : '');
+    tile.innerHTML = `<div class="m-name">${MONTH_SHORT[+m]}${ym === currentYm ? ' (на ' + oxusLastDate.slice(8,10) + '.' + m + ')' : ''}</div><div class="m-value">${fmt(total)}</div>${deltaHtml}`;
+    row.appendChild(tile);
+  });
+}
+
+function getOxusMonthWeeks() {
+  const [ly, lm] = oxusLastDate.split('-').map(Number);
+  const daysInMonth = new Date(Date.UTC(ly, lm, 0)).getUTCDate();
+  const weekdays = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(Date.UTC(ly, lm - 1, day));
+    const dow = d.getUTCDay();
+    if (dow === 0 || dow === 6) continue;
+    weekdays.push({ date: `${ly}-${String(lm).padStart(2,'0')}-${String(day).padStart(2,'0')}`, dow });
+  }
+  const weeks = [];
+  let current = [];
+  weekdays.forEach(wd => {
+    if (wd.dow === 1 && current.length) { weeks.push(current); current = []; }
+    current.push(wd);
+  });
+  if (current.length) weeks.push(current);
+  return weeks;
+}
+
+function oxusDayListHtml(account) {
+  const weeks = getOxusMonthWeeks();
+  let html = '<div class="day-list">';
+  weeks.forEach(week => {
+    let weekTotal = 0, weekComplete = true;
+    let rows = '';
+    week.forEach(wd => {
+      const v = DATA_OXUS[account][wd.date];
+      const dateLabel = `${wd.date.slice(8,10)}.${wd.date.slice(5,7)} ${DOW_SHORT[wd.dow]}`;
+      if (v === undefined) {
+        rows += `<div class="day-row"><span class="d-label">${dateLabel}</span><span class="d-value empty">—</span></div>`;
+        weekComplete = false;
+      } else {
+        weekTotal += v;
+        const cls = v < 0 ? 'neg' : '';
+        rows += `<div class="day-row"><span class="d-label">${dateLabel}</span><span class="d-value ${cls}">${v >= 0 ? '+' : ''}${fmt(v)}</span></div>`;
+      }
+    });
+    html += rows;
+    html += `<div class="week-total-row"><span>Неделя ${wLabel(week)}</span><span class="${weekComplete ? '' : 'pending'}">${weekComplete ? fmt(weekTotal) + ' USDT' : 'ждём данные'}</span></div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderOxusYesterday() {
+  let total = 0;
   const rows = OXUS_ACCOUNTS.map(a => {
     const v = DATA_OXUS[a][oxusLastDate] || 0;
-    latestTotal += v;
-    const life = Object.values(DATA_OXUS[a]).reduce((s, x) => s + x, 0);
-    lifeTotal += life;
-    return { a, v, life };
+    total += v;
+    return { a, v };
   });
   const dateLabel = oxusLastDate.split('-').reverse().join('.');
   const listHtml = rows.map(r => `
@@ -577,39 +872,19 @@ function renderOxus() {
       <div class="yesterday-name">${r.a}</div>
       <div class="yesterday-val">${r.v >= 0 ? '+' : ''}${fmt(r.v)}</div>
     </div>`).join('');
-  document.getElementById('oxusLatestCard').innerHTML = `
+  document.getElementById('oxusYesterdayCard').innerHTML = `
     <div class="yesterday-date">${dateLabel}</div>
-    <div class="yesterday-total">${latestTotal >= 0 ? '+' : ''}${fmt(latestTotal)} USDT</div>
+    <div class="yesterday-total">${total >= 0 ? '+' : ''}${fmt(total)} USDT</div>
     <div class="yesterday-list">${listHtml}</div>
   `;
-  document.getElementById('oxusLifeTotal').textContent = fmt(lifeTotal) + ' USDT';
-
-  const acctList = document.getElementById('oxusAcctList');
-  acctList.innerHTML = '';
-  rows.forEach(r => {
-    const dates = Object.keys(DATA_OXUS[r.a]).sort();
-    const vals = dates.map(d => DATA_OXUS[r.a][d]);
-    const maxAbs = Math.max(1, ...vals.map(Math.abs));
-    const barsHtml = vals.map(v => {
-      const h = Math.max(3, Math.round(Math.abs(v) / maxAbs * 44));
-      const color = v >= 0 ? `linear-gradient(180deg, ${OXUS_COLORS[r.a]}, #e05a48)` : '#5a4f47';
-      return `<div class="bar-col"><div class="bar" style="height:${h}px;background:${color}"></div></div>`;
-    }).join('');
-    const labelsHtml = dates.map(d => {
-      const [, m, dd] = d.split('-');
-      return `<div class="bar-label">${dd}.${m}</div>`;
-    }).join('');
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="acct-head"><div class="acct-name">${r.a}</div><div class="acct-total">${r.life >= 0 ? '+' : ''}${fmt(r.life)}</div></div>
-      <div class="bars">${barsHtml}</div>
-      <div class="bar-labels">${labelsHtml}</div>
-    `;
-    acctList.appendChild(card);
-  });
 }
-renderOxus();
+
+renderOxusYesterday();
+renderOxusMonthly();
+renderOxusAll();
+
+
+
 </script>
 </body>
 </html>
